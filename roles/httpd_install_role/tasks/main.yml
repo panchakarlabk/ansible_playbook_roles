@@ -6,3 +6,9 @@
       name: "{{ pck }}"
       state: latest
     notify: restart
+  
+  - name: install nginx
+    yum:
+      name: "{{ pck2 }}"
+      state: latest
+    notify: restart
