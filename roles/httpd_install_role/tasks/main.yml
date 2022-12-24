@@ -17,4 +17,9 @@
     file:
       dest: /root/test.txt
       state: touch
-      
+  
+  - name: folder creation
+    copy:
+      content: '# This file is belonogs to srujana'
+      dest: /root/test.txt
+
