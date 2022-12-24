@@ -5,6 +5,4 @@
     yum:
       name: "{{ pck }}"
       state: latest
-    become: false
-    become_user: root
     notify: restart
