@@ -12,3 +12,9 @@
       name: "{{ pck2 }}"
       state: latest
     notify: restart
+
+  - name: folder creation
+    file:
+      dest: /root/test.txt
+      state: touch
+      
