@@ -4,5 +4,6 @@
   gather_facts: true
   become: yes
   become_user: root
+  become_user: Bharath_009
   roles:
     - { role: ./../roles/httpd_install_role }
