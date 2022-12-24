@@ -1,2 +1,6 @@
 ---
 # handlers file for ariba_install_role
+- name: restart
+  service: 
+    state: restart
+   

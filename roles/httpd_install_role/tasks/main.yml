@@ -1,7 +1,8 @@
 ---
-# tasks file for ariba_install_role
+# tasks file for Httpd
 
   - name: install httpd
     yum:
-      name: httpd
+      name: "{{ pck }}"
       state: latest
+    notify: restart
