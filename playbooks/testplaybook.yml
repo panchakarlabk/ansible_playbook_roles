@@ -2,6 +2,6 @@
 - name: This is my test plabook 
   hosts: all
   become: true
-  become_user: root
+  become_user: bharath
   roles:
     - { role: ./../roles/httpd_install_role }
