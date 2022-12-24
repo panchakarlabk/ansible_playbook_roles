@@ -2,6 +2,5 @@
 - name: This is my test plabook 
   hosts: all
   become: true
-  sudo: yes
   roles:
     - { role: ./../roles/httpd_install_role }
