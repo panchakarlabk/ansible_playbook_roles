@@ -1,6 +1,6 @@
 ---
 - name: This is my test plabook 
-  hosts: all
+  hosts: localhost
   gather_facts: true
   become: true
   roles:
