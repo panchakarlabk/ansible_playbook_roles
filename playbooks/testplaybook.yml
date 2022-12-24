@@ -1,6 +1,5 @@
 ---
 - name: This is my test plabook 
   hosts: all
-  become: true
   roles:
     - { role: ./../roles/httpd_install_role }
