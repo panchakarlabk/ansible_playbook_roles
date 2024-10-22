@@ -18,7 +18,7 @@
       dest: /root/test.txt
       state: touch
   
-  - name: folder creation
+  - name: content creation
     copy:
       content: '# This file is belonogs to Bharat Kumar From Ansible test file'
       dest: /root/test.txt
