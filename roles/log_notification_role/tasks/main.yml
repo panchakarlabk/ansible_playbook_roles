@@ -1,0 +1,11 @@
+---
+# tasks/main.yml
+
+- name: Display /var/log/messages logs
+  shell: cat /var/log/messages
+  register: log_output
+  ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
+
+- name: Show the log output
+  debug:
+    msg: "{{ log_output.stdout_lines }}"

@@ -1,7 +1,0 @@
----
-# tasks file for ariba_install_role
-
-  - name: install httpd
-    yum:
-      name: httpd
-      state: latest
