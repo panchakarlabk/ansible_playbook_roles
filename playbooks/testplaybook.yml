@@ -3,5 +3,5 @@
   hosts: all
   become: true
   roles:
-    ##- { role: ./../roles/httpd_install_role }
-    - { role: ./../log_notification_role }
+    - { role: ./../roles/httpd_install_role }
+    ##- { role: ./../log_notification_role }
