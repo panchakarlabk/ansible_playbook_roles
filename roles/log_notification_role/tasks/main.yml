@@ -9,3 +9,18 @@
 - name: Show the log output
   debug:
     msg: "{{ log_output.stdout_lines }}"
+
+- name: Send mail notification
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bharat@cxr.ai
+    password: Bharath_009
+    to: panchakarla@gmail.com
+    subject: Logs from /var/log/messages
+    body: |
+      Here are the logs from /var/log/messages:
+      {% for line in log_output.stdout_lines %}
+      {{ line }}
+      {% endfor %}
+  when: log_output.stdout_lines is defined
