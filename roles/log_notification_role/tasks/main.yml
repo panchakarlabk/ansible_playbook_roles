@@ -10,6 +10,11 @@
   debug:
     msg: "{{ log_output.stdout_lines }}"
 
+- name: Debug command output
+  debug:
+    var: command_output.stdout_lines
+
+
 # - name: Send mail notification
 #   community.general.mail:
 #     host: smtp.gmail.com
