@@ -1,37 +1,24 @@
 ---
-# tasks/main.yml
-
 # Step 1: Start DR PE restore check
 - name: Start DR PE restore check
   debug:
     msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
-# tasks/main.yml
 
+# Step 2: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
-  shell: tail -n 10 "{{ log_path }}"  >> /tmp/all_logs.txt 2>&1 
-  ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
-  delegate_to: localhost
+  shell: |
+    echo "=== Logs from {{ inventory_hostname }} ===" >> /tmp/all_logs.txt
+    tail -n 10 "{{ log_path }}" >> /tmp/all_logs.txt 2>&1
+  ignore_errors: yes  # Continue even if the log file doesn't exist or there's a permission issue.
+  delegate_to: localhost  # This ensures the logs are collected on the control machine.
 
+# Step 3: Display the content of all_logs.txt
 - name: Display the content of all_logs.txt
   command: cat /tmp/all_logs.txt
-  delegate_to: localhost  # Run the task on the control machine
+  delegate_to: localhost  # Ensure this task runs on the control machine.
   register: all_logs
-  
-# - name: Dr Pe logs 
-#   ansible.builtin.debug:
-#      msg: "{{ log_output }}"
-#   register: log_output
-#   delegate_to: localhost
-# - name: Append logs to a single file on localhost
-#   lineinfile:
-#     path: "/tmp/all_logs.txt"
-#     line: |
-#       ### Logs from host: {{ inventory_hostname }} ###
-#       {% if log_output.stdout_lines %}
-#       {{ log_output.stdout_lines | join('\n') }}
-#       {% else %}
-#       No logs found.
-#       {% endif %}
-#     create: yes
-#     insertafter: EOF  # Ensures the new content is appended to the end of the file
-#   delegate_to: localhost  # Run this task on the control machine
+
+# Step 4: Show the logs in the playbook output
+- name: Show logs in playbook output
+  debug:
+    var: all_logs.stdout
