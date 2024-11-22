@@ -18,8 +18,8 @@
 
 - name: Collect logs from all hosts and combine them into a single variable
   set_fact:
-    all_logs: "{{ all_logs | default('') + '\n\nLogs from each host ' "/tmp/{{ inventory_hostname }}_logs.txt" }}"
-  run_once: true  # Ensures the task runs only once and collects logs from all hosts
+    all_logs: "{{ all_logs | default('') + '\n\nLogs from host ' + inventory_hostname + ':\n' + (log_output.stdout_lines | join('\n') | default('No logs found')) }}"
+  #run_once: true  # Ensures the task runs only once and collects logs from all hosts
 
 - name: Send mail notification with logs from all hosts
   community.general.mail:
