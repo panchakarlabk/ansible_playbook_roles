@@ -35,3 +35,4 @@
 - name: Show logs in the playbook output
   debug:
     msg: "DR PE restore: {{ consolidated_logs }}"
+  runat: once
