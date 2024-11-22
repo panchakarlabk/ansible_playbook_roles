@@ -8,18 +8,25 @@
   
 - name: Save logs locally for each host
   copy:
-    content: "{{ log_output.stdout_lines | join('\n') }}"
-    dest: "/tmp/{{ inventory_hostname }}_logs.txt"
+    content: |
+      ### Logs from host: {{ inventory_hostname }} ###
+      {% if log_output.stdout_lines %}
+      {{ log_output.stdout_lines | join('\n') }}
+      {% else %}
+      No logs found.
+      {% endif %}
+    dest: "/tmp/all_logs.txt"
+    append: yes  # Append to the file, do not overwrite
   delegate_to: localhost  # Save the logs on the control machine
 
 - name: Debug logs to ensure they are captured
-  debug:
-    msg: "Logs from host {{ inventory_hostname }}: {{ log_output.stdout_lines | default('No logs found') }}"
+  shell: cat "/tmp/all_logs.txt"
+  register: all_logs
 
-- name: Collect logs from all hosts and combine them into a single variable
-  set_fact:
-    all_logs: "{{ all_logs | default('') + '\n\nLogs from host ' + inventory_hostname + ':\n' + (log_output.stdout_lines | join('\n') | default('No logs found')) }}"
-  #run_once: true  # Ensures the task runs only once and collects logs from all hosts
+# - name: Collect logs from all hosts and combine them into a single variable
+#   set_fact:
+#     all_logs: "{{ all_logs | default('') + '\n\nLogs from host ' + inventory_hostname + ':\n' + (log_output.stdout_lines | join('\n') | default('No logs found')) }}"
+#   #run_once: true  # Ensures the task runs only once and collects logs from all hosts
 
 - name: Send mail notification with logs from all hosts
   community.general.mail:
