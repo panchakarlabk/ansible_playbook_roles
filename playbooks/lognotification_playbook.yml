@@ -4,7 +4,7 @@
   become: true
   vars:
     log_dir: "/var/log"
-    log_file: "dr_pe_restore.log"
+    log_file: "messages"
     out_dir: "/tmp"
     out_file: "dr_pe_restore_logs.txt"
     host1: "192.168.162.128"
