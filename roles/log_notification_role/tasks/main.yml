@@ -6,28 +6,28 @@
   debug:
     msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
 
-# Step 2: Collect logs from host1 using slurp (base64 encoded content)
+# Step 2: Collect logs from host1 using fetch
 - name: Collect logs from host1
-  slurp:
+  fetch:
     src: "{{ log_dir }}/{{ log_file }}"
-  register: host1_logs
+    dest: "/tmp/{{ inventory_hostname }}_{{ out_file }}"
+    flat: yes
   delegate_to: "{{ host1 }}"
   run_once: true
 
-# Step 3: Collect logs from host2 using slurp (base64 encoded content)
+# Step 3: Collect logs from host2 using fetch
 - name: Collect logs from host2
-  slurp:
+  fetch:
     src: "{{ log_dir }}/{{ log_file }}"
-  register: host2_logs
+    dest: "/tmp/{{ inventory_hostname }}_{{ out_file }}"
+    flat: yes
   delegate_to: "{{ host2 }}"
   run_once: true
 
-# Step 4: Append logs from host1 to a single output file on localhost
+# Step 4: Append logs from host1 to the output file on localhost
 - name: Append logs from host1 to the output file
   copy:
-    content: |
-      ### Logs from host1 ###
-      {{ host1_logs.content }}
+    src: "/tmp/{{ host1 }}_{{ out_file }}"
     dest: "{{ out_dir }}/{{ out_file }}"
     append: yes
   delegate_to: localhost
@@ -36,16 +36,14 @@
 # Step 5: Append logs from host2 to the output file on localhost
 - name: Append logs from host2 to the output file
   copy:
-    content: |
-      ### Logs from host2 ###
-      {{ host2_logs.content }}
+    src: "/tmp/{{ host2 }}_{{ out_file }}"
     dest: "{{ out_dir }}/{{ out_file }}"
     append: yes
   delegate_to: localhost
   run_once: true
 
 # Step 6: Display the contents of the output file
-- name: Display the content of /tmp/all_logs.txt
+- name: Display the content of the log file
   command: cat {{ out_dir }}/{{ out_file }}
   delegate_to: localhost
   run_once: true
