@@ -8,7 +8,7 @@
 
 - name: DR PE restore log status 
   debug:
-    msg: "DE PR restore logs status : "{{ targets}}{{ log_output.stdout_lines }}"
+    msg: "DE PR restore logs status : "{{ targets}}"-"{{ log_output.stdout_lines }}"
 
 # - name: Send mail notification
 #   community.general.mail:
