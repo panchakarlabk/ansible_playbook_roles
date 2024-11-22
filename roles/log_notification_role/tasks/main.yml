@@ -3,7 +3,7 @@
 - name: Start DR PE restore check
   debug:
     msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
-  runat: once
+  run_once: true
 
 # Step 2: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
@@ -29,10 +29,10 @@
   command: cat /tmp/all_logs_collected.txt
   delegate_to: localhost
   register: consolidated_logs
-  runat: once
+  run_once: true
 
 # Step 5: Show the logs in the playbook output
 - name: Show logs in the playbook output
   debug:
     msg: "DR PE restore: {{ consolidated_logs }}"
-  runat: once
+  run_once: true
