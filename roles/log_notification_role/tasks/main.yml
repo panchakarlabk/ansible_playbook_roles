@@ -1,27 +1,27 @@
 ---
 # tasks/main.yml
 
-- name: Display /var/log/messages logs
-  shell: tail -n 10 /var/log/messages
+- name: Daily Monitore Logs DR PE restore log status 
+  shell: tail -n 10 "{{ log_path }}"
   register: log_output
   ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
 
-- name: Show the log output
+- name: DR PE restore log status 
   debug:
     msg: "{{ log_output.stdout_lines }}"
 
-- name: Send mail notification
-  community.general.mail:
-    host: smtp.gmail.com
-    port: 587
-    username: bharat@cxr.ai
-    password: bxhg ugir udbp psqj
-    to: panchakarlabk@gmail.com
-    subject: Logs from /var/log/messages
-    body: |
-      Here are the logs from /var/log/messages:
-      {% for line in log_output.stdout_lines %}
-      {{ line }}
-      {% endfor %}
-  when: log_output.stdout_lines is defined 
+# - name: Send mail notification
+#   community.general.mail:
+#     host: smtp.gmail.com
+#     port: 587
+#     username: bharat@cxr.ai
+#     password: bxhg ugir udbp psqj
+#     to: panchakarlabk@gmail.com
+#     subject: Logs from /var/log/messages
+#     body: |
+#       Here are the logs from /var/log/messages:
+#       {% for line in log_output.stdout_lines %}
+#       {{ line }}
+#       {% endfor %}
+#   when: log_output.stdout_lines is defined 
 
