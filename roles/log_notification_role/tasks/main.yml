@@ -15,7 +15,25 @@
   register: all_logs
   #delegate_to: localhost  # Collect logs on the control machine
 
-# Step 4: Show the logs in the playbook output
-- name: Show logs in playbook output
+# Step 3: Append logs to a file on the controller
+- name: Append logs to a central file on the controller
+  copy:
+    content: |
+      === Logs from {{ inventory_hostname }} ===
+      {{ all_logs.stdout | default('No logs collected') }}
+      === End of logs from {{ inventory_hostname }} ===
+    dest: "/tmp/all_logs_collected.txt"
+    remote_src: false
+    append: true  # Append logs from each host to the same file
+  delegate_to: localhost  # Run this task on the controller
+
+# Step 4: Display the collected logs
+- name: Display the collected logs
+  command: cat /tmp/all_logs_collected.txt
+  delegate_to: localhost
+  register: consolidated_logs
+
+# Step 5: Show the logs in the playbook output
+- name: Show logs in the playbook output
   debug:
-    var: all_logs.stdout
+    var: consolidated_logs.stdout
