@@ -1,29 +1,33 @@
 ---
 # tasks/main.yml
 
-- name: Daily Monitore Logs DR PE restore log status 
+- name: Daily Monitor Logs DR PE restore log status
   shell: tail -n 10 "{{ log_path }}"
   register: log_output
   ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
+  
+- name: Save logs locally for each host
+  copy:
+    content: "{{ log_output.stdout_lines | join('\n') }}"
+    dest: "/tmp/{{ inventory_hostname }}_logs.txt"
+  delegate_to: localhost  # Save the logs on the control machine
 
-- name: DR PE restore log status 
+- name: Debug logs to ensure they are captured
   debug:
     msg: "Logs from host {{ inventory_hostname }}: {{ log_output.stdout_lines | default('No logs found') }}"
-    
-- name: Send mail notification
+
+- name: Collect logs from all hosts and combine them into a single variable
+  set_fact:
+    all_logs: "{{ all_logs | default('') + '\n\nLogs from host ' + inventory_hostname + ':\n' + (log_output.stdout_lines | join('\n') | default('No logs found')) }}"
+  run_once: true  # Ensures the task runs only once and collects logs from all hosts
+
+- name: Send mail notification with logs from all hosts
   community.general.mail:
     host: smtp.gmail.com
     port: 587
     username: "{{ email_username }}"
     password: "{{ email_password }}"
-    # username: bharat@cxr.ai
-    # password: bxhg ugir udbp psqj
     to: panchakarlabk@gmail.com
-    subject: Daily Monitore Logs DR PE restore log status
-    body: |
-      Host: {{ inventory_hostname }}
-      Here are the logs from {{ log_path }}:
-      {% for line in log_output.stdout_lines %}
-      {{ line }}
-      {% endfor %}
-  when: log_output.stdout_lines is defined 
+    subject: "Daily Monitor Logs DR PE restore log status"
+    body: "{{ all_logs }}"
+  when: all_logs is defined
