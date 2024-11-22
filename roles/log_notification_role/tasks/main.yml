@@ -9,6 +9,7 @@
 - name: Dr Pe logs 
   ansible.builtin.debug:
      msg: "{{ log_output }}"
+  register: log_output
 # - name: Append logs to a single file on localhost
 #   lineinfile:
 #     path: "/tmp/all_logs.txt"
