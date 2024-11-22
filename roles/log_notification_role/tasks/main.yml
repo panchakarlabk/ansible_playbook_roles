@@ -19,18 +19,18 @@
     var: command_output.stdout_lines
 
 
-# - name: Send mail notification
-#   community.general.mail:
-#     host: smtp.gmail.com
-#     port: 587
-#     username: bharat@cxr.ai
-#     password: Bharath_009
-#     to: panchakarlabk@gmail.com
-#     subject: Logs from /var/log/messages
-#     body: |
-#       Here are the logs from /var/log/messages:
-#       {% for line in log_output.stdout_lines %}
-#       {{ line }}
-#       {% endfor %}
-#   when: log_output.stdout_lines is defined 
+- name: Send mail notification
+  community.general.mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bharat@cxr.ai
+    password: bxhg ugir udbp psqj
+    to: panchakarlabk@gmail.com
+    subject: Logs from /var/log/messages
+    body: |
+      Here are the logs from /var/log/messages:
+      {% for line in log_output.stdout_lines %}
+      {{ line }}
+      {% endfor %}
+  when: log_output.stdout_lines is defined 
 
