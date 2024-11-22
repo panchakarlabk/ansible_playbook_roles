@@ -8,14 +8,20 @@
 - name: Daily Monitor Logs DR PE restore log status
   shell: |
     echo "=== Logs from {{ inventory_hostname }} ===" >> /tmp/all_logs.txt
-    tail -n 10 "{{ log_path }}" >> /tmp/all_logs.txt 2>&1
-  ignore_errors: yes  # Continue even if the log file doesn't exist or there's a permission issue.
-  delegate_to: localhost  # This ensures the logs are collected on the control machine.
+    if [ -f "{{ log_path }}" ]; then
+      tail -n 10 "{{ log_path }}" >> /tmp/all_logs.txt 2>&1
+    else
+      echo "Log file {{ log_path }} does not exist on {{ inventory_hostname }}" >> /tmp/all_logs.txt
+    fi
+  vars:
+    log_path: "/var/log/messages"  # Default path for logs; change if necessary
+  ignore_errors: yes  # Continue even if there are issues
+  delegate_to: localhost  # Collect logs on the control machine
 
 # Step 3: Display the content of all_logs.txt
 - name: Display the content of all_logs.txt
   command: cat /tmp/all_logs.txt
-  delegate_to: localhost  # Ensure this task runs on the control machine.
+  delegate_to: localhost  # Ensure this task runs on the control machine
   register: all_logs
 
 # Step 4: Show the logs in the playbook output
