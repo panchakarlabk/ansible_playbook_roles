@@ -6,6 +6,9 @@
   register: log_output
   ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
   
+- name: Dr Pe logs 
+  ansible.builtin.debug:
+     msg: "{{ log_output }}"
 # - name: Append logs to a single file on localhost
 #   lineinfile:
 #     path: "/tmp/all_logs.txt"
