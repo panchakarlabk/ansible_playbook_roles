@@ -1,14 +1,6 @@
 ---
-- name: Collect and display DR PE restore logs
-  hosts: localhost
-  become: true
-  vars:
-    log_dir: "/var/log"
-    log_file: "messages"
-    out_dir: "/tmp"
-    out_file: "dr_pe_restore_logs.txt"
-    host1: "192.168.162.128"
-    host2: "192.168.162.130"
+- name: This is my test plabook 
+  hosts: "{{ targets }}"
   become: true
   roles:
     - { role: ./../roles//log_notification_role }

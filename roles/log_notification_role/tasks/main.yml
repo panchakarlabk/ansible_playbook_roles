@@ -1,45 +1,31 @@
----
 # tasks/main.yml
 
-# Step 1: Start DR PE restore check
-- name: Start DR PE restore check
-  debug:
-    msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
-    
-# Step 1: Fetch logs from host1
-- name: Fetch logs from host1
-  fetch:
-    src: "{{ log_dir }}/{{ log_file }}"  # Log file on the remote host
-    dest: "/tmp/{{ inventory_hostname }}_{{ log_file }}"  # Local path to save the fetched file
-    flat: yes
-
-# Step 2: Fetch logs from host2
-- name: Fetch logs from host2
-  fetch:
-    src: "{{ log_dir }}/{{ log_file }}"
-    dest: "/tmp/{{ inventory_hostname }}_{{ log_file }}"
-    flat: yes
-
-# Step 3: Append logs from host1 to the output file
-- name: Append logs from host1 to the output file
-  copy:
-    content: "{{ lookup('file', '/tmp/host1_{{ log_file }}') }}"  # Read content of fetched log file
-    dest: "{{ out_dir }}/{{ out_file }}"
-    append: yes
+- name: Daily Monitor Logs DR PE restore log status
+  shell: tail -n 10 "{{ log_path }}"  >> /tmp/all_logs.txt 2>&1
+  register: log_output
+  ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
   delegate_to: localhost
-  run_once: true
-
-# Step 4: Append logs from host2 to the output file
-- name: Append logs from host2 to the output file
-  copy:
-    content: "{{ lookup('file', '/tmp/host2_{{ log_file }}') }}"
-    dest: "{{ out_dir }}/{{ out_file }}"
-    append: yes
+  
+- name: Dr Pe logs 
+  ansible.builtin.debug:
+     msg: "{{ log_output }}"
+  register: log_output
   delegate_to: localhost
-  run_once: true
+# - name: Append logs to a single file on localhost
+#   lineinfile:
+#     path: "/tmp/all_logs.txt"
+#     line: |
+#       ### Logs from host: {{ inventory_hostname }} ###
+#       {% if log_output.stdout_lines %}
+#       {{ log_output.stdout_lines | join('\n') }}
+#       {% else %}
+#       No logs found.
+#       {% endif %}
+#     create: yes
+#     insertafter: EOF  # Ensures the new content is appended to the end of the file
+#   delegate_to: localhost  # Run this task on the control machine
 
-# Step 5: Display the contents of the final output file
-- name: Display the content of the output file
-  command: cat "{{ out_dir }}/{{ out_file }}"
-  delegate_to: localhost
-  run_once: true
+- name: Display the content of all_logs.txt
+  command: cat /tmp/all_logs.txt
+  delegate_to: localhost  # Run the task on the control machine
+  register: log_output
