@@ -6,18 +6,19 @@
   register: log_output
   ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
   
-- name: Save logs locally for each host
-  copy:
-    content: |
+- name: Append logs to a single file on localhost
+  lineinfile:
+    path: "/tmp/all_logs.txt"
+    line: |
       ### Logs from host: {{ inventory_hostname }} ###
       {% if log_output.stdout_lines %}
       {{ log_output.stdout_lines | join('\n') }}
       {% else %}
       No logs found.
       {% endif %}
-    dest: "/tmp/all_logs.txt"
-    append: yes  # Append to the file, do not overwrite
-  delegate_to: localhost  # Save the logs on the control machine
+    create: yes
+    insertafter: EOF  # Ensures the new content is appended to the end of the file
+  delegate_to: localhost  # Run this task on the control machine
 
 - name: Debug logs to ensure they are captured
   shell: cat "/tmp/all_logs.txt"
