@@ -2,23 +2,23 @@
 # tasks/main.yml
 
 - name: Daily Monitor Logs DR PE restore log status
-  shell: tail -n 10 "{{ log_path }}"
+  shell: tail -n 10 "{{ log_path }}"  >> /tmp/all_logs.txt 2>&1
   register: log_output
   ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
   
-- name: Append logs to a single file on localhost
-  lineinfile:
-    path: "/tmp/all_logs.txt"
-    line: |
-      ### Logs from host: {{ inventory_hostname }} ###
-      {% if log_output.stdout_lines %}
-      {{ log_output.stdout_lines | join('\n') }}
-      {% else %}
-      No logs found.
-      {% endif %}
-    create: yes
-    insertafter: EOF  # Ensures the new content is appended to the end of the file
-  delegate_to: localhost  # Run this task on the control machine
+# - name: Append logs to a single file on localhost
+#   lineinfile:
+#     path: "/tmp/all_logs.txt"
+#     line: |
+#       ### Logs from host: {{ inventory_hostname }} ###
+#       {% if log_output.stdout_lines %}
+#       {{ log_output.stdout_lines | join('\n') }}
+#       {% else %}
+#       No logs found.
+#       {% endif %}
+#     create: yes
+#     insertafter: EOF  # Ensures the new content is appended to the end of the file
+#   delegate_to: localhost  # Run this task on the control machine
 
 - name: Display the content of all_logs.txt
   command: cat /tmp/all_logs.txt
