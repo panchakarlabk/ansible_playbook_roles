@@ -27,7 +27,7 @@
   copy:
     content: |
       ### Logs from host1 ###
-      {{ host1_logs.content | b64decode }}
+      {{ host1_logs.content }}
     dest: "{{ out_dir }}/{{ out_file }}"
     append: yes
   delegate_to: localhost
@@ -38,7 +38,7 @@
   copy:
     content: |
       ### Logs from host2 ###
-      {{ host2_logs.content | b64decode }}
+      {{ host2_logs.content }}
     dest: "{{ out_dir }}/{{ out_file }}"
     append: yes
   delegate_to: localhost
