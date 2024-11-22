@@ -5,11 +5,13 @@
   shell: tail -n 10 "{{ log_path }}"  >> /tmp/all_logs.txt 2>&1
   register: log_output
   ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
+  delegate_to: localhost
   
 - name: Dr Pe logs 
   ansible.builtin.debug:
      msg: "{{ log_output }}"
   register: log_output
+  delegate_to: localhost
 # - name: Append logs to a single file on localhost
 #   lineinfile:
 #     path: "/tmp/all_logs.txt"
