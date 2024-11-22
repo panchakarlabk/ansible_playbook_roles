@@ -1,49 +1,51 @@
 ---
 # tasks/main.yml
 
-- name: Daily Monitor Logs DR PE restore log status
-  shell: tail -n 10 "{{ log_path }}"  >> /tmp/all_logs.txt 2>&1
-  register: log_output
-  ignore_errors: yes  # Optional: In case the log file doesn't exist or there's a permission issue.
+# Step 1: Start DR PE restore check
+- name: Start DR PE restore check
+  debug:
+    msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
+
+# Step 2: Collect logs from host1 using slurp (base64 encoded content)
+- name: Collect logs from host1
+  slurp:
+    src: "{{ log_dir }}/{{ log_file }}"
+  register: host1_logs
+  delegate_to: "{{ host1 }}"
+  run_once: true
+
+# Step 3: Collect logs from host2 using slurp (base64 encoded content)
+- name: Collect logs from host2
+  slurp:
+    src: "{{ log_dir }}/{{ log_file }}"
+  register: host2_logs
+  delegate_to: "{{ host2 }}"
+  run_once: true
+
+# Step 4: Append logs from host1 to a single output file on localhost
+- name: Append logs from host1 to the output file
+  copy:
+    content: |
+      ### Logs from host1 ###
+      {{ host1_logs.content | b64decode }}
+    dest: "{{ out_dir }}/{{ out_file }}"
+    append: yes
   delegate_to: localhost
-  
-- name: Dr Pe logs 
-  ansible.builtin.debug:
-     msg: "{{ log_output }}"
-  register: log_output
+  run_once: true
+
+# Step 5: Append logs from host2 to the output file on localhost
+- name: Append logs from host2 to the output file
+  copy:
+    content: |
+      ### Logs from host2 ###
+      {{ host2_logs.content | b64decode }}
+    dest: "{{ out_dir }}/{{ out_file }}"
+    append: yes
   delegate_to: localhost
-# - name: Append logs to a single file on localhost
-#   lineinfile:
-#     path: "/tmp/all_logs.txt"
-#     line: |
-#       ### Logs from host: {{ inventory_hostname }} ###
-#       {% if log_output.stdout_lines %}
-#       {{ log_output.stdout_lines | join('\n') }}
-#       {% else %}
-#       No logs found.
-#       {% endif %}
-#     create: yes
-#     insertafter: EOF  # Ensures the new content is appended to the end of the file
-#   delegate_to: localhost  # Run this task on the control machine
+  run_once: true
 
-- name: Display the content of all_logs.txt
-  command: cat /tmp/all_logs.txt
-  delegate_to: localhost  # Run the task on the control machine
-  register: all_logs
-
-# - name: Collect logs from all hosts and combine them into a single variable
-#   set_fact:
-#     all_logs: "{{ all_logs | default('') + '\n\nLogs from host ' + inventory_hostname + ':\n' + (log_output.stdout_lines | join('\n') | default('No logs found')) }}"
-#   #run_once: true  # Ensures the task runs only once and collects logs from all hosts
-
-- name: Send mail notification with logs from all hosts
-  community.general.mail:
-    host: smtp.gmail.com
-    port: 587
-    username: "{{ email_username }}"
-    password: "{{ email_password }}"
-    to: panchakarlabk@gmail.com
-    subject: "Daily Monitor Logs DR PE restore log status"
-    body: "{{ all_logs }}"
-  when: all_logs is defined
+# Step 6: Display the contents of the output file
+- name: Display the content of /tmp/all_logs.txt
+  command: cat {{ out_dir }}/{{ out_file }}
+  delegate_to: localhost
   run_once: true
