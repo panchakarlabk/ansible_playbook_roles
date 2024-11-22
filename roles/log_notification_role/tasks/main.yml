@@ -10,15 +10,6 @@
   debug:
     msg: "{{ log_output.stdout_lines }}"
 
-# - name: Run a shell command and capture output
-#   shell: echo "This is a success message"
-#   register: command_output
-
-# - name: Debug command output
-#   debug:
-#     var: command_output.stdout_lines
-
-
 - name: Send mail notification
   community.general.mail:
     host: smtp.gmail.com
