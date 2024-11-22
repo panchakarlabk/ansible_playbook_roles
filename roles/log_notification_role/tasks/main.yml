@@ -17,7 +17,7 @@
     username: bharat@cxr.ai
     password: bxhg ugir udbp psqj
     to: panchakarlabk@gmail.com
-    subject: Logs from /var/log/messages
+    subject: Daily Monitore Logs DR PE restore log status
     body: |
       Host: {{ inventory_hostname }}
       Here are the logs from {{ log_path }}:
