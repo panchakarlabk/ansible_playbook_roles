@@ -20,8 +20,9 @@
     insertafter: EOF  # Ensures the new content is appended to the end of the file
   delegate_to: localhost  # Run this task on the control machine
 
-- name: Debug logs to ensure they are captured
-  shell: cat "/tmp/all_logs.txt"
+- name: Display the content of all_logs.txt
+  command: cat /tmp/all_logs.txt
+  delegate_to: localhost  # Run the task on the control machine
   register: all_logs
 
 # - name: Collect logs from all hosts and combine them into a single variable
