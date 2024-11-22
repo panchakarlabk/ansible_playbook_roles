@@ -16,6 +16,7 @@
   vars:
     log_path: "/var/log/messages"  # Default path for logs; change if necessary
   ignore_errors: yes  # Continue even if there are issues
+  register: all_logs
   #delegate_to: localhost  # Collect logs on the control machine
 
 # Step 3: Display the content of all_logs.txt
