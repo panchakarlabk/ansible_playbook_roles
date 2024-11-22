@@ -7,8 +7,8 @@
 # Step 2: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   shell: | 
-     echo "=== Logs from {{ inventory_hostname }} ===" >> all_logs.txt 
-     tail -n 10 "{{ log_path }}" >> all_logs.txt 2>&1
+     echo "=== Logs from {{ inventory_hostname }} ===" 
+     tail -n 10 "{{ log_path }}" 
   vars:
     log_path: "/var/log/messages"  # Default path for logs; change if necessary
   ignore_errors: yes  # Continue even if there are issues
