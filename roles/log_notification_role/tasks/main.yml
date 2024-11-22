@@ -8,20 +8,20 @@
 
 - name: DR PE restore log status 
   debug:
-    msg: "DE PR restore logs status : "{{ targets}}"-"{{ log_output.stdout_lines }}"
-
-# - name: Send mail notification
-#   community.general.mail:
-#     host: smtp.gmail.com
-#     port: 587
-#     username: bharat@cxr.ai
-#     password: bxhg ugir udbp psqj
-#     to: panchakarlabk@gmail.com
-#     subject: Logs from /var/log/messages
-#     body: |
-#       Here are the logs from /var/log/messages:
-#       {% for line in log_output.stdout_lines %}
-#       {{ line }}
-#       {% endfor %}
-#   when: log_output.stdout_lines is defined 
-
+    msg: "Logs from host {{ inventory_hostname }}: {{ log_output.stdout_lines | default('No logs found') }}"
+    
+- name: Send mail notification
+  community.general.mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bharat@cxr.ai
+    password: bxhg ugir udbp psqj
+    to: panchakarlabk@gmail.com
+    subject: Logs from /var/log/messages
+    body: |
+      Host: {{ inventory_hostname }}
+      Here are the logs from {{ log_path }}:
+      {% for line in log_output.stdout_lines %}
+      {{ line }}
+      {% endfor %}
+  when: log_output.stdout_lines is defined 
