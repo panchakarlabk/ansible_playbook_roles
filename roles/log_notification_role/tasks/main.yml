@@ -5,7 +5,7 @@
 - name: Start DR PE restore check
   debug:
     msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
----
+    
 # Step 1: Fetch logs from host1
 - name: Fetch logs from host1
   fetch:
