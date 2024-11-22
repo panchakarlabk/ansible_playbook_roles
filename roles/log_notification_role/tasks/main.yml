@@ -14,8 +14,10 @@
   community.general.mail:
     host: smtp.gmail.com
     port: 587
-    username: bharat@cxr.ai
-    password: bxhg ugir udbp psqj
+    username: "{{ email_username }}"
+    password: "{{ email_password }}"
+    # username: bharat@cxr.ai
+    # password: bxhg ugir udbp psqj
     to: panchakarlabk@gmail.com
     subject: Daily Monitore Logs DR PE restore log status
     body: |
