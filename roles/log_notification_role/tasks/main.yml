@@ -39,7 +39,10 @@
     to: panchakarlabk@gmail.com
     subject: Daily Monitor Logs DR PE restore log status
     body: |
-      Daily Monitor Logs DR PE restore log status:
-      {{ consolidated_logs.stdout_lines | join(',\n') }}
+      
+      {% for line in consolidated_logs.stdout_lines %}
+      {{ line }},
+      {% endfor %}
   when: consolidated_logs.stdout_lines is defined 
   run_once: true
+
