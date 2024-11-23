@@ -3,6 +3,7 @@
 - name: Start DR PE restore check
   debug:
     msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
+  register: log_taken_time
   run_once: true
 
 # Step 2: Collect logs and append them to a single file
