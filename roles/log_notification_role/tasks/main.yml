@@ -23,7 +23,7 @@
     echo "{{ all_logs.stdout | default('No logs collected') }}" >> /tmp/all_logs_collected.txt
     echo "=== End of logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
   delegate_to: localhost  # Ensure this runs on the controller
-  run_once: true
+
 
 # Step 4: Display the collected logs
 - name: Display the collected logs
