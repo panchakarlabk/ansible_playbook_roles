@@ -24,12 +24,6 @@
   register: consolidated_logs
   run_once: true
 
-# # Step 5: Show the logs in the playbook output
-# - name: Show logs in the playbook output
-#   debug:
-#     msg: "DR PE restore: {{ consolidated_logs }}"
-#   run_once: true
-
 - name: Send Daily Monitor Logs mail notification
   community.general.mail:
     host: smtp.gmail.com
