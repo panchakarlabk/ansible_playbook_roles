@@ -1,0 +1,7 @@
+Daily Monitor Logs DR PE restore log status:
+Status: {{ logs_status }}
+
+Logs:
+{% for line in consolidated_logs.stdout_lines %}
+{{ line }},
+{% endfor %}

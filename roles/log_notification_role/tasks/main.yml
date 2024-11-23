@@ -1,5 +1,4 @@
 ---
-
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   shell: | 
@@ -7,7 +6,6 @@
      tail -n 10 "{{ log_path }}" 
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
-  #delegate_to: localhost  # Collect logs on the control machine
 
 ## Step 3: Append logs to a central file on the controller
 - name: Append logs to a central file on the controller
@@ -31,7 +29,18 @@
   register: consolidated_logs
   run_once: true
 
-# Step 6: Send Daily Monitor Logs mail notification
+# Step 6: Render the email template
+- name: Render the email body template
+  template:
+    src: email_template.j2
+    dest: /tmp/email_body.txt
+  vars:
+    logs_status: "{{ logs_status }}"
+    consolidated_logs: "{{ consolidated_logs.stdout_lines }}"
+  run_once: true
+  delegate_to: localhost
+
+# Step 7: Send Daily Monitor Logs mail notification
 - name: Send Daily Monitor Logs mail notification
   community.general.mail:
     host: smtp.gmail.com
@@ -40,15 +49,9 @@
     password: "{{ email_password }}"
     to: panchakarlabk@gmail.com
     subject: Daily Monitor Logs DR PE restore log status
-    body: |
-      Daily Monitor Logs DR PE restore log status:
-      Status: {{ logs_status }}
-
-      Logs:
-      {% for line in consolidated_logs.stdout_lines %}
-      {{ line }},
-      {% endfor %}
+    body: "{{ lookup('file', '/tmp/email_body.txt') }}"
   when: consolidated_logs.stdout_lines is defined 
   run_once: true
+
 
 
