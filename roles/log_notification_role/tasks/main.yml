@@ -40,19 +40,28 @@
   run_once: true
   delegate_to: localhost
 
-# Step 7: Send Daily Monitor Logs mail notification
-- name: Send Daily Monitor Logs mail notification
-  community.general.mail:
-    host: smtp.gmail.com
-    port: 587
-    username: "{{ lookup('env', 'EMAIL_USERNAME') }}"
-    password: "{{ lookup('env', 'EMAIL_PASSWORD') }}"
-    to: panchakarlabk@gmail.com
-    subject: Daily Monitor Logs DR PE restore log status
-    body: "{{ lookup('file', '/tmp/email_body.txt') }}"
-  when: consolidated_logs.stdout_lines is defined 
+
+- name: Debug Email Username and Password
+  debug:
+    msg:
+      - "Email Username: {{ lookup('env', 'EMAIL_USERNAME') }}"
+      - "Email Password: {{ lookup('env', 'EMAIL_PASSWORD') }}"
   run_once: true
   delegate_to: localhost
+
+# # Step 7: Send Daily Monitor Logs mail notification
+# - name: Send Daily Monitor Logs mail notification
+#   community.general.mail:
+#     host: smtp.gmail.com
+#     port: 587
+#     username: "{{ lookup('env', 'EMAIL_USERNAME') }}"
+#     password: "{{ lookup('env', 'EMAIL_PASSWORD') }}"
+#     to: panchakarlabk@gmail.com
+#     subject: Daily Monitor Logs DR PE restore log status
+#     body: "{{ lookup('file', '/tmp/email_body.txt') }}"
+#   when: consolidated_logs.stdout_lines is defined 
+#   run_once: true
+#   delegate_to: localhost
 
 
 
