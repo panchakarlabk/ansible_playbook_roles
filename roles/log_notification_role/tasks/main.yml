@@ -17,11 +17,10 @@
 # Step 3: Append logs to a central file on the controller
 - name: Append logs to a central file on the controller
   shell: |
-    echo "=== Logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
+    echo "===" >> /tmp/all_logs_collected.txt
     echo "{{ all_logs.stdout_lines | default('No logs collected') }}" >> /tmp/all_logs_collected.txt 2>&1
     echo "=== End of logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
   delegate_to: localhost  # Ensure this runs on the controller
-
 
 # Step 4: Display the collected logs
 - name: Display the collected logs
