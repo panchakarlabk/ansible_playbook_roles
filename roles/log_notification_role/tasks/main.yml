@@ -1,10 +1,5 @@
 ---
 # Step 1: Start DR PE restore check
-- name: Start DR PE restore check
-  debug:
-    msg: "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}"
-  register: log_taken_time
-  run_once: true
 
 # Step 2: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
@@ -18,7 +13,7 @@
 # Step 3: Append logs to a central file on the controller
 - name: Append logs to a central file on the controller
   shell: |
-    echo "===" >> /tmp/all_logs_collected.txt
+    echo "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     echo "{{ all_logs.stdout_lines | default('No logs collected') }}" >> /tmp/all_logs_collected.txt 2>&1
     echo "=== End of logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
   delegate_to: localhost  # Ensure this runs on the controller
