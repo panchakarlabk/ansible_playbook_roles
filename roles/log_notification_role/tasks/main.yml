@@ -52,6 +52,7 @@
     body: "{{ lookup('file', '/tmp/email_body.txt') }}"
   when: consolidated_logs.stdout_lines is defined 
   run_once: true
+  delegate_to: localhost
 
 
 
