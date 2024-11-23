@@ -40,8 +40,6 @@
     subject: Daily Monitor Logs DR PE restore log status
     body: |
       Daily Monitor Logs DR PE restore log status:
-      {% for line in consolidated_logs.stdout_lines %}
-      {{ line }}
-      {% endfor %}
+      {{ consolidated_logs.stdout_lines | join(',\n') }}
   when: consolidated_logs.stdout_lines is defined 
   run_once: true
