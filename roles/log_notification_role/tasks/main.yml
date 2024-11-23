@@ -18,7 +18,7 @@
 - name: Append logs to a central file on the controller
   shell: |
     echo "=== Logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
-    echo "{{ all_logs.stdout_lines | default('No logs collected') }}" >> /tmp/all_logs_collected.txt
+    echo "{{ all_logs.stdout_lines | default('No logs collected') }}" >> /tmp/all_logs_collected.txt 2>&1
     echo "=== End of logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
   delegate_to: localhost  # Ensure this runs on the controller
 
@@ -30,8 +30,8 @@
   register: consolidated_logs
   run_once: true
 
-# Step 5: Show the logs in the playbook output
-- name: Show logs in the playbook output
-  debug:
-    msg: "DR PE restore: {{ consolidated_logs }}"
-  run_once: true
+# # Step 5: Show the logs in the playbook output
+# - name: Show logs in the playbook output
+#   debug:
+#     msg: "DR PE restore: {{ consolidated_logs }}"
+#   run_once: true
