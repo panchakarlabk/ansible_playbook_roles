@@ -9,7 +9,7 @@
   register: all_logs
   #delegate_to: localhost  # Collect logs on the control machine
 
-# Step 3: Append logs to a central file on the controller
+## Step 3: Append logs to a central file on the controller
 - name: Append logs to a central file on the controller
   shell: |
     echo "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
@@ -17,13 +17,21 @@
     echo "=== End of logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
   delegate_to: localhost  # Ensure this runs on the controller
 
-# Step 4: Display the collected logs
+# Step 4: Check for errors in logs
+- name: Identify errors in logs
+  set_fact:
+    logs_status: "{% if 'error' in (all_logs.stdout_lines | join(' ') | lower) %}not ok{% else %}ok{% endif %}"
+  run_once: true
+  delegate_to: localhost  # Ensure this runs on the controller
+
+# Step 5: Display the collected logs
 - name: Display the collected logs
   command: cat /tmp/all_logs_collected.txt
   delegate_to: localhost
   register: consolidated_logs
   run_once: true
 
+# Step 6: Send Daily Monitor Logs mail notification
 - name: Send Daily Monitor Logs mail notification
   community.general.mail:
     host: smtp.gmail.com
@@ -33,10 +41,14 @@
     to: panchakarlabk@gmail.com
     subject: Daily Monitor Logs DR PE restore log status
     body: |
-      
+      Daily Monitor Logs DR PE restore log status:
+      Status: {{ logs_status }}
+
+      Logs:
       {% for line in consolidated_logs.stdout_lines %}
       {{ line }},
       {% endfor %}
   when: consolidated_logs.stdout_lines is defined 
   run_once: true
+
 
