@@ -1,7 +1,6 @@
 ---
-# Step 1: Start DR PE restore check
 
-# Step 2: Collect logs and append them to a single file
+# Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   shell: | 
      echo "=== Logs from {{ inventory_hostname }} ===" 
