@@ -1,7 +1,7 @@
 ---
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
-  shell: | 
+  ansible_builtin.shell: | 
      echo "=== Logs from {{ inventory_hostname }} ===" 
      tail -n 10 "{{ log_path }}" 
   ignore_errors: yes  # Continue even if there are issues
@@ -41,13 +41,9 @@
   delegate_to: localhost
 
 
-- name: Debug Email Username and Password
+- name: logs_status
   debug:
-    msg:
-      - "Email Username: {{ email_username }}"
-      - "Email Password: {{ email_password }}"
-      # - "Email Username: {{ lookup('env', 'EMAIL_USERNAME') }}"
-      # - "Email Password: {{ lookup('env', 'EMAIL_PASSWORD') }}"
+    msg:  "{{ logs_status }}"
   run_once: true
   delegate_to: localhost
 
