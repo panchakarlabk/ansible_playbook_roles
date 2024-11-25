@@ -44,8 +44,8 @@
 - name: Debug Email Username and Password
   debug:
     msg:
-      - "Email Username: {{ ansible_user }}"
-      - "Email Password: {{ ansible_password }}"
+      - "Email Username: {{ email_username }}"
+      - "Email Password: {{ email_password }}"
       # - "Email Username: {{ lookup('env', 'EMAIL_USERNAME') }}"
       # - "Email Password: {{ lookup('env', 'EMAIL_PASSWORD') }}"
   run_once: true
