@@ -7,7 +7,7 @@
   register: all_logs
 
 # Step 2: Append logs to a central file on the controller
-- name: Append logs to a central file on the controller
+- name: Append logs with CET time
   ansible.builtin.shell: |
     echo "=== DR PE {{ ansible_date_time.iso8601 | to_datetime | timezone('CET') | strftime('%Y-%m-%d %H:%M:%S') }} ===" >> /tmp/all_logs_collected.txt
     if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
@@ -16,7 +16,8 @@
       echo "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo "=== End of logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
-  delegate_to: localhost  # Ensure this runs on the controller
+  delegate_to: localhost
+  # Ensure this runs on the controller
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
