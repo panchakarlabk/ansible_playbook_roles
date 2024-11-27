@@ -8,11 +8,11 @@
 
 - name: Append logs with CET time
   ansible.builtin.shell: |
-    echo "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+    echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
     if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
-      echo "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
     else
-      echo "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+      echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost

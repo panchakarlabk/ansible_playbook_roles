@@ -6,8 +6,6 @@ Database hosts monitoring status:
 
 DR PE Database restore
 
-{% if logs_status == 'no logs found' %}
-No logs collected as of {{ ansible_date_time.iso8601 }} CET.
-{% else %}
-{{ consolidated_logs }}
-{% endif %}
+{% for line in consolidated_logs.stdout %}
+{{ line }},
+{% endfor %}
