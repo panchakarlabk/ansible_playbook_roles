@@ -25,11 +25,16 @@
       no logs found
       {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
       not ok
+      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
       {% else %}
       ok
       {% endif %}
   run_once: true
   delegate_to: localhost
+
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
