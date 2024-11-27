@@ -45,7 +45,7 @@
     dest: /tmp/email_body.txt
   vars:
     logs_status: "{{ logs_status }}"
-    consolidated_logs: "{{ consolidated_logs.stdout_lines }}"
+    consolidated_logs: "{{ consolidated_logs.stdout }}"
   run_once: true
   delegate_to: localhost
 
