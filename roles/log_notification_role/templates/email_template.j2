@@ -1,11 +1,9 @@
-
 Time: {{ ansible_date_time.iso8601 }} CET
-
 
 Database hosts monitoring status:
 
 DR PE Database restore
 
-{% for line in consolidated_logs.stdout %}
-{{ line }},
+{% for line in consolidated_logs.stdout_lines %}
+{{ line }}
 {% endfor %}
