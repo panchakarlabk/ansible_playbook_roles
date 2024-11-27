@@ -52,8 +52,8 @@
   community.general.mail:
     host: smtp.gmail.com
     port: 587
-    username: "{{ lookup('env', 'EMAIL_USERNAME') }}"
-    password: "{{ lookup('env', 'EMAIL_PASSWORD') }}"
+    username: "{{ email_username }}"
+    password: "{{ email_password }}"
     to: panchakarlabk@gmail.com
     subject: Daily Monitor Logs DR PE restore log status
     body: "{{ lookup('file', '/tmp/email_body.txt') }}"
