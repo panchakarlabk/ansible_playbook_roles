@@ -35,19 +35,19 @@
   run_once: true
   delegate_to: localhost
 
-# Step 4: Collect the status and logs for each host in a list
-- name: Create a list of logs and statuses
-  ansible.builtin.set_fact:
-    logs_and_statuses: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': all_logs.stdout_lines }] }}"
-  run_once: true
-  delegate_to: localhost
-
 # Step 5: Display the collected logs
 - name: Display the collected logs
   ansible.builtin.command: cat /tmp/all_logs_collected.txt
   delegate_to: localhost
   register: consolidated_logs
   run_once: true
+
+# Step 4: Collect the status and logs for each host in a list
+- name: Create a list of logs and statuses
+  ansible.builtin.set_fact:
+    logs_and_statuses: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
+  run_once: true
+  delegate_to: localhost
 
 # Step 6: Render the email template
 - name: Render the email body template
@@ -59,12 +59,6 @@
   run_once: true
   delegate_to: localhost
 
-
-- name: logs_status
-  ansible.builtin.debug:
-    msg:  "{{ logs_status }}"
-  run_once: true
-  delegate_to: localhost
 
 # # Step 7: Send Daily Monitor Logs mail notification
 - name: Send Daily Monitor Logs mail notification
