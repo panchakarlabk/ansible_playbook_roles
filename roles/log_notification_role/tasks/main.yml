@@ -1,7 +1,7 @@
 ---
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
-  ansible_builtin.shell: | 
+  ansible.builtin.shell: | 
      echo "=== Logs from {{ inventory_hostname }} ===" 
      tail -n 10 "{{ log_path }}" 
   ignore_errors: yes  # Continue even if there are issues
@@ -9,7 +9,7 @@
 
 ## Step 3: Append logs to a central file on the controller
 - name: Append logs to a central file on the controller
-  shell: |
+  ansible.builtin.shell: |
     echo "Start check DR PE restore at: {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     echo "{{ all_logs.stdout_lines | default('No logs collected') }}" >> /tmp/all_logs_collected.txt 2>&1
     echo "=== End of logs from {{ inventory_hostname }} ===" >> /tmp/all_logs_collected.txt
@@ -17,14 +17,14 @@
 
 # Step 4: Check for errors in logs
 - name: Identify errors in logs
-  set_fact:
+  ansible.builtin.set_fact:
     logs_status: "{% if 'error' in (all_logs.stdout_lines | join(' ') | lower) %}not ok{% else %}ok{% endif %}"
   run_once: true
   delegate_to: localhost  # Ensure this runs on the controller
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
-  command: cat /tmp/all_logs_collected.txt
+  ansible.builtin.command: cat /tmp/all_logs_collected.txt
   delegate_to: localhost
   register: consolidated_logs
   run_once: true
@@ -42,24 +42,24 @@
 
 
 - name: logs_status
-  debug:
+  ansible.builtin.debug:
     msg:  "{{ logs_status }}"
   run_once: true
   delegate_to: localhost
 
 # # Step 7: Send Daily Monitor Logs mail notification
-# - name: Send Daily Monitor Logs mail notification
-#   community.general.mail:
-#     host: smtp.gmail.com
-#     port: 587
-#     username: "{{ lookup('env', 'EMAIL_USERNAME') }}"
-#     password: "{{ lookup('env', 'EMAIL_PASSWORD') }}"
-#     to: panchakarlabk@gmail.com
-#     subject: Daily Monitor Logs DR PE restore log status
-#     body: "{{ lookup('file', '/tmp/email_body.txt') }}"
-#   when: consolidated_logs.stdout_lines is defined 
-#   run_once: true
-#   delegate_to: localhost
+- name: Send Daily Monitor Logs mail notification
+  community.general.mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "{{ lookup('env', 'EMAIL_USERNAME') }}"
+    password: "{{ lookup('env', 'EMAIL_PASSWORD') }}"
+    to: panchakarlabk@gmail.com
+    subject: Daily Monitor Logs DR PE restore log status
+    body: "{{ lookup('file', '/tmp/email_body.txt') }}"
+  when: consolidated_logs.stdout_lines is defined 
+  run_once: true
+  delegate_to: localhost
 
 
 
