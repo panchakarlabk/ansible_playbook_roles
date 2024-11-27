@@ -6,6 +6,6 @@ Database hosts monitoring status:
 
 DR PE Database restore
 
-{% for line in consolidated_logs %}
+{% for line in consolidated_logs.stdout %}
 {{ line }},
 {% endfor %}
