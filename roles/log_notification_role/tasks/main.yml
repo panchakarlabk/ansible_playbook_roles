@@ -45,7 +45,6 @@
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
     logs_and_statuses: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
-  run_once: true
   delegate_to: localhost
 
 # Step 6: Render the email template
