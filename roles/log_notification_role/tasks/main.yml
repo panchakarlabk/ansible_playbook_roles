@@ -32,7 +32,6 @@
       {% else %}
       ok
       {% endif %}
-  run_once: true
   delegate_to: localhost
 
 # Step 5: Display the collected logs
