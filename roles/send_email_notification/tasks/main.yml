@@ -17,6 +17,7 @@
     to: "{{ email_recipient }}"
     subject: "{{ email_subject }}"
     body: "{{ lookup('file', '/tmp/email_body.txt') }}"
+    subtype: html
   when: email_body is defined
   run_once: true
   delegate_to: localhost
