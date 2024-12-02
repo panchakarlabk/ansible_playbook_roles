@@ -1,7 +1,7 @@
 ---
 - name: Render the email body template
   template:
-    src: email_body.j2
+    src: email_template.j2
     dest: /tmp/email_body.txt
   vars:
     consolidated_logs: "{{ logs_and_statuses }}"
