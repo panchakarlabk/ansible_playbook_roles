@@ -1,12 +1,28 @@
-Time: {{ ansible_date_time.iso8601 }} CET
-
-Database hosts monitoring status:
-
-DR PE Database restore
-
-{% for entry in email_body %}
+<html>
+  <body>
+    <p>Time: {{ ansible_date_time.iso8601 }} CET</p>
+    <p><strong>Database hosts monitoring status:</strong></p>
+    <p><strong>DR PE Database Restore</strong></p>
+    {% for entry in email_body %}
+      <div>
+        <p>Host: <strong>{{ entry.host }}</strong></p>
+        <p>Status: 
+          {% if entry.logs_status == 'ok' %}
+            <span style="color: green;">{{ entry.logs_status }}</span>
+          {% elif entry.logs_status == 'not ok' %}
+            <span style="color: red;">{{ entry.logs_status }}</span>
+          {% else %}
+            <span style="color: orange;">{{ entry.logs_status }}</span>
+          {% endif %}
+        </p>
+        <p><strong>Logs:</strong></p>
+        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
 {% for line in entry.logs %}
 {{ line }}
 {% endfor %}
-
-{% endfor %}
+        </pre>
+      </div>
+      <hr />
+    {% endfor %}
+  </body>
+</html>
