@@ -4,3 +4,4 @@
   become: true
   roles:
     - { role: ./../roles//log_notification_role }
+    - { role: ./../roles//send_email_notification }
