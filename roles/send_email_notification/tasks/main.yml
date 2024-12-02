@@ -1,0 +1,20 @@
+---
+- name: Render the email body template
+  template:
+    src: email_body.j2
+    dest: /tmp/email_body.txt
+  vars:
+    consolidated_logs: "{{ logs_and_statuses }}"
+  run_once: true
+
+- name: Send email notification
+  community.general.mail:
+    host: smtp.gmail.com
+    port: 587
+    username: "{{ email_username }}"
+    password: "{{ email_password }}"
+    to: "{{ email_recipient }}"
+    subject: "{{ email_subject }}"
+    body: "{{ lookup('file', '/tmp/email_body.txt') }}"
+  when: logs_and_statuses is defined
+  run_once: true
