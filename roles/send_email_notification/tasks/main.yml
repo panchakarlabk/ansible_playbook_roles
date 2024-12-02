@@ -6,6 +6,7 @@
   vars:
     consolidated_logs: "{{ logs_and_statuses }}"
   run_once: true
+  delegate_to: localhost
 
 - name: Send email notification
   community.general.mail:
@@ -18,3 +19,4 @@
     body: "{{ lookup('file', '/tmp/email_body.txt') }}"
   when: logs_and_statuses is defined
   run_once: true
+  delegate_to: localhost
