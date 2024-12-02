@@ -3,5 +3,5 @@
   hosts: "{{ targets }}"
   become: true
   roles:
-    - { role: ./../roles//log_notification_role }
-    - { role: ./../roles//send_email_notification }
+    - { role: ./../roles/restore_status }
+    - { role: ./../roles/send_email_notification }
