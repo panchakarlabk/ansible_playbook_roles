@@ -6,17 +6,6 @@
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
 
-- name: Append logs with CET time
-  ansible.builtin.shell: |
-    echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
-    if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
-      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
-    else
-      echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
-    fi
-    echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
-  delegate_to: localhost
-
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
   ansible.builtin.set_fact:
@@ -32,6 +21,18 @@
       {% else %}
       ok
       {% endif %}
+  delegate_to: localhost
+
+- name: Append logs with CET time
+  ansible.builtin.shell: |
+    echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+    echo -e "**Status** {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
+    if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
+      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+    else
+      echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+    fi
+    echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
 
 # Step 5: Display the collected logs
@@ -56,7 +57,6 @@
     consolidated_logs: "{{ logs_and_statuses }}"
   run_once: true
   delegate_to: localhost
-
 
 # # Step 7: Send Daily Monitor Logs mail notification
 - name: Send Daily Monitor Logs mail notification

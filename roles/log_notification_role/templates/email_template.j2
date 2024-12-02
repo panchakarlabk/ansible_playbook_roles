@@ -5,9 +5,6 @@ Database hosts monitoring status:
 DR PE Database restore
 
 {% for entry in logs_and_statuses %}
-**Host:** {{ entry.host }}
-**Status:** {{ entry.logs_status }}
-
 {% for line in entry.logs %}
 {{ line }}
 {% endfor %}
