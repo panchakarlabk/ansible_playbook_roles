@@ -4,7 +4,7 @@ Database hosts monitoring status:
 
 DR PE Database restore
 
-{% for entry in logs_and_statuses %}
+{% for entry in email_body %}
 {% for line in entry.logs %}
 {{ line }}
 {% endfor %}

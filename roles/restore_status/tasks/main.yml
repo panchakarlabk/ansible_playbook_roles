@@ -45,32 +45,8 @@
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
-    logs_and_statuses: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
+    email_body: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
   delegate_to: localhost
-
-# # Step 6: Render the email template
-# - name: Render the email body template
-#   template:
-#     src: email_template.j2
-#     dest: /tmp/email_body.txt
-#   vars:
-#     consolidated_logs: "{{ logs_and_statuses }}"
-#   run_once: true
-#   delegate_to: localhost
-
-# # # Step 7: Send Daily Monitor Logs mail notification
-# - name: Send Daily Monitor Logs mail notification
-#   community.general.mail:
-#     host: smtp.gmail.com
-#     port: 587
-#     username: "{{ email_username }}"
-#     password: "{{ email_password }}"
-#     to: panchakarlabk@gmail.com
-#     subject: Daily Monitor Logs DR PE restore log status
-#     body: "{{ lookup('file', '/tmp/email_body.txt') }}"
-#   when: consolidated_logs.stdout_lines is defined 
-#   run_once: true
-#   delegate_to: localhost
 
 
 

@@ -4,7 +4,7 @@
     src: email_template.j2
     dest: /tmp/email_body.txt
   vars:
-    consolidated_logs: "{{ logs_and_statuses }}"
+    email_body: "{{ email_body }}"
   run_once: true
   delegate_to: localhost
 
