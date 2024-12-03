@@ -1,39 +1,49 @@
-- name: Fetch devices in "database" group
-  ansible.builtin.uri:
-    url: "https://{{ logicmonitor_company }}.logicmonitor.com/rest/device/groups"
-    method: GET
-    headers:
-      Authorization: "Bearer {{ logicmonitor_access_token }}"
-      Content-Type: "application/json"
-    return_content: yes
-  register: group_data
+---
+# Step 1: Collect logs and append them to a single file
+- name: Daily Monitor Logs DR PE restore log status
+  ansible.builtin.shell: | 
+    tail "{{ log_path }}" | grep "$(date +%Y/%m/%d)"
+  ignore_errors: yes  # Continue even if there are issues
+  register: all_logs
 
-- name: Debug group data
-  ansible.builtin.debug:
-    var: group_data
-
-- name: Ensure the file folder exists
-  ansible.builtin.file:
-    path: "./file"
-    state: directory
-    mode: '0755'
-
-- name: Save the group_data to a file
-  ansible.builtin.copy:
-    content: "{{ group_data.json | to_nice_json }}"
-    dest: "./file/group_data.json"
-    mode: '0644'
-
-- name: Extract "database" group ID
+# Step 3: Check for errors in logs
+- name: Identify errors in logs
   ansible.builtin.set_fact:
-    database_group_id: >-
-      {{
-        (group_data.json.items | selectattr('name', 'equalto', 'database') | list | first).id
-          if (group_data.json.items | selectattr('name', 'equalto', 'database') | list | first) is defined
-          else 'not_found'
-      }}
+    logs_status: >-
+      {% if not all_logs.stdout_lines %}
+      no logs found
+      {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  delegate_to: localhost
 
-- name: Fail if database group is not found
-  ansible.builtin.fail:
-    msg: "The 'database' group was not found in LogicMonitor."
-  when: database_group_id == 'not_found'
+- name: Append logs with CET time
+  ansible.builtin.shell: |
+    echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+    echo -e "**Status** {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
+    if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
+      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+    else
+      echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+    fi
+    echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
+  delegate_to: localhost
+
+# Step 5: Display the collected logs
+- name: Display the collected logs
+  ansible.builtin.command: cat /tmp/all_logs_collected.txt
+  delegate_to: localhost
+  register: consolidated_logs
+  run_once: true
+
+# Step 4: Collect the status and logs for each host in a list
+- name: Create a list of logs and statuses
+  ansible.builtin.set_fact:
+    email_body: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
+  delegate_to: localhost
