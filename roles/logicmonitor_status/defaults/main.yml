@@ -1,3 +1,8 @@
 ---
 # defaults file for ariba_install_role
 log_path: "/var/log/messages"
+logicmonitor_account: "your_account_name"  # LogicMonitor account name
+lm_access_id: "your_access_id"            # LogicMonitor API Access ID
+lm_access_key: "your_access_key"          # LogicMonitor API Access Key
+alert_group: "Target Group Name"          # Group to filter alerts
+lm_auth: "LMv1 {{ lm_access_id }}:{{ signature }}:{{ current_time }}"

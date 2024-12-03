@@ -1,52 +1,30 @@
 ---
-# Step 1: Collect logs and append them to a single file
-- name: Daily Monitor Logs DR PE restore log status
-  ansible.builtin.shell: | 
-    tail "{{ log_path }}" | grep "$(date +%Y/%m/%d)"
-  ignore_errors: yes  # Continue even if there are issues
-  register: all_logs
+- name: Fetch LogicMonitor alerts
+  vars:
+    lm_api_url: "https://{{ logicmonitor_account }}.logicmonitor.com/santaba/rest/alert/alerts"
+    query_params: "size=1000"
+  uri:
+    url: "{{ lm_api_url }}?{{ query_params }}"
+    method: GET
+    headers:
+      Authorization: "{{ lm_auth }}"
+      Content-Type: "application/json"
+    return_content: yes
+  register: lm_alerts
 
-# Step 3: Check for errors in logs
-- name: Identify errors in logs
-  ansible.builtin.set_fact:
-    logs_status: >-
-      {% if not all_logs.stdout_lines %}
-      no logs found
-      {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% else %}
-      ok
-      {% endif %}
-  delegate_to: localhost
+- name: Ensure API response is successful
+  fail:
+    msg: "Failed to fetch alerts: {{ lm_alerts.status }}"
+  when: lm_alerts.status != 200
 
-- name: Append logs with CET time
-  ansible.builtin.shell: |
-    echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
-    echo -e "**Status** {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
-    if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
-      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
-    else
-      echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
-    fi
-    echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
-  delegate_to: localhost
+- name: Filter alerts by group
+  set_fact:
+    group_alerts: "{{ lm_alerts.json.data | selectattr('groupName', 'equalto', alert_group) | list }}"
 
-# Step 5: Display the collected logs
-- name: Display the collected logs
-  ansible.builtin.command: cat /tmp/all_logs_collected.txt
-  delegate_to: localhost
-  register: consolidated_logs
-  run_once: true
+- name: Find errors in alerts
+  set_fact:
+    error_alerts: "{{ group_alerts | selectattr('status', 'equalto', 'error') | list }}"
 
-# Step 4: Collect the status and logs for each host in a list
-- name: Create a list of logs and statuses
-  ansible.builtin.set_fact:
-    email_body: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
-  delegate_to: localhost
-
-
-
+- name: Display alert errors
+  debug:
+    msg: "Error alerts in group '{{ alert_group }}': {{ error_alerts }}"
