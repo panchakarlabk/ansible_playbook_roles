@@ -1,9 +1,12 @@
 ---
-# Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
-  ansible.builtin.shell: | 
-    tail "{{ log_path }}" | grep "$(date +%Y/%m/%d)"
-  ignore_errors: yes  # Continue even if there are issues
+  ansible.builtin.shell: |
+    if [ -f "{{ log_path }}" ]; then
+      tail "{{ log_path }}" | grep "$(date +%Y/%m/%d)"
+    else
+      echo "Log file does not exist"
+    fi
+  ignore_errors: yes
   register: all_logs
 
 # Step 3: Check for errors in logs
