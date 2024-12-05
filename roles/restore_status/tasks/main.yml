@@ -1,26 +1,12 @@
 ---
-- name: Ensure log path is set for each host under process_001_mysql
-  debug:
-    msg: "Log path for {{ inventory_hostname }} in process_001_mysql is {{ dba_automation.process_001_mysql.config.log_path }}"
-  when: inventory_hostname in dba_automation.process_001_mysql.hosts
-
-- name: Ensure log path is set for each host under process_002_orcale
-  debug:
-    msg: "Log path for {{ inventory_hostname }} in process_002_orcale is {{ dba_automation.process_002_orcale.config.log_path }}"
-  when: inventory_hostname in dba_automation.process_002_orcale.hosts
-
-
+# Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
-  ansible.builtin.shell: |
-    if [ -f "{{ dba_automation.process_001_mysql.config.log_path }}" ]; then
-      tail "{{ dba_automation.process_001_mysql.config.log_path }}" | grep "$(date +%Y/%m/%d)"
-    else
-      echo "Log file does not exist"
-    fi
-  ignore_errors: yes
+  ansible.builtin.shell: | 
+    tail "{{ dba_automation.process_001_mysql.config.log_path }}" | grep "$(date +%Y/%m/%d)"
+  ignore_errors: yes  # Continue even if there are issues
   register: all_logs
   when: inventory_hostname in dba_automation.process_001_mysql.hosts
-
+  
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
   ansible.builtin.set_fact:
@@ -62,3 +48,6 @@
   ansible.builtin.set_fact:
     email_body: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
   delegate_to: localhost
+
+
+
