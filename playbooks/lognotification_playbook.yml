@@ -3,7 +3,7 @@
   hosts: "{{ targets }}"
   become: true
   vars_files:
-    - host_config.yml  # Load the configuration file
+    - ./host_config.yml    # Load the configuration file
   roles:
     - restore_status 
     - send_email_notification 
