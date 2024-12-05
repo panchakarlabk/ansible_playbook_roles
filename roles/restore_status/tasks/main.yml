@@ -11,13 +11,25 @@
 
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: |
-    if [ -f "{{ log_path }}" ]; then
-      tail "{{ log_path }}" | grep "$(date +%Y/%m/%d)"
+    if [ -f "{{ dba_automation.process_002_send_postcard_to_santa_claus.config.log_path }}" ]; then
+      tail "{{ dba_automation.process_002_send_postcard_to_santa_claus.config.log_path }}" | grep "$(date +%Y/%m/%d)"
     else
       echo "Log file does not exist"
     fi
   ignore_errors: yes
   register: all_logs
+  when: inventory_hostname in dba_automation.process_002_send_postcard_to_santa_claus.hosts
+
+- name: Daily Monitor Logs DR PE restore log status
+  ansible.builtin.shell: |
+    if [ -f "{{ dba_automation.process_001_send.config.log_path }}" ]; then
+      tail "{{ dba_automation.process_001_send.config.log_path }}" | grep "$(date +%Y/%m/%d)"
+    else
+      echo "Log file does not exist"
+    fi
+  ignore_errors: yes
+  register: all_logs
+  when: inventory_hostname in dba_automation.process_001_send.hosts
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
