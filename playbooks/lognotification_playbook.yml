@@ -9,3 +9,8 @@
       vars:
         host_config: "{{ host_config }}"
     - send_email_notification 
+
+  tasks:
+  - name: Debug hosts_config variable
+    debug:
+      var: host_config
