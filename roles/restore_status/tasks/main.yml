@@ -9,16 +9,6 @@
     msg: "Log path for {{ inventory_hostname }} in process_002_send_postcard_to_santa_claus is {{ dba_automation.process_002_send_postcard_to_santa_claus.config.log_path }}"
   when: inventory_hostname in dba_automation.process_002_send_postcard_to_santa_claus.hosts
 
-- name: Daily Monitor Logs DR PE restore log status
-  ansible.builtin.shell: |
-    if [ -f "{{ dba_automation.process_002_send_postcard_to_santa_claus.config.log_path }}" ]; then
-      tail "{{ dba_automation.process_002_send_postcard_to_santa_claus.config.log_path }}" | grep "$(date +%Y/%m/%d)"
-    else
-      echo "Log file does not exist"
-    fi
-  ignore_errors: yes
-  register: all_logs
-  when: inventory_hostname in dba_automation.process_002_send_postcard_to_santa_claus.hosts
 
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: |
