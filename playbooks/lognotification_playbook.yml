@@ -11,6 +11,7 @@
     - send_email_notification 
 
   tasks:
-  - name: Debug hosts_config variable
+
+  - name: Ensure log path is set for each host
     debug:
-      var: "{{ host_config }}"
+      msg: "Log path for {{ inventory_hostname }} is {{ host_config[inventory_hostname].log_path }}"
