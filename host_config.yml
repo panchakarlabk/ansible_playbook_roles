@@ -1,6 +1,6 @@
 ---
 host_config:
   192.168.162.128:
-    log_path: /home/bharat/logs/host1.log
+    log_path: /home/bharat/logs/logs.txt
   192.168.162.130:
-    log_path: /home/bharat/logs/host2.log
+    log_path: /home/bharat/logs/logs.txt
