@@ -1,4 +1,9 @@
 ---
+
+- name: Ensure log path is set for each host
+  debug:
+    msg: "Log path for {{ inventory_hostname }} is {{ hosts_cofig[inventory_hostname].log_path }}"
+
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: |
     if [ -f "{{ log_path }}" ]; then
