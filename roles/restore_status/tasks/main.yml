@@ -2,7 +2,7 @@
 
 - name: Debug hosts_config variable
   debug:
-    var: host_config
+    var: "{{ host_config }}"
 
 - name: Ensure log path is set for each host
   debug:
