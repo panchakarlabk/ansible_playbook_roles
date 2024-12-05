@@ -5,7 +5,5 @@
   vars_files:
     - host_config.yml  # Load the configuration file
   roles:
-    - role: restore_status 
-      vars:
-        host_config: "{{ host_config }}"
+    - restore_status 
     - send_email_notification 
