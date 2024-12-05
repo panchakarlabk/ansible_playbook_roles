@@ -7,3 +7,7 @@
   roles:
     - restore_status 
     - send_email_notification 
+
+- name: Debug hosts_config variable
+  debug:
+    var: host_config
