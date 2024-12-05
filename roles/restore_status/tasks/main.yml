@@ -1,7 +1,13 @@
 ---
-- name: Ensure log path is set for each host
+- name: Ensure log path is set for each host under process_001_send
   debug:
-    msg: "Log path for {{ inventory_hostname }} is {{ host_config[inventory_hostname].log_path }}"
+    msg: "Log path for {{ inventory_hostname }} in process_001_send is {{ dba_automation.process_001_send.config.log_path }}"
+  when: inventory_hostname in dba_automation.process_001_send.hosts
+
+- name: Ensure log path is set for each host under process_002_send_postcard_to_santa_claus
+  debug:
+    msg: "Log path for {{ inventory_hostname }} in process_002_send_postcard_to_santa_claus is {{ dba_automation.process_002_send_postcard_to_santa_claus.config.log_path }}"
+  when: inventory_hostname in dba_automation.process_002_send_postcard_to_santa_claus.hosts
 
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: |
