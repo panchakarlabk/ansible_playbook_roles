@@ -1,3 +1,4 @@
+---
 host_config:
   192.168.162.128:
     log_path: /home/bharat/logs/host1.log

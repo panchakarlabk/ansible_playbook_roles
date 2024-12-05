@@ -2,14 +2,8 @@
 - name: This is my test plabook 
   hosts: "{{ targets }}"
   become: true
-  vars:
-    hosts_config:
-      192.168.162.128:
-        log_path: /home/bharat/logs/host1.log
-      192.168.162.130:
-        log_path: /home/bharat/logs/host2.log
-  # vars_files:
-  #   - host_config.yml    # Load the configuration file
+  vars_files:
+    - host_config.yml    # Load the configuration file
   roles:
     - restore_status 
     - send_email_notification 

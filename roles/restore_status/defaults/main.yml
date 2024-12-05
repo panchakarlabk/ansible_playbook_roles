@@ -1,6 +1,3 @@
 ---
-host_config:
-  192.168.162.128:
-    log_path: /home/bharat/logs/host1.log
-  192.168.162.130:
-    log_path: /home/bharat/logs/host2.log
+# defaults file for ariba_install_role
+#log_path: "/var/log/messages"
