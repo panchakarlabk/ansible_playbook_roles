@@ -3,4 +3,4 @@ host_config:
   192.168.162.128:
     log_path: /home/bharat/logs/logs.txt
   192.168.162.130:
-    log_path: /home/bharat/logs/logs.txt
+    log_path: /home/bharat/logs/logs.log
