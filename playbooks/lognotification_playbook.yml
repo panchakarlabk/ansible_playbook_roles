@@ -2,7 +2,10 @@
 - name: This is my test plabook 
   hosts: "{{ targets }}"
   become: true
-  vars_files: host_config.yml    # Load the configuration file
+  vars_files: 
+    - host_config.yml    # Load the configuration file
   roles:
-    - restore_status 
+    - role: restore_status
+      vars:
+        host_config: "{{ host_config }}"
     - send_email_notification 
