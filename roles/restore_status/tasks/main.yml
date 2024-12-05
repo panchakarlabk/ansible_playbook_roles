@@ -1,9 +1,4 @@
 ---
-
-- name: Debug hosts_config variable
-  debug:
-    var: host_config
-
 - name: Ensure log path is set for each host
   debug:
     msg: "Log path for {{ inventory_hostname }} is {{ host_config[inventory_hostname].log_path }}"
