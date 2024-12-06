@@ -1,12 +1,14 @@
 ---
-- name: Determine log path for each host
-  set_fact:
-    host_log_path: >-
-      {{ (item.log_path if 'log_path' in item else dba_automation.log_path) }}
-  with_items: "{{ dba_automation.hosts }}"
-  when: inventory_hostname == item.hostname
 
-- name: Display log path for the host
+- name: Iterate through processes to find matching host and log path
+  set_fact:
+    host_log_path: "{{ process.config.log_path }}"
+  with_subelements:
+    - "{{ dba_automation | dict2items }}"
+    - hosts
+  when: inventory_hostname == item.1
+
+- name: Display the log path for each host
   debug:
     msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
 
