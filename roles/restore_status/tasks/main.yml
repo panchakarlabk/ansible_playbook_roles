@@ -31,6 +31,25 @@
       {% endif %}
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
+  when: inventory_hostname in dba_automation.process_001_mysql.hosts
+
+# Step 3: Check for errors in logs
+- name: Identify errors in logs
+  ansible.builtin.set_fact:
+    logs_status: >-
+      {% if not all_logs.stdout_lines %}
+      no logs found
+      {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  delegate_to: localhost
+  ignore_errors: yes  # Continue even if there are issues
   when: inventory_hostname in dba_automation.process_002_orcale.hosts
 
 - name: Append logs with CET time
@@ -45,7 +64,6 @@
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
-  when: inventory_hostname in dba_automation.process_002_orcale.hosts
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
@@ -60,7 +78,6 @@
   ansible.builtin.set_fact:
     email_body: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
   delegate_to: localhost
-  when: inventory_hostname in dba_automation.process_002_orcale.hosts
 
 
 
