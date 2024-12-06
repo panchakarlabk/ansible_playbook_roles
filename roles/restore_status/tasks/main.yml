@@ -11,6 +11,7 @@
 - name: Display the log path for each host
   debug:
     msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
+  when: host_log_path is defined
 
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
