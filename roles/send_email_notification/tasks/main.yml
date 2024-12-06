@@ -5,6 +5,7 @@
     dest: /tmp/email_body.txt
   vars:
     email_body: "{{ email_body }}"
+  run_once: true
   delegate_to: localhost
   when: email_body is defined
     
