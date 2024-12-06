@@ -1,11 +1,11 @@
 ---
 
-- name: Iterate through processes to find matching host and log path
+- name: Set log path for each host dynamically
   set_fact:
-    host_log_path: "{{ item.value.config.log_path }}"
+    host_log_path: "{{ item.0.config.log_path }}"
   with_subelements:
-    - "{{ dba_automation | dict2items }}"
-    - value.hosts
+    - "{{ dba_automation | dict2items | map(attribute='value') | list }}"
+    - hosts
   when: inventory_hostname == item.1
 
 - name: Display the log path for each host
