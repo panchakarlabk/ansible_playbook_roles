@@ -6,7 +6,6 @@
   vars:
     email_body: "{{ email_body }}"
   delegate_to: localhost
-  run_once: true
   when: email_body is defined
     
 - name: Send email notification
