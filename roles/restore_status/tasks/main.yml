@@ -30,6 +30,7 @@
       ok
       {% endif %}
   delegate_to: localhost
+  ignore_errors: yes  # Continue even if there are issues
 
 - name: Append logs with CET time
   ansible.builtin.shell: |
@@ -42,6 +43,7 @@
     fi
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
+  ignore_errors: yes  # Continue even if there are issues
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
