@@ -66,7 +66,10 @@
   ansible.builtin.set_fact:
     email_body: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
   delegate_to: localhost
-  when: logs_status is defined
+  when: 
+    - logs_status is defined
+    - consolidated_logs is defined
+    - consolidated_logs.stdout_lines is defined
 
 
 
