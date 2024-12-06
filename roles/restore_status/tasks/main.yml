@@ -31,6 +31,7 @@
       {% endif %}
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
+  when: inventory_hostname in dba_automation.process_002_orcale.hosts
 
 - name: Append logs with CET time
   ansible.builtin.shell: |
@@ -44,6 +45,7 @@
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
+  when: inventory_hostname in dba_automation.process_002_orcale.hosts
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
@@ -52,11 +54,13 @@
   register: consolidated_logs
   run_once: true
 
+
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
     email_body: "{{ logs_and_statuses | default([]) + [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
   delegate_to: localhost
+  when: inventory_hostname in dba_automation.process_002_orcale.hosts
 
 
 
