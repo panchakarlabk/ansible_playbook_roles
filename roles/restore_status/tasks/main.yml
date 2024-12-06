@@ -61,6 +61,12 @@
   register: consolidated_logs
   run_once: true
 
+- name: Initialize email_body variable
+  ansible.builtin.set_fact:
+    email_body: []
+  delegate_to: localhost
+  run_once: true
+
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
