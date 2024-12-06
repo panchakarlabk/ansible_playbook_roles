@@ -15,7 +15,7 @@
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: | 
-    tail "{{ dba_automation[inventory_hostname].log_path }}" | grep "$(date +%Y/%m/%d)"
+    tail "{{ host_log_path }}" | grep "$(date +%Y/%m/%d)"
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
 
