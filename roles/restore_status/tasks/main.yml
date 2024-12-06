@@ -1,37 +1,21 @@
 ---
+- name: Determine log path for each host
+  set_fact:
+    host_log_path: >-
+      {{ (item.log_path if 'log_path' in item else dba_automation.log_path) }}
+  with_items: "{{ dba_automation.hosts }}"
+  when: inventory_hostname == item.hostname
+
+- name: Display log path for the host
+  debug:
+    msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
+
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: | 
-    tail "{{ dba_automation.process_001_mysql.config.log_path }}" | grep "$(date +%Y/%m/%d)"
+    tail "{{ dba_automation[inventory_hostname].log_path }}" | grep "$(date +%Y/%m/%d)"
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
-  when: inventory_hostname in dba_automation.process_001_mysql.hosts
-
-- name: Daily Monitor Logs DR PE restore log status
-  ansible.builtin.shell: | 
-    tail "{{ dba_automation.process_002_orcale.config.log_path }}" | grep "$(date +%Y/%m/%d)"
-  ignore_errors: yes  # Continue even if there are issues
-  register: all_logs
-  when: inventory_hostname in dba_automation.process_002_orcale.hosts
-  
-# Step 3: Check for errors in logs
-- name: Identify errors in logs
-  ansible.builtin.set_fact:
-    logs_status: >-
-      {% if not all_logs.stdout_lines %}
-      no logs found
-      {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% else %}
-      ok
-      {% endif %}
-  delegate_to: localhost
-  ignore_errors: yes  # Continue even if there are issues
-  when: inventory_hostname in dba_automation.process_001_mysql.hosts
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
@@ -50,7 +34,24 @@
       {% endif %}
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
-  when: inventory_hostname in dba_automation.process_002_orcale.hosts
+
+# Step 3: Check for errors in logs
+- name: Identify errors in logs
+  ansible.builtin.set_fact:
+    logs_status: >-
+      {% if not all_logs.stdout_lines %}
+      no logs found
+      {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  delegate_to: localhost
+  ignore_errors: yes  # Continue even if there are issues
 
 - name: Append logs with CET time
   ansible.builtin.shell: |

@@ -1,12 +1,28 @@
 dba_automation:
-  process_001_mysql:
-    config:
-      log_path: "/home/bharat/logs/logs.txt"
-    hosts:
-      - 192.168.162.128
-      - 192.168.162.136  # Assuming you meant different hosts here, otherwise it will be duplicate
-  process_002_orcale:
-    config:
-      log_path: "/home/bharat/logs/logs.txt"
-    hosts:
-      - 192.168.162.130
+  log_path: "/home/bharat/logs/logs.txt"  # Default log_path for the group
+  hosts:
+    - hostname: 192.168.162.128
+    - hostname: 192.168.162.136
+      log_path: "/custom/path/for/136/logs.txt"  # Override log_path for this host
+    - hostname: 192.168.162.130
+
+# dba_automation:
+#   192.168.162.128:
+#     log_path: "/home/bharat/logs/logs.txt"
+#   192.168.162.136:
+#     log_path: "/home/bharat/logs/logs.txt"
+#   192.168.162.130:
+#     log_path: "/home/bharat/logs/logs.txt"
+    
+# dba_automation:
+#   process_001_mysql:
+#     config:
+#       log_path: "/home/bharat/logs/logs.txt"
+#     hosts:
+#       - 192.168.162.128
+#       - 192.168.162.136  # Assuming you meant different hosts here, otherwise it will be duplicate
+#   process_002_orcale:
+#     config:
+#       log_path: "/home/bharat/logs/logs.txt"
+#     hosts:
+#       - 192.168.162.130
