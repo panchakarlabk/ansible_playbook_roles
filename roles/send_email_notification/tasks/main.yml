@@ -7,8 +7,11 @@
     email_body: "{{ email_body }}"
   run_once: true
   delegate_to: localhost
-  when: email_body is defined
-
+  when:
+    - email_body is defined
+    - email_body | length > 0
+    - email_body[0].logs_status is defined
+    
 - name: Send email notification
   community.general.mail:
     host: smtp.gmail.com
