@@ -37,24 +37,6 @@
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
 
-# Step 3: Check for errors in logs
-- name: Identify errors in logs
-  ansible.builtin.set_fact:
-    logs_status: >-
-      {% if not all_logs.stdout_lines %}
-      no logs found
-      {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% else %}
-      ok
-      {% endif %}
-  delegate_to: localhost
-  ignore_errors: yes  # Continue even if there are issues
-
 - name: Append logs with CET time
   ansible.builtin.shell: |
     echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
@@ -74,7 +56,6 @@
   delegate_to: localhost
   register: consolidated_logs
   run_once: true
-
 
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
