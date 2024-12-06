@@ -19,6 +19,7 @@
     tail "{{ host_log_path }}" | grep "$(date +%Y/%m/%d)"
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
+  when: host_log_path is defined
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
