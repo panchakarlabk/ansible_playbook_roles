@@ -59,7 +59,7 @@
         <tbody>
           {% for item in relevant_alerts %}
           <tr>
-            <td>{{  (item.groups.date | default(0) | int) | strftime('%Y-%m-%d') }} </td>
+            <td>{{  (item.groups.date | default(0)) | strftime('%Y-%m-%d') }} </td>
             <td>{{  item.groups.date | default(0)}} </td>
             <td>{{ item.askComment | default('') }} </td>
             <td>{{ item.monitorObjectName | default('') }}</td>
