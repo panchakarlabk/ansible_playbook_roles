@@ -50,10 +50,9 @@
         <thead>
           <tr>
             <th>Date</th>
+            <th>time</th>
             <th>Ask Comment</th>
             <th>Monitor Object Name</th>
-            <th>date</th>
-            <th>time</th>
             <th>Resource Template Name</th>
           </tr>
         </thead>
@@ -61,16 +60,10 @@
           {% for item in relevant_alerts %}
           <tr>
           <td>
-            {{
-              (item.groups.date | default(0) | int)
-              | to_datetime('%Y-%m-%d')
-            }}
+            {{ (item.groups.date | default(0) | int) | to_datetime('%Y-%m-%d') }}
           </td>
           <td>
-            {{
-              (item.groups.date | default(0) | int)
-              | to_datetime('%H:%M:%S')
-            }}
+            {{ (item.groups.date | default(0) | int) | to_datetime('%H:%M:%S') }}
           </td>
             <td>{{ item.askComment | default('') }}</td>
             <td>{{ item.monitorObjectName | default('') }}</td>
