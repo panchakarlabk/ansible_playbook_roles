@@ -9,7 +9,7 @@
 
 - name: Parse JSON content
   set_fact:
-    parsed_data: "{{ json_content['content'] | b64decode | from_json }}"
+    parsed_data: "{{ json_content['items']}}"
 
 - name: Display all items
   debug:
