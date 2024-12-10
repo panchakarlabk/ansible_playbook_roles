@@ -33,7 +33,7 @@
       Ask Comment: {{ item.askComment }}
       Monitor Object Name: {{ item.monitorObjectName }}
       Resource Template Name: {{ item.resourceTemplateName }}
-  with_items: "{{ filtered_items }}"
+  with_items: "{{ relevant_alerts }}"
   delegate_to: localhost
   run_once: true
 
