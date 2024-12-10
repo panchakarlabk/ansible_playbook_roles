@@ -46,3 +46,7 @@
       | {{ ansible_date_time.iso8601 }} | {{ item.askComment | default('') }}{{ ' ' * (12 - item.askComment | length) }} | {{ item.monitorObjectName | default('') }}{{ ' ' * (21 - item.monitorObjectName | length) }} | {{ item.resourceTemplateName | default('') }}{{ ' ' * (23 - item.resourceTemplateName | length) }} |
       {% endfor %}
   when: relevant_alerts | length > 0
+
+- name: Debug
+  debug:
+    msg: log_content
