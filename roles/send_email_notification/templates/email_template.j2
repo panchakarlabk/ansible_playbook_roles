@@ -60,10 +60,10 @@
           {% for item in relevant_alerts %}
           <tr>
             <td>
-              {{ (item.groups.date | default(0) | int // 1000) | strftime('%Y-%m-%d') }}
+              {{ item.groups.date | default(0) | to_datetime('%Y%m%d') }}
             </td>
             <td>
-              {{ (item.groups.date | default(0) | int // 1000) | strftime('%H:%M:%S') }}
+              {{ item.groups.date | default(0) }}
             </td>
             <td>{{ item.askComment | default('') }} </td>
             <td>{{ item.monitorObjectName | default('') }}</td>
