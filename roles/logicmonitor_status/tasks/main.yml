@@ -4,6 +4,8 @@
   slurp:
     src: files/data.json
   register: json_content
+  delegate_to: localhost
+  run_once: true
 
 - name: Parse JSON content
   set_fact:
@@ -16,4 +18,6 @@
       Monitor Object Name: {{ item.monitorObjectName }}
       Resource Template Name: {{ item.resourceTemplateName }}
   with_items: "{{ parsed_data.parse_data.items }}"
+  delegate_to: localhost
+  run_once: true
 
