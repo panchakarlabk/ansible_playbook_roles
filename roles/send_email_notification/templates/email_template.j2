@@ -59,6 +59,8 @@
         <tbody>
           {% for item in relevant_alerts %}
           <tr>
+            <td>{{ (item.groups.date | default('') }} </td>
+            <td>{{ (item.groups.date | default('') }} </td>
             <td>{{ item.askComment | default('') }}</td>
             <td>{{ item.monitorObjectName | default('') }}</td>
             <td>{{ item.resourceTemplateName | default('') }}</td>
