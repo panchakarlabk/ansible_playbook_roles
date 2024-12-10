@@ -6,21 +6,25 @@
   register: json_content
   run_once: true
 
-- name: Display the collected alerts
+- name: msg the collected alerts 
   debug:
-    msg: "{{ json_content }}"
+    msg: "{{ json_content.stdout }}"
   
-- name: Parse JSON content
+- name: Parse JSON content from the file
   set_fact:
-    parsed_data: "{{ json_content['items']}}"
+    parsed_data: "{{ json_content.stdout | from_json }}"
 
-- name: Display all items
+- name: Filter items where askComment starts with 'EVT' or 'INC'
+  set_fact:
+    filtered_items: "{{ parsed_data.parse_data.items | selectattr('askComment', 'search', '^EVT|^INC') | list }}"
+
+- name: Display filtered items
   debug:
     msg: >
       Ask Comment: {{ item.askComment }}
       Monitor Object Name: {{ item.monitorObjectName }}
       Resource Template Name: {{ item.resourceTemplateName }}
-  with_items: "{{ parsed_data.parse_data.items }}"
+  with_items: "{{ filtered_items }}"
   delegate_to: localhost
   run_once: true
 
