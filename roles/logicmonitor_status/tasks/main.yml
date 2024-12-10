@@ -1,7 +1,7 @@
 
 ---
 - name: Display the collected alerts
-  ansible.builtin.command: cat data.json | jq .
+  ansible.builtin.command: jq . data.json
   delegate_to: localhost
   register: json_content
   run_once: true
