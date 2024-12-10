@@ -52,6 +52,8 @@
             <th>Date</th>
             <th>Ask Comment</th>
             <th>Monitor Object Name</th>
+            <th>date</th>
+            <th>time</th>
             <th>Resource Template Name</th>
           </tr>
         </thead>
@@ -61,13 +63,13 @@
           <td>
             {{
               (item.groups.date | default(0) | int)
-              | to_datetime('%Y-%m-%d', 'gmt')
+              | to_datetime('%Y-%m-%d')
             }}
           </td>
           <td>
             {{
               (item.groups.date | default(0) | int)
-              | to_datetime('%H:%M:%S', 'gmt')
+              | to_datetime('%H:%M:%S')
             }}
           </td>
             <td>{{ item.askComment | default('') }}</td>
