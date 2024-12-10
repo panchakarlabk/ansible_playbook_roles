@@ -5,14 +5,10 @@
   delegate_to: localhost
   register: json_content
   run_once: true
-
-- name: msg the collected alerts 
-  debug:
-    msg: "{{ json_content.stdout }}"
   
 - name: Parse JSON content from the file
   set_fact:
-    parsed_data: "{{ json_content.stdout | from_json }}"
+    parsed_data: "{{ json_content.stdout }}"
 
 - name: Filter items where askComment starts with 'EVT' or 'INC'
   set_fact:
