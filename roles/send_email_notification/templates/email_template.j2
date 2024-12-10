@@ -36,7 +36,10 @@
         <tbody>
           {% for item in relevant_alerts %}
           <tr>
-            <td>{{ ansible_date_time.iso8601 }}</td>
+            <td>{{
+              (item.groups.date | default(0) | int)
+              | to_datetime('%Y-%m-%d %H:%M:%S', 'gmt')
+            }}</td>
             <td>{{ item.askComment | default('') }}</td>
             <td>{{ item.monitorObjectName | default('') }}</td>
             <td>{{ item.resourceTemplateName | default('') }}</td>

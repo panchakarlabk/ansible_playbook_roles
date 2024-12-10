@@ -8,7 +8,7 @@
         "monitorObjectName": "DatabaseServer1",
         "groups":
           {
-            
+            "date": "1733769000"
           },
         "resourceTemplateName": "MySQLTemplate"
       },
