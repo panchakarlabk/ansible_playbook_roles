@@ -2,7 +2,6 @@
   <body>
     <p>Time: {{ ansible_date_time.iso8601 }} CET</p>
     <p><strong>Database hosts monitoring status:</strong></p>
-
     <p><strong>Logic Monitore alerts </strong></p>
      {{ logic_monitor_email_body }}
     <p><strong>DR PE Database Restore</strong></p>
@@ -27,5 +26,25 @@
       </div>
       <hr />
     {% endfor %}
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Ask Comment</th>
+            <th>Monitor Object Name</th>
+            <th>Resource Template Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in relevant_alerts %}
+          <tr>
+            <td>{{ ansible_date_time.iso8601 }}</td>
+            <td>{{ item.askComment | default('') }}</td>
+            <td>{{ item.monitorObjectName | default('') }}</td>
+            <td>{{ item.resourceTemplateName | default('') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
   </body>
 </html>

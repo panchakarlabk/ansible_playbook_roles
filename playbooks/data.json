@@ -6,6 +6,10 @@
         "id": "1",
         "askComment": "EVT123",
         "monitorObjectName": "DatabaseServer1",
+        "groups":
+          {
+            
+          },
         "resourceTemplateName": "MySQLTemplate"
       },
       {
@@ -18,7 +22,8 @@
           "id": "3",
           "askComment": "OTHER789",
           "monitorObjectName": "CacheServer3",
-          "resourceTemplateName": "RedisTemplate"
+          "resourceTemplateName": "RedisTemplate",
+          "item": "test"
       }
     ]
   }
