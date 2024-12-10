@@ -12,7 +12,7 @@
 
 - name: Debug the parsed data's structure and keys
   debug:
-    msg: "{{ json_content.parse_data }}"
+    msg: "{{ json_content['parse_data'] }}"
 
 - name: Filter relevant alerts
   set_fact:
