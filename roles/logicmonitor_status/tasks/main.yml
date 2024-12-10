@@ -14,6 +14,11 @@
   debug:
     var: parsed_data
 
+
+- name: Debug the parsed data's structure and keys
+  debug:
+    msg: "{{ parsed_data.keys() }}"
+
 - name: Filter items where askComment starts with 'EVT' or 'INC'
   set_fact:
     filtered_items: "{{ parsed_data.parse_data.items | selectattr('askComment', 'search', '^EVT|^INC') | list }}"
