@@ -2,6 +2,9 @@
   <body>
     <p>Time: {{ ansible_date_time.iso8601 }} CET</p>
     <p><strong>Database hosts monitoring status:</strong></p>
+
+    <p><strong>Logic Monitore alerts </strong></p>
+     {{ logic_monitor_email_body }}
     <p><strong>DR PE Database Restore</strong></p>
     {% for entry in email_body %}
       <div>

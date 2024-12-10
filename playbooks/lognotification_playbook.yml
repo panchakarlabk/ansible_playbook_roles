@@ -6,4 +6,5 @@
     - host_config.yml    # Load the configuration file
   roles:
     - restore_status
+    - logicmonitor_status
     - send_email_notification 

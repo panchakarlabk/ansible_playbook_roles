@@ -20,10 +20,12 @@
 
 - name: Prepare filtered alerts for logging with current date
   set_fact:
-    log_content: |
+    logic_monitor_email_body: |
       | Date                 | Ask Comment  | Monitor Object Name   | Resource Template Name  |
       |----------------------|--------------|-----------------------|-------------------------|
       {% for item in relevant_alerts %}
       | {{ ansible_date_time.iso8601 }} | {{ item.askComment | default('') }}{{ ' ' * (12 - item.askComment | length) }} | {{ item.monitorObjectName | default('') }}{{ ' ' * (21 - item.monitorObjectName | length) }} | {{ item.resourceTemplateName | default('') }}{{ ' ' * (23 - item.resourceTemplateName | length) }} |
       {% endfor %}
   when: relevant_alerts | length > 0
+
+
