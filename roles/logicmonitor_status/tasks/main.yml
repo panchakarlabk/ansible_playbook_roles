@@ -2,7 +2,7 @@
 ---
 - name: Read JSON file
   slurp:
-    src: files/data.json
+    src: data.json
   register: json_content
   delegate_to: localhost
   run_once: true
