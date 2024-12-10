@@ -6,35 +6,17 @@
   register: json_content
   run_once: true
 
-- name: Parse JSON data
+- name: Parse JSON content from the file
   set_fact:
-    parsed_data: "{{ json_content | from_json }}"
+    parsed_data: "{{ json_content.stdout | from_json }}"
 
-- name: Create list of directories
-  set_fact:
-    directories: "{{ directories | default([]) + [item.monitorObjectName + '/' + item.resourceTemplateName + '/' + item.askComment] }}"
-  loop: "{{ parsed_data['items'] }}"
-
-- name: Display the list of directories
+- name: Debug parsed data structure
   debug:
-    var: directories
+    var: parsed_data
 
-- name: Filter relevant alerts
-  set_fact:
-    relevant_alerts: "{{ parsed_data['items'] | selectattr('askComment', 'search', '^(EVT|INC)') | list }}"
-
-# - name: Parse JSON content from the file
-#   set_fact:
-#     parsed_data: "{{ json_content.stdout | from_json }}"
-
-# - name: Debug parsed data structure
-#   debug:
-#     var: parsed_data
-
-
-# - name: Debug the parsed data's structure and keys
-#   debug:
-#     msg: "{{ parsed_data.keys() }}"
+- name: Debug the parsed data's structure and keys
+  debug:
+    msg: "{{ parsed_data.keys() }}"
 
 - name: Filter relevant alerts
   set_fact:
