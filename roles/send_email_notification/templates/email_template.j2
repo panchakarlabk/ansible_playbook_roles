@@ -1,25 +1,26 @@
 <html>
+   <head>
+     <style>
+       table {
+         width: 100%;
+         border-collapse: collapse;
+         font-family: Arial, sans-serif;
+         font-size: 14px;
+       }
+       th, td {
+         border: 1px solid #dddddd;
+        text-align: left;
+         padding: 8px;
+       }
+       th {
+         background-color: #f2f2f2;
+       }
+      tr:nth-child(even) {
+         background-color: #f9f9f9;
+       }
+     </style>
+  </head>
   <body>
-      <style>
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          font-family: Arial, sans-serif;
-          font-size: 14px;
-        }
-        th, td {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
-        }
-        th {
-          background-color: #f2f2f2;
-        }
-        tr:nth-child(even) {
-          background-color: #f9f9f9;
-        }
-      </style>
-
     <p>Time: {{ ansible_date_time.iso8601 }} CET</p>
     <p><strong>Database hosts monitoring status:</strong></p>
     <p><strong>Logic Monitore alerts </strong></p>
@@ -38,13 +39,13 @@
         </p>
         <p><strong>Logs:</strong></p>
         <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
-{% for line in entry.logs %}
-{{ line }}
-{% endfor %}
-        </pre>
-      </div>
-      <hr />
-    {% endfor %}
+        {% for line in entry.logs %}
+        {{ line }}
+        {% endfor %}
+                </pre>
+              </div>
+              <hr />
+            {% endfor %}
       <table>
         <thead>
           <tr>
