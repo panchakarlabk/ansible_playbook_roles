@@ -1,12 +1,15 @@
 
 ---
-- name: Read JSON file
-  slurp:
-    src: data.json
-  register: json_content
+- name: Display the collected alerts
+  ansible.builtin.command: cat data.json
   delegate_to: localhost
+  register: json_content
   run_once: true
 
+- name: Display the collected alerts
+  debug:
+    msg: "{{ json_content }}"
+  
 - name: Parse JSON content
   set_fact:
     parsed_data: "{{ json_content['items']}}"
