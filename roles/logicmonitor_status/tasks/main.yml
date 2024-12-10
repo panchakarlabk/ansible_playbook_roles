@@ -16,7 +16,7 @@
 
 - name: Filter items where askComment starts with 'EVT' or 'INC'
   set_fact:
-    filtered_items: "{{ parsed_data.parse_data.items | selectattr('askComment', 'search', '^EVT|^INC') | list }}"
+    filtered_items: "{{ parsed_data.items | selectattr('askComment', 'search', '^EVT|^INC') | list }}"
 
 - name: Display filtered items
   debug:
