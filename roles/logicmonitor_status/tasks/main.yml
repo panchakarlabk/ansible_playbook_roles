@@ -12,11 +12,11 @@
 
 - name: Debug the parsed data's structure and keys
   debug:
-    msg: "{{ json_content.stdout.parsed_data }}"
+    msg: "{{ json_content.stdout.parse_data }}"
 
 - name: Filter relevant alerts
   set_fact:
-    relevant_alerts: "{{ json_content.stdout.parsed_data['items'] | selectattr('askComment', 'search', '^(EVT|INC)') | list }}"
+    relevant_alerts: "{{ json_content.stdout | selectattr('askComment', 'search', '^(EVT|INC)') | list }}"
 
 # - name: Filter items where askComment starts with 'EVT' or 'INC'
 #   set_fact:
