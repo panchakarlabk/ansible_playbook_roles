@@ -19,9 +19,13 @@
   debug:
     msg: "{{ parsed_data.keys() }}"
 
-- name: Filter items where askComment starts with 'EVT' or 'INC'
+- name: Filter relevant alerts
   set_fact:
-    filtered_items: "{{ parsed_data.parse_data.items | selectattr('askComment', 'search', '^EVT|^INC') | list }}"
+    relevant_alerts: "{{ parsed_data['items'] | selectattr('askComment', 'search', '^(EVT|INC)') | list }}"
+
+# - name: Filter items where askComment starts with 'EVT' or 'INC'
+#   set_fact:
+#     filtered_items: "{{ parsed_data.parse_data.items | selectattr('askComment', 'search', '^EVT|^INC') | list }}"
 
 - name: Display filtered items
   debug:
