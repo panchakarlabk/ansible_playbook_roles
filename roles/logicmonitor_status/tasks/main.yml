@@ -9,7 +9,7 @@
 - name: Create list of directories
   set_fact:
     directories: "{{ directories | default([]) + [item.monitorObjectName + '/' + item.resourceTemplateName + '/' + item.askComment] }}"
-  loop: "{{ json_content['items'] }}"
+  loop: "{{ json_content.stdout['items'] }}"
 
 - name: Display the list of directories
   debug:
