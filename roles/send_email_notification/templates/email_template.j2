@@ -24,29 +24,6 @@
     <p>Time: {{ ansible_date_time.iso8601 }} CET</p>
     <p><strong>Database hosts monitoring status:</strong></p>
     <p><strong>Logic Monitore alerts </strong></p>
-     <table>
-        <thead>
-          <tr>
-            <th>Date</th>
-            <th>Ask Comment</th>
-            <th>Monitor Object Name</th>
-            <th>Resource Template Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in relevant_alerts %}
-          <tr>
-            <td>{{
-              (item.groups.date | default(0) | int)
-              | to_datetime('%Y-%m-%d %H:%M:%S', 'gmt')
-            }}</td>
-            <td>{{ item.askComment | default('') }}</td>
-            <td>{{ item.monitorObjectName | default('') }}</td>
-            <td>{{ item.resourceTemplateName | default('') }}</td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
     <p><strong>DR PE Database Restore</strong></p>
     {% for entry in email_body %}
       <div>
@@ -69,5 +46,25 @@
               </div>
               <hr />
             {% endfor %}
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Ask Comment</th>
+            <th>Monitor Object Name</th>
+            <th>Resource Template Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in relevant_alerts %}
+          <tr>
+            <td>{{ ansible_date_time.iso8601 }}</td>
+            <td>{{ item.askComment | default('') }}</td>
+            <td>{{ item.monitorObjectName | default('') }}</td>
+            <td>{{ item.resourceTemplateName | default('') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
   </body>
 </html>
