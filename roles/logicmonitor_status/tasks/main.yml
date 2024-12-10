@@ -13,11 +13,11 @@
 
 - name: Parse JSON content
   set_fact:
-    parsed_json: "{{ json_content.stdout | from_json }}"
+    parsed_json: "{{ json_content.stdout.parse_data | from_json }}"
 
 - name: Debug the parsed data's structure and keys
   debug:
-    msg: "{{ parsed_json.parse_data }}"
+    msg: "{{ parsed_json }}"
 
 - name: Filter relevant alerts
   set_fact:
