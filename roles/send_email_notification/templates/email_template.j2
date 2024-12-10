@@ -59,12 +59,6 @@
         <tbody>
           {% for item in relevant_alerts %}
           <tr>
-          <td>
-            {{ (item.groups.date | default(0) | int) | to_datetime('%Y-%m-%d') }}
-          </td>
-          <td>
-            {{ (item.groups.date | default(0) | int) | to_datetime('%H:%M:%S') }}
-          </td>
             <td>{{ item.askComment | default('') }}</td>
             <td>{{ item.monitorObjectName | default('') }}</td>
             <td>{{ item.resourceTemplateName | default('') }}</td>
