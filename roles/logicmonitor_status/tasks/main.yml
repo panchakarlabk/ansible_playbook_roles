@@ -6,14 +6,18 @@
   register: json_content
   run_once: true
 
-- name: Create list of directories
-  set_fact:
-    directories: "{{ directories | default([]) + [item.monitorObjectName + '/' + item.resourceTemplateName + '/' + item.askComment] }}"
-  loop: "{{ json_content.stdout['items'] }}"
-
 - name: Display the list of directories
   debug:
-    var: directories
+    var: json_content.stdout
+
+# - name: Create list of directories
+#   set_fact:
+#     directories: "{{ directories | default([]) + [item.monitorObjectName + '/' + item.resourceTemplateName + '/' + item.askComment] }}"
+#   loop: "{{ json_content.stdout['items'] }}"
+
+# - name: Display the list of directories
+#   debug:
+#     var: directories
 
 - name: Filter items where askComment starts with 'EVT' or 'INC'
   set_fact:
