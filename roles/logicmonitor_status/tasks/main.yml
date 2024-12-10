@@ -8,7 +8,7 @@
   
 - name: Parse JSON content from the file
   set_fact:
-    parsed_data: "{{ json_content.stdout }}"
+    parsed_data: "{{ json_content.stdout | from_json }}"
 
 - name: Filter items where askComment starts with 'EVT' or 'INC'
   set_fact:
