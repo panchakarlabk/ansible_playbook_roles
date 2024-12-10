@@ -10,32 +10,13 @@
   debug:
     var: json_content.stdout
 
-
 - name: Parse JSON content
   set_fact:
     parsed_json: "{{ json_content.stdout | from_json }}"
 
-- name: Debug the parsed data's structure and keys
-  debug:
-    msg: "{{ parsed_json.parse_data }}"
-
 - name: Filter relevant alerts
   set_fact:
     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
-
-# - name: Filter items where askComment starts with 'EVT' or 'INC'
-#   set_fact:
-#     filtered_items: "{{ parsed_data.parse_data.items | selectattr('askComment', 'search', '^EVT|^INC') | list }}"
-
-# - name: Display filtered items
-#   debug:
-#     msg: >
-#       Ask Comment: {{ item.askComment }}
-#       Monitor Object Name: {{ item.monitorObjectName }}
-#       Resource Template Name: {{ item.resourceTemplateName }}
-#   with_items: "{{ relevant_alerts }}"
-#   delegate_to: localhost
-#   run_once: true
 
 - name: Prepare filtered alerts for logging with current date
   set_fact:
@@ -46,7 +27,3 @@
       | {{ ansible_date_time.iso8601 }} | {{ item.askComment | default('') }}{{ ' ' * (12 - item.askComment | length) }} | {{ item.monitorObjectName | default('') }}{{ ' ' * (21 - item.monitorObjectName | length) }} | {{ item.resourceTemplateName | default('') }}{{ ' ' * (23 - item.resourceTemplateName | length) }} |
       {% endfor %}
   when: relevant_alerts | length > 0
-
-- name: Debug
-  debug:
-    msg: "{{ relevant_alerts }}"
