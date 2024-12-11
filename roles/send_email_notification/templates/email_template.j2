@@ -61,7 +61,11 @@
           <tr>
             <td> 
               {% set epoch_time = item.groups.date | default(0) | int %}
-              {{ (epoch_time // 1000) | to_datetime('%Y-%m-%d %H:%M:%S') if epoch_time >= 1000000000 else 'Invalid date' }}
+              {% if epoch_time >= 1000000000 %}
+                  {{ (epoch_time // 1000) | string | to_datetime('%Y-%m-%d %H:%M:%S') }}
+               {% else %}
+                  Invalid date
+              {% endif %}
             </td>
             <td>
               {{ item.groups.date | default(0) }}
