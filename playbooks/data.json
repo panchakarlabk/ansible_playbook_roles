@@ -34,7 +34,7 @@
         "askComment": "OTHER789",
         "monitorObjectName": "ApplicationServer1",
         "resourceTemplateName": "PostgresTemplate",
-        "item": "test",
+        "var1": "test",
         "groups":
         {
           "date": "1733855400"
