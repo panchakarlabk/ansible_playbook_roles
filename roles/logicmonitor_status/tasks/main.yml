@@ -49,13 +49,12 @@
                 length > 0
               ) |
               any
-            ) |
-            list |
-            length > 0
+            ) | length > 0
           )
         ) |
         list
       }}
+
 
 - name: Display relevant alerts
   debug:
