@@ -30,12 +30,12 @@
   set_fact:
     relevant_alerts: >
       {{
-        parsed_json.parse_data['items'] 
-        | rejectattr('monitorObjectName', 'in', ignore_alerts_rules | map(attribute='ignore_if') | flatten)
-        | rejectattr('resourceTemplateName', 'in', ignore_alerts_rules | map(attribute='ignore_if') | flatten)
+        parsed_json.parse_data['items']
+        | rejectattr('monitorObjectName', 'in', ignore_conditions | map(attribute='monitorObjectName') | flatten)
+        | rejectattr('resourceTemplateName', 'in', ignore_conditions | map(attribute='resourceTemplateName') | flatten)
         | list
       }}
-
+      
 - name: Append epoch time from groups.date
   set_fact:
     epoch_times: "{{ (item.groups.date | int) if (item.groups is defined and 'date' in item.groups) else None  }}"
