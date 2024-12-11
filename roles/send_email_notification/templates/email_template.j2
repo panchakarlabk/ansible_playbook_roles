@@ -59,15 +59,23 @@
         <tbody>
           {% for item in relevant_alerts %}
           <tr>
-            <td> 
-              {{ item.groups.date | default(0) }}
+            <td>
+              {% if item.groups is defined and 'date' in item.groups %}
+                {{ '%Y-%m-%d' | strftime(item.groups.date | int) }}
+              {% else %}
+                N/A
+              {% endif %}
             </td>
             <td>
-              {{ item.groups.date | default(0) }}
+              {% if item.groups is defined and 'date' in item.groups %}
+                {{ '%H:%M:%S' | strftime(item.groups.date | int) }}
+              {% else %}
+                N/A
+              {% endif %}
             </td>
-            <td>{{ item.askComment | default('') }} </td>
-            <td>{{ item.monitorObjectName | default('') }}</td>
-            <td>{{ item.resourceTemplateName | default('') }}</td>
+            <td>{{ item.askComment | default('N/A') }}</td>
+            <td>{{ item.monitorObjectName | default('N/A') }}</td>
+            <td>{{ item.resourceTemplateName | default('N/A') }}</td>
           </tr>
           {% endfor %}
         </tbody>

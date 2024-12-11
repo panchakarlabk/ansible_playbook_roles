@@ -14,32 +14,54 @@
   set_fact:
     parsed_json: "{{ json_content.stdout | from_json }}"
 
-# - name: Filter relevant alerts
-#   set_fact:
-#     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
-
-- name: Filter alerts based on ignore rules
+- name: Filter relevant alerts
   set_fact:
-    relevant_alerts: >-
-      {{
-        parsed_json.parse_data.items |
-        reject(
-          lambda item: ignore_alerts_rules |
-          selectattr('ignore_if', 'defined') |
-          selectattr('ignore_if', 'select', lambda condition: condition.items() | map('equalto', item.items()) | any) |
-          list |
-          length > 0
-        ) |
-        list
-      }}
+    relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
 
-- name: Display relevant alerts
+- name: Extract epoch times from groups.date
+  set_fact:
+    epoch_times: []
+  
+- name: Append epoch time from groups.date
+  set_fact:
+    epoch_times: "{{ epoch_times + [ (item.groups.date | int) if (item.groups is defined and 'date' in item.groups) else None ] }}"
+  loop: "{{ parsed_json.parse_data['items'] }}"
+  when: item.groups is defined
+
+- name: Epoch Time Fact
   debug:
-    msg: >
-      Ask Comment: {{ item.askComment }}
-      Monitor Object Name: {{ item.monitorObjectName }}
-      Resource Template Name: {{ item.resourceTemplateName }}
-  with_items: "{{ relevant_alerts }}"
+    var: epoch_times
+
+- name: Extract human-readable time from epoch times
+  set_fact:
+    time_fact: "{{ '%H:%M:%S' | strftime(epoch_times[0]) }}"
+
+- name: Extract human-readable date from epoch times
+  set_fact:
+    date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times[0]) }}"
+
+# - name: Filter alerts based on ignore rules
+#   set_fact:
+#     relevant_alerts: >-
+#       {{
+#         parsed_json.parse_data.items |
+#         reject(
+#           lambda item: ignore_alerts_rules |
+#           selectattr('ignore_if', 'defined') |
+#           selectattr('ignore_if', 'select', lambda condition: condition.items() | map('equalto', item.items()) | any) |
+#           list |
+#           length > 0
+#         ) |
+#         list
+#       }}
+
+# - name: Display relevant alerts
+#   debug:
+#     msg: >
+#       Ask Comment: {{ item.askComment }}
+#       Monitor Object Name: {{ item.monitorObjectName }}
+#       Resource Template Name: {{ item.resourceTemplateName }}
+#   with_items: "{{ relevant_alerts }}"
 
 # - name: Convert epoch times to human-readable format
 #   set_fact:
