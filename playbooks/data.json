@@ -39,6 +39,7 @@
         "monitorObjectName": "ApplicationServer1",
         "resourceTemplateName": "PostgresTemplate",
         "var1": "test",
+        "startepoch": "1733855400",
         "SDT":
         {
           "startDateTime": "1733855400"
