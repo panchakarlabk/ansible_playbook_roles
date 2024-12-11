@@ -21,9 +21,9 @@
 - name: Convert epoch times to human-readable format
   set_fact:
     updated_items: >-
-      {{ relevant_alerts.items | map('combine', {
+      {{ parse_data.items | map('combine', {
         'groups': {
-          'date': item.groups.date | default(0) | int | to_datetime('%Y-%m-%d %H:%M:%S')
+          'date': (item.groups.date | default(0) | string | to_datetime('%Y-%m-%d %H:%M:%S'))
         }
       }) | list }}
 
