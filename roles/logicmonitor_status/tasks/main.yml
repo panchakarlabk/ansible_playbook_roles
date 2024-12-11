@@ -34,13 +34,14 @@
   set_fact:
     relevant_alerts: >-
       {{
-        parsed_json.parse_data.items |
+        parsed_json.parse_data['items'] |
         reject(
           lambda item: ignore_conditions | selectattr('monitorObjectName', 'equalto', item.monitorObjectName) | list | length > 0 or
                         ignore_conditions | selectattr('resourceTemplateName', 'equalto', item.resourceTemplateName) | list | length > 0
         ) |
         list
       }}
+  loop: "{{ parsed_json.parse_data['items'] }}"
 
 - name: Display relevant alerts
   debug:
