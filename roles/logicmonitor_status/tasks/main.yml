@@ -14,7 +14,10 @@
   set_fact:
     parsed_json: "{{ json_content.stdout | from_json }}"
 
-- name: Gather all ignore conditions
+# - name: Filter relevant alerts
+#   set_fact:
+#     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
+- name: Gather all ignore conditions for monitorObjectName and resourceTemplateName
   set_fact:
     ignore_conditions: "{{ ignore_alerts_rules | map(attribute='ignore_if') | list | flatten }}"
 
@@ -22,20 +25,20 @@
   debug:
     var: ignore_conditions
 
-# - name: Filter relevant alerts
-#   set_fact:
-#     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
-
 - name: Filter relevant alerts
   set_fact:
     relevant_alerts: >
       {{
         parsed_json.parse_data['items']
-        | rejectattr('monitorObjectName', 'in', ignore_conditions | map(attribute='monitorObjectName') | flatten)
-        | rejectattr('resourceTemplateName', 'in', ignore_conditions | map(attribute='resourceTemplateName') | flatten)
+        | rejectattr('monitorObjectName', 'in', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten)
+        | rejectattr('resourceTemplateName', 'in', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten)
         | list
       }}
-      
+
+- name: Display filtered alerts
+  debug:
+    var: relevant_alerts
+    
 - name: Append epoch time from groups.date
   set_fact:
     epoch_times: "{{ (item.groups.date | int) if (item.groups is defined and 'date' in item.groups) else None  }}"
