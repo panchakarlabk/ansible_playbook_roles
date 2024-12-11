@@ -23,7 +23,11 @@
           "askComment": "OTHER789",
           "monitorObjectName": "CacheServer3",
           "resourceTemplateName": "RedisTemplate",
-          "item": "test"
+          "item": "test" ,
+          "groups":
+          {
+            "date": "1733855400"
+          }
       },
       {
         "id": "3",
