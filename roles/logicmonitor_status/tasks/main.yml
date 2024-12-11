@@ -14,9 +14,24 @@
   set_fact:
     parsed_json: "{{ json_content.stdout | from_json }}"
 
-- name: Filter relevant alerts
+# - name: Filter relevant alerts
+#   set_fact:
+#     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
+
+- name: Filter alerts based on ignore rules
   set_fact:
-    relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
+    relevant_alerts: >-
+      {{
+        parsed_json.parse_data['items']  |
+        reject(
+          lambda item: ignore_alerts_rules |
+          selectattr('ignore_if', 'defined') |
+          selectattr('ignore_if', 'select', lambda condition: condition.items() | map('equalto', item.items()) | any) |
+          list |
+          length > 0
+        ) |
+        list
+      }}
 
 - name: Append epoch time from groups.date
   set_fact:
@@ -32,22 +47,7 @@
   set_fact:
     date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times) }}"
 
-    
 
-# - name: Filter alerts based on ignore rules
-#   set_fact:
-#     relevant_alerts: >-
-#       {{
-#         parsed_json.parse_data.items |
-#         reject(
-#           lambda item: ignore_alerts_rules |
-#           selectattr('ignore_if', 'defined') |
-#           selectattr('ignore_if', 'select', lambda condition: condition.items() | map('equalto', item.items()) | any) |
-#           list |
-#           length > 0
-#         ) |
-#         list
-#       }}
 
 # - name: Display relevant alerts
 #   debug:

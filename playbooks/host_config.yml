@@ -20,3 +20,4 @@ ignore_alerts_rules:
     decription: "app/business alerts"
     ignore_if:
       - resourceTemplateName: "ApacheTemplate"
+      
