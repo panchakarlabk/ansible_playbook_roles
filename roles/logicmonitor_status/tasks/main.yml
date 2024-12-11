@@ -50,11 +50,11 @@
 
 - name: Extract human-readable time from epoch times
   set_fact:
-    time_fact: "{{ '%H:%M:%S' | strftime(epoch_times) }}"
+    time_fact: "{{ '%H:%M:%S' | strftime(epoch_times) / 1000 }}"
 
 - name: Extract human-readable date from epoch times
   set_fact:
-    date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times) }}"
+    date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times) / 1000 }}"
 
 
 
