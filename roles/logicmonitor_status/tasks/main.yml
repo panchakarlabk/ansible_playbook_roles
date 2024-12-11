@@ -44,9 +44,9 @@
 
 - name: Append epoch time from groups.date
   set_fact:
-    epoch_times: "{{ (item.groups.date | int) if (item.groups is defined and 'date' in item.groups) else None  }}"
+    epoch_times: "{{ (item.SDT.startDateTime | int) if (item.SDT.startDateTime is defined and 'startDateTime' in item.SDT) else None  }}"
   loop: "{{ parsed_json }}"
-  when: item.groups is defined
+  when: item.SDT is defined
 
 - name: Extract human-readable time from epoch times
   set_fact:

@@ -6,9 +6,9 @@
         "id": "1",
         "askComment": "EVT123",
         "monitorObjectName": "DatabaseServer1",
-        "groups":
+        "SDT":
           {
-            "date": "1733918221"
+            "startDateTime ": "1733918221"
           },
         "resourceTemplateName": "MySQLTemplate"
       },
@@ -16,7 +16,11 @@
         "id": "2",
         "askComment": "INC456",
         "monitorObjectName": "WebServer2",
-        "resourceTemplateName": "ApacheTemplate"
+        "resourceTemplateName": "ApacheTemplate",
+        "SDT":
+        {
+          "startDateTime ": ""
+        }
       },
       {
           "id": "3",
@@ -24,9 +28,9 @@
           "monitorObjectName": "CacheServer3",
           "resourceTemplateName": "RedisTemplate",
           "item": "test" ,
-          "groups":
+          "SDT":
           {
-            "date": "1733855400"
+            "startDateTime": "1733855400"
           }
       },
       {
@@ -35,9 +39,9 @@
         "monitorObjectName": "ApplicationServer1",
         "resourceTemplateName": "PostgresTemplate",
         "var1": "test",
-        "groups":
+        "SDT":
         {
-          "date": "1733855400"
+          "startDateTime": "1733855400"
         }
       }
     ]

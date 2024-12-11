@@ -60,15 +60,15 @@
           {% for item in relevant_alerts %}
           <tr>
             <td>
-              {% if item.groups is defined and 'date' in item.groups %}
-                {{ '%Y-%m-%d' | strftime(item.groups.date | int) }}
+              {% if item.STD is defined and 'date' in item.STD %}
+                {{ '%Y-%m-%d' | strftime(item.STD.date | int) }}
               {% else %}
                 N/A
               {% endif %}
             </td>
             <td>
-              {% if item.groups is defined and 'date' in item.groups %}
-                {{ '%H:%M:%S' | strftime(item.groups.date | int) }}
+              {% if item.STD is defined and 'date' in item.STD %}
+                {{ '%H:%M:%S' | strftime(item.STD.date | int) }}
               {% else %}
                 N/A
               {% endif %}
