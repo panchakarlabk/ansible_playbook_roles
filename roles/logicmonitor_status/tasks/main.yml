@@ -18,13 +18,19 @@
   set_fact:
     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
 
-- name: Extract epoch times from groups.date
-  set_fact:
-    epoch_times: []
+# - name: Extract epoch times from groups.date
+#   set_fact:
+#     epoch_times: []
   
+# - name: Append epoch time from groups.date
+#   set_fact:
+#     epoch_times: "{{ epoch_times + [ (item.groups.date | int) if (item.groups is defined and 'date' in item.groups) else None ] }}"
+#   loop: "{{ parsed_json.parse_data['items'] }}"
+#   when: item.groups is defined
+
 - name: Append epoch time from groups.date
   set_fact:
-    epoch_times: "{{ epoch_times + [ (item.groups.date | int) if (item.groups is defined and 'date' in item.groups) else None ] }}"
+    epoch_times: "{{ (item.groups.date | int) if (item.groups is defined and 'date' in item.groups) else None  }}"
   loop: "{{ parsed_json.parse_data['items'] }}"
   when: item.groups is defined
 
@@ -34,11 +40,11 @@
 
 - name: Extract human-readable time from epoch times
   set_fact:
-    time_fact: "{{ '%H:%M:%S' | strftime(epoch_times[0]) }}"
+    time_fact: "{{ '%H:%M:%S' | strftime(epoch_times) }}"
 
 - name: Extract human-readable date from epoch times
   set_fact:
-    date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times[0]) }}"
+    date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times) }}"
 
 # - name: Filter alerts based on ignore rules
 #   set_fact:
