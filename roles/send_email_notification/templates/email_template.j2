@@ -46,10 +46,13 @@
               </div>
               <hr />
             {% endfor %}
+
+     <p>all alerts</p>
       <table>
         <thead>
-        <tr><p>Total Alerts: {{ relevant_alerts | length }}</p> <!-- Displays the total count --></tr>
+        <p>Total Alerts: {{ all_alerts | length }}</p> <!-- Displays the total count -->
           <tr>
+            <th>Index</th>
             <th>Date</th>
             <th>time</th>
             <th>Ask Comment</th>
@@ -58,8 +61,48 @@
           </tr>
         </thead>
         <tbody>
-          {% for item in relevant_alerts %}
+          {% for item in all_alerts %}
           <tr>
+            <td>{{ loop.index }}</td> <!-- Dynamic row number -->
+            <td>
+              {% if item.STD.startDateTime is defined and 'startDateTime' in item.STD %}
+                {{ '%Y-%m-%d' | strftime(item.STD.startDateTime | int) }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td>
+              {% if item.STD.startDateTime is defined and 'startDateTime' in item.STD %}
+                {{ '%H:%M:%S' | strftime(item.STD.startDateTime | int) }}
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td>{{ item.askComment | default('N/A') }}</td>
+            <td>{{ item.monitorObjectName | default('N/A') }}</td>
+            <td>{{ item.resourceTemplateName | default('N/A') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <p>fileterd alerts</p>
+      <table>
+        <thead>
+        <p>Total Alerts: {{ relevant_alerts_ignore | length }}</p> <!-- Displays the total count -->
+          <tr>
+            <th>Index</th>
+            <th>Date</th>
+            <th>time</th>
+            <th>Ask Comment</th>
+            <th>Monitor Object Name</th>
+            <th>Resource Template Name</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in relevant_alerts_ignore %}
+          <tr>
+            <td>{{ loop.index }}</td> <!-- Dynamic row number -->
             <td>
               {% if item.STD.startDateTime is defined and 'startDateTime' in item.STD %}
                 {{ '%Y-%m-%d' | strftime(item.STD.startDateTime | int) }}

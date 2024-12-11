@@ -14,9 +14,9 @@
   set_fact:
     parsed_json: "{{ json_content.stdout | from_json | json_query('parse_data.items') }}"
 
-# - name: Filter relevant alerts
-#   set_fact:
-#     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
+- name: Filter relevant alerts
+  set_fact:
+    all_alerts: "{{ parsed_json | list }}"
 
 
 
@@ -30,7 +30,7 @@
 
 - name: Filter relevant alerts
   set_fact:
-    relevant_alerts: >
+    relevant_alerts_ignore: >
       {{
         parsed_json
         | rejectattr('monitorObjectName', 'in', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten)
