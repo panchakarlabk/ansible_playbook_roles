@@ -22,16 +22,19 @@
   set_fact:
     relevant_alerts: >-
       {{
-        parsed_json.parse_data['items']  |
+        parsed_json.parse_data['items'] |
         reject(
           lambda item: ignore_alerts_rules |
           selectattr('ignore_if', 'defined') |
-          selectattr('ignore_if', 'select', lambda condition: condition.items() | map('equalto', item.items()) | any) |
+          selectattr('ignore_if', 'select', lambda condition: 
+            condition.items() | map('equalto', item.items()) | list | any
+          ) |
           list |
           length > 0
         ) |
         list
       }}
+
 
 - name: Append epoch time from groups.date
   set_fact:
