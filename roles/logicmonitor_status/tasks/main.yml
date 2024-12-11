@@ -14,55 +14,17 @@
   set_fact:
     parsed_json: "{{ json_content.stdout | from_json }}"
 
-# - name: Filter relevant alerts
-#   set_fact:
-#     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
-
 - name: Gather all ignore conditions
   set_fact:
     ignore_conditions: "{{ ignore_alerts_rules | map(attribute='ignore_if') | list | flatten }}"
-
-- name: Debug parsed alerts
-  debug:
-    var: parsed_json.parse_data.items
 
 - name: Debug ignore conditions
   debug:
     var: ignore_conditions
 
-- name: Debug ignore conditions
-  debug:
-    var: ignore_alerts_rules
-
 - name: Filter relevant alerts
   set_fact:
-    relevant_alerts: >-
-      {{
-        parsed_json.parse_data.items |
-        reject(
-          lambda item: (
-            ignore_alerts_rules | selectattr('ignore_if', 'defined') | map(
-              lambda rule: (
-                rule.ignore_if | selectattr('monitorObjectName', 'equalto', item.monitorObjectName) |
-                selectattr('resourceTemplateName', 'equalto', item.resourceTemplateName) |
-                list |
-                length > 0
-              ) |
-              any
-            ) | length > 0
-          )
-        ) |
-        list
-      }}
-
-
-- name: Display relevant alerts
-  debug:
-    msg: >
-      Ask Comment: {{ item.askComment }}
-      Monitor Object Name: {{ item.monitorObjectName }}
-      Resource Template Name: {{ item.resourceTemplateName }}
-  with_items: "{{ relevant_alerts }}"
+    relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
 
 - name: Append epoch time from groups.date
   set_fact:
