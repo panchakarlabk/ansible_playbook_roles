@@ -60,7 +60,7 @@
           {% for item in relevant_alerts %}
           <tr>
             <td>
-              {{ '%Y-%m-%d'| strftime( {{ item.groups.date }} ) | default(0) }}
+              {{ (item.groups.date | default(0) | int // 1000) | to_datetime('%Y-%m-%d %H:%M:%S') }}
             </td>
             <td>
               {{ item.groups.date | default(0) }}
