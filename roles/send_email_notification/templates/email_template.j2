@@ -60,12 +60,7 @@
           {% for item in relevant_alerts %}
           <tr>
             <td> 
-              {% set epoch_time = item.groups.date | default(0) | int %}
-              {% if epoch_time >= 1000000000 %}
-                  {{ (epoch_time // 1000) | string | to_datetime('%Y-%m-%d %H:%M:%S') }}
-               {% else %}
-                  Invalid date
-              {% endif %}
+              {{ item.groups.date | default(0) }}
             </td>
             <td>
               {{ item.groups.date | default(0) }}

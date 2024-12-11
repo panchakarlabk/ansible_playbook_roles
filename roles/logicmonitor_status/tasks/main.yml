@@ -18,6 +18,21 @@
   set_fact:
     relevant_alerts: "{{ parsed_json.parse_data['items'] | list }}"
 
+- name: Convert epoch times to human-readable format
+  set_fact:
+    updated_items: >-
+      {{ relevant_alerts.items | map(
+        lambda x: x | combine({
+          'groups': {
+            'date': (x.groups.date | default(0) | int | to_datetime('%Y-%m-%d %H:%M:%S'))
+          }
+        })
+      ) | list }}
+
+- name: Debug updated items
+  debug:
+    var: updated_items
+
 # - name: Prepare filtered alerts for logging with current date
 #   set_fact:
 #     logic_monitor_email_body: |
