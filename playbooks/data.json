@@ -24,6 +24,13 @@
           "monitorObjectName": "CacheServer3",
           "resourceTemplateName": "RedisTemplate",
           "item": "test"
+      },
+      {
+        "id": "3",
+        "askComment": "OTHER789",
+        "monitorObjectName": "ApplicationServer1",
+        "resourceTemplateName": "PostgresTemplate",
+        "item": "test"
       }
     ]
   }

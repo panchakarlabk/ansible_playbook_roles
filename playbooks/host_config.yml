@@ -10,3 +10,13 @@ dba_automation:
       log_path: "/home/bharat/logs.log"
     hosts:
       - 192.168.162.130
+
+ignore_alerts_rules:
+  - code: "rule_001"
+    decription: "dummy stuff not DBA topic"
+    ignore_if:
+      - monitorObjectName: "DatabaseServer1"
+  - code: "rule_002"
+    decription: "app/business alerts"
+    ignore_if:
+      - resourceTemplateName: "ApacheTemplate"
