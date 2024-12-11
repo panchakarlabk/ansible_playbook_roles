@@ -61,7 +61,7 @@
           <tr>
             <td>
               {% if item.STD.startDateTime is defined and 'startDateTime' in item.STD %}
-                {{ '%Y-%m-%d' | strftime(item.STD.date | int) }}
+                {{ '%Y-%m-%d' | strftime(item.STD.startDateTime | int) }}
               {% else %}
                 N/A
               {% endif %}

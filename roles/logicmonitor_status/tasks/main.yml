@@ -44,7 +44,7 @@
 
 - name: Append epoch time from groups.date
   set_fact:
-    epoch_times: "{{ (item.SDT.startDateTime | int) if (item.SDT.startDateTime is defined and 'startDateTime' in item.SDT) else None  }}"
+    epoch_times: "{{ (item.SDT.startDateTime | int | // 1000) if (item.SDT.startDateTime is defined and 'startDateTime' in item.SDT) else None  }}"
   loop: "{{ parsed_json }}"
   when: item.SDT is defined
 
