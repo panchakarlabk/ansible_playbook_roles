@@ -28,23 +28,12 @@
 
 - name: Filter relevant alerts
   set_fact:
-    relevant_alerts: >-
+    relevant_alerts: >
       {{
-        parsed_json.parse_data.items |
-        reject(
-          lambda item: (
-            ignore_alerts_rules | selectattr('ignore_if', 'defined') | map(
-              lambda rule: (
-                rule.ignore_if | selectattr('monitorObjectName', 'equalto', item.monitorObjectName) |
-                selectattr('resourceTemplateName', 'equalto', item.resourceTemplateName) |
-                list |
-                length > 0
-              ) |
-              any
-            ) | length > 0
-          )
-        ) |
-        list
+        parsed_json.parse_data['items'] 
+        | rejectattr('monitorObjectName', 'in', ignore_alerts_rules | map(attribute='ignore_if') | flatten)
+        | rejectattr('resourceTemplateName', 'in', ignore_alerts_rules | map(attribute='ignore_if') | flatten)
+        | list
       }}
 
 - name: Append epoch time from groups.date
