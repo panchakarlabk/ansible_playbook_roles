@@ -21,13 +21,11 @@
 - name: Convert epoch times to human-readable format
   set_fact:
     updated_items: >-
-      {{ relevant_alerts.items | map(
-        lambda x: x | combine({
-          'groups': {
-            'date': (x.groups.date | default(0) | int | to_datetime('%Y-%m-%d %H:%M:%S'))
-          }
-        })
-      ) | list }}
+      {{ relevant_alerts.items | map('combine', {
+        'groups': {
+          'date': item.groups.date | default(0) | int | to_datetime('%Y-%m-%d %H:%M:%S')
+        }
+      }) | list }}
 
 - name: Debug updated items
   debug:
