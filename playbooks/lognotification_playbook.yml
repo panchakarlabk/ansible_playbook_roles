@@ -6,8 +6,8 @@
     - host_config.yml    # Load the configuration file
   roles:
     - restore_status
-    - logicmonitor_status
-    
+    # - logicmonitor_status
+
   # Conditional role inclusion
   tasks:
     - name: Include send_email_notification role if conditions are met
