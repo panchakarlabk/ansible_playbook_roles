@@ -54,10 +54,11 @@
   set_fact:
     date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times) }}"
 
-- name: Check if logicmonitor_status is successful
-  debug:
-    msg: "LogicMonitor status completed successfully."
-  register: logicmonitor_status_result
+- name: Set restore_status_result 
+  ansible.builtin.set_fact:
+    logicmonitor_status_result:
+      success: true
+      message: "logic monitore status completed successfully."
 
 
 # - name: Display relevant alerts
