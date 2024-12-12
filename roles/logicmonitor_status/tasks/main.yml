@@ -20,7 +20,7 @@
 
 - name: Format ISO8601 date to human-readable format
   set_fact:
-    formatted_date: "{{ ansible_date_time.iso8601 | to_datetime('%Y-%m-%d %H:%M:%S')
+    formatted_date: "{{ ansible_date_time.iso8601 | to_datetime('%Y-%m-%d %H:%M:%S')"
 
 - name: Gather all ignore conditions for monitorObjectName and resourceTemplateName
   set_fact:
