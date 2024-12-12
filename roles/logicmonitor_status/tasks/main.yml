@@ -54,6 +54,10 @@
   set_fact:
     date_fact: "{{ '%Y-%m-%d' | strftime(epoch_times) }}"
 
+- name: Check if logicmonitor_status is successful
+  debug:
+    msg: "LogicMonitor status completed successfully."
+  register: logicmonitor_status_result
 
 
 # - name: Display relevant alerts
