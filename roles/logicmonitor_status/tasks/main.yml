@@ -20,7 +20,7 @@
 
 - name: Display human-readable date
   debug:
-    msg: "{{ ansible_date_time.iso8601 | strftime('%Y-%m-%d %H:%M:%S') }}"
+    msg: "{{ ansible_date_time.iso8601 | to_datetime | strftime('%Y-%m-%d %H:%M:%S') }}"
 
 - name: Gather all ignore conditions for monitorObjectName and resourceTemplateName
   set_fact:
