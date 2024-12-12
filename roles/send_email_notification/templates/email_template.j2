@@ -25,7 +25,8 @@
     <p><strong>Database hosts monitoring status:</strong></p>
     <p><strong>Logic Monitore alerts </strong></p>
     <p><strong>DR PE Database Restore</strong></p>
-    {% for entry in email_body %}
+  {% if restore_logs is defined and restore_logs | length > 0 %}
+    {% for entry in restore_logs %}
       <div>
         <p>Host: <strong>{{ entry.host }}</strong></p>
         <p>Status: 
@@ -46,6 +47,9 @@
         </div>
         <hr />
         {% endfor %}
+      {% else %}
+      <p>No restore_logs content available.</p>
+    {% endif %}
  {% if all_alerts is defined and all_alerts | length > 0 %}
      <p>all alerts</p>
       <table>

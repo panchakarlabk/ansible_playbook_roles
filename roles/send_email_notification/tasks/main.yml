@@ -4,7 +4,6 @@
     src: email_template.j2
     dest: /tmp/email_body.txt
   delegate_to: localhost
-  when: email_body is defined
     
 - name: Send email notification
   community.general.mail:
