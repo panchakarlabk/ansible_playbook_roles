@@ -8,7 +8,7 @@
     - restore_status
     - logicmonitor_status
     
-  tasks:
+  handlers:
     - name: send_email_notification
       include_role:
         name: send_email_notification
