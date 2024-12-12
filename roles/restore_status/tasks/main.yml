@@ -1,5 +1,9 @@
 ---
 
+- name: Get human-readable datetime
+  ansible.builtin.command: date "+%Y-%m-%d %H:%M:%S"
+  register: datetime_output
+
 - name: Set log path for each host dynamically
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
