@@ -4,6 +4,7 @@
     src: email_template.j2
     dest: /tmp/email_body.txt
   delegate_to: localhost
+  run_once: true
     
 - name: Send email notification
   community.general.mail:
