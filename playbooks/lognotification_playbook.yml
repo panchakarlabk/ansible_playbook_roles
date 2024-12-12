@@ -10,8 +10,7 @@
     
   handlers:
     - name: send_email_notification
-      include_role:
-        name: send_email_notification
+      role: send_email_notification
       when: 
         - restore_status_result is defined and restore_status_result.success 
         - logicmonitor_status_result is defined and logicmonitor_status_result.success
