@@ -21,7 +21,7 @@
      </style>
   </head>
   <body>
-    <p>Time: {{ datetime_output.stdout }} CET</p>
+    <p>Time: {{ datetime_output.stdout }} </p>
     <p><strong>Database hosts monitoring status:</strong></p>
     <p><strong>Logic Monitore alerts </strong></p>
     <p><strong>DR PE Database Restore</strong></p>
@@ -42,10 +42,10 @@
         {% for line in entry.logs %}
         {{ line }}
         {% endfor %}
-                </pre>
-              </div>
-              <hr />
-            {% endfor %}
+        </pre>
+        </div>
+        <hr />
+        {% endfor %}
 
      <p>all alerts</p>
       <table>
