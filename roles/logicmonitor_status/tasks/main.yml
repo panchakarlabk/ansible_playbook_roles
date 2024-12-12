@@ -18,9 +18,9 @@
   set_fact:
     all_alerts: "{{ parsed_json | list }}"
 
-- name: Format ISO8601 date to human-readable format
-  set_fact:
-    formatted_date: "{{ ansible_date_time.iso8601 | to_datetime('%Y-%m-%dT%H:%M:%SZ') | strftime('%B %d, %Y, %H:%M %Z') }}"
+- name: Display human-readable date
+  debug:
+    msg: "{{ ansible_date_time.iso8601 | strftime('%Y-%m-%d %H:%M:%S') }}"
 
 - name: Gather all ignore conditions for monitorObjectName and resourceTemplateName
   set_fact:
