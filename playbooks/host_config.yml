@@ -9,7 +9,7 @@ dba_automation:
     config:
       log_path: "/home/bharat/logs.log"
     hosts:
-      - 192.168.162.130
+      - 192.168.162.136
 
 ignore_alerts_rules:
   - code: "rule_001"
