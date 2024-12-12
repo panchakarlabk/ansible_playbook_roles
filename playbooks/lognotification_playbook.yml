@@ -8,9 +8,13 @@
     - restore_status
     - logicmonitor_status
     
-  handlers:
-    - name: send_email_notification
-      import_tasks: "./roles/send_email_notification/tasks/main.yml"
+  # Conditional role inclusion
+  tasks:
+    - name: Include send_email_notification role if conditions are met
+      include_role:
+        name: send_email_notification
       when: 
-        - restore_status_result is defined and restore_status_result.success 
-        - logicmonitor_status_result is defined and logicmonitor_status_result.success
+        - restore_status_result is defined
+        - restore_status_result.success
+        - logicmonitor_status_result is defined
+        - logicmonitor_status_result.success
