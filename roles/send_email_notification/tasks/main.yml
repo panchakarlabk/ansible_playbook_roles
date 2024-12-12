@@ -3,9 +3,6 @@
   template:
     src: email_template.j2
     dest: /tmp/email_body.txt
-  vars:
-    email_body: "{{ email_body }}"
-    logic_monitor_email_body:  "{{ logic_monitor_email_body }}"
   delegate_to: localhost
   when: email_body is defined
     
