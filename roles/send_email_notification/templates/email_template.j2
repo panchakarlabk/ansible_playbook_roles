@@ -46,11 +46,11 @@
         </div>
         <hr />
         {% endfor %}
-
+ {% if all_alerts is defined and all_alerts | length > 0 %}
      <p>all alerts</p>
       <table>
         <thead>
-        <p>Total Alerts: {{ all_alerts | length }}</p> <!-- Displays the total count -->
+        <p>Total Alerts: {{ all_alerts | length | default('N/A') }}</p> <!-- Displays the total count -->
           <tr>
             <th>Index</th>
             <th>Date</th>
@@ -85,7 +85,10 @@
           {% endfor %}
         </tbody>
       </table>
-
+    {% else %}
+      <p>No alerts available.</p>
+    {% endif %}
+    {% if relevant_alerts_ignore is defined and relevant_alerts_ignore | length > 0 %}
       <p>fileterd alerts</p>
       <table>
         <thead>
@@ -124,5 +127,8 @@
           {% endfor %}
         </tbody>
       </table>
+      {% else %}
+      <p>No filtered alerts available.</p>
+    {% endif %}
   </body>
 </html>
