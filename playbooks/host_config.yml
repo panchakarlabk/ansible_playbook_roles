@@ -23,4 +23,3 @@ ignore_alerts_rules:
     ignore_if:
       - resourceTemplateName: "Apache*"
 
-      

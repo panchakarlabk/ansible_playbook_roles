@@ -21,7 +21,7 @@
      </style>
   </head>
   <body>
-    <p>Time: {{ datetime_output.stdout }} </p>
+    <p>Time: {{ datetime_output.stdout  | default('N/A') }} </p>
     <p><strong>Database hosts monitoring status:</strong></p>
     <p><strong>Logic Monitore alerts </strong></p>
     <p><strong>DR PE Database Restore</strong></p>
