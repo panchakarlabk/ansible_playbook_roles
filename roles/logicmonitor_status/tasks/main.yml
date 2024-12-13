@@ -31,8 +31,8 @@
     relevant_alerts_ignore: >
       {{
         parsed_json
-        | rejectattr('monitorObjectName', 'in', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten | join('|'))
-        | rejectattr('resourceTemplateName', 'in', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten | join('|'))
+        | rejectattr('monitorObjectName', 'in', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten | join('|') | map('regex_escape') | map('regex_replace', '\\*', '.*'))
+        | rejectattr('resourceTemplateName', 'in', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten | join('|') | map('regex_escape') | map('regex_replace', '\\*', '.*'))
         | list
       }}
 
