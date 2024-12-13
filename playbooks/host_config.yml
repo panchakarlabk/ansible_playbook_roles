@@ -22,9 +22,4 @@ ignore_alerts_rules:
     ignore_if:
       - resourceTemplateName: "*Apache*"
   
-  - code: "rule_002"
-    decription: "app/business alerts"
-    ignore_if:
-      - resourceTemplateName: "Apache*"
-
 

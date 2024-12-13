@@ -35,38 +35,33 @@
 #         | rejectattr('resourceTemplateName', 'in', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten)
 #         | list
 #       }}
-
-- name: Filter relevant alerts with fixed regex for wildcards
+- name: Filter relevant alerts
   set_fact:
     relevant_alerts_ignore: >
       {{
         parsed_json
         | rejectattr(
-            'monitorObjectName',
-            'match',
-            '(' + (
-              ignore_conditions
-              | selectattr('monitorObjectName', 'defined')
-              | map(attribute='monitorObjectName')
-              | map('regex_escape')  # Escape special characters
-              | map('regex_replace', '\\*', '.*')  # Replace '*' with '.*'
-              | join('|')
-            ) + ')'
-          )
+            'monitorObjectName', 
+            'match', 
+            ignore_conditions 
+            | selectattr('monitorObjectName', 'defined') 
+            | map(attribute='monitorObjectName') 
+            | join('|')
+        )
         | rejectattr(
-            'resourceTemplateName',
-            'match',
-            '(' + (
-              ignore_conditions
-              | selectattr('resourceTemplateName', 'defined')
-              | map(attribute='resourceTemplateName')
-              | map('regex_escape')  # Escape special characters
-              | map('regex_replace', '\\*', '.*')  # Replace '*' with '.*'
-              | join('|')
-            ) + ')'
-          )
+            'resourceTemplateName', 
+            'match', 
+            ignore_conditions 
+            | selectattr('resourceTemplateName', 'defined') 
+            | map(attribute='resourceTemplateName') 
+            | join('|')
+        )
         | list
       }}
+
+- name: Debug relevant alerts
+  debug:
+    var: relevant_alerts_ignore
 
 - name: Display filtered alerts
   debug:
