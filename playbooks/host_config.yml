@@ -16,7 +16,6 @@ ignore_alerts_rules:
     decription: "dummy stuff not DBA topic"
     ignore_if:
       - monitorObjectName: "DatabaseServer1*"
-      - monitorObjectName: "CacheServer3"
   - code: "rule_002"
     decription: "app/business alerts"
     ignore_if:
