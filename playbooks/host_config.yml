@@ -19,6 +19,6 @@ ignore_alerts_rules:
   - code: "rule_002"
     decription: "app/business alerts"
     ignore_if:
-      - resourceTemplateName: "*Apache*"
+      - resourceTemplateName: "Apache*"
   
 
