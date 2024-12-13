@@ -26,13 +26,13 @@
   debug:
     var: ignore_conditions
 
-- name: Filter relevant alerts with wildcards
+- name: Filter relevant alerts
   set_fact:
     relevant_alerts_ignore: >
       {{
         parsed_json
-        | rejectattr('monitorObjectName', 'match', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | join('|') | regex_search)
-        | rejectattr('resourceTemplateName', 'match', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | join('|') | regex_search)
+        | rejectattr('monitorObjectName', 'in', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten)
+        | rejectattr('resourceTemplateName', 'in', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten)
         | list
       }}
 
