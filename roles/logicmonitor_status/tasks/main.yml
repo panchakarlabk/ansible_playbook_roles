@@ -36,34 +36,49 @@
 #         | list
 #       }}
 
+- name: Combine all monitorObjectName ignore patterns into regex
+  set_fact:
+    monitor_objectname_ignore_regex: >
+      {{
+        ignore_conditions
+        | selectattr('monitorObjectName', 'defined')
+        | map(attribute='monitorObjectName')
+        | map('regex_escape')
+        | map('regex_replace', '\\*', '.*')
+        | join('|')
+      }}
+
+- name: Combine all resourceTemplateName ignore patterns into regex
+  set_fact:
+    resource_template_ignore_regex: >
+      {{
+        ignore_conditions
+        | selectattr('resourceTemplateName', 'defined')
+        | map(attribute='resourceTemplateName')
+        | map('regex_escape')
+        | map('regex_replace', '\\*', '.*')
+        | join('|')
+      }}
+
+- name: Debug ignore regex patterns
+  debug:
+    msg:
+      - "Monitor ObjectName Regex: {{ monitor_objectname_ignore_regex }}"
+      - "Resource Template Regex: {{ resource_template_ignore_regex }}"
+
 - name: Filter relevant alerts
   set_fact:
     relevant_alerts_ignore: >
       {{
         parsed_json
-        | rejectattr(
-            'monitorObjectName',
-            'match',
-            ignore_conditions
-            | selectattr('monitorObjectName', 'defined')
-            | map(attribute='monitorObjectName')
-            | map('regex_escape')
-            | map('regex_replace', '\\*', '.*')
-            | join('|')
-          )
-        | rejectattr(
-            'resourceTemplateName',
-            'match',
-            ignore_conditions
-            | selectattr('resourceTemplateName', 'defined')
-            | map(attribute='resourceTemplateName')
-            | map('regex_escape')
-            | map('regex_replace', '\\*', '.*')
-            | join('|')
-          )
+        | rejectattr('monitorObjectName', 'match', monitor_objectname_ignore_regex)
+        | rejectattr('resourceTemplateName', 'match', resource_template_ignore_regex)
         | list
       }}
 
+- name: Debug relevant alerts
+  debug:
+    var: relevant_alerts_ignore
 
 - name: Debug relevant alerts
   debug:
