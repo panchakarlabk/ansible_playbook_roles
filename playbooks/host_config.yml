@@ -15,7 +15,7 @@ ignore_alerts_rules:
   - code: "rule_001"
     decription: "dummy stuff not DBA topic"
     ignore_if:
-      - monitorObjectName: "DatabaseServer1"
+      - monitorObjectName: "DatabaseServer1*"
       - monitorObjectName: "CacheServer3"
       - askComment: "OTHER789"
   - code: "rule_002"
