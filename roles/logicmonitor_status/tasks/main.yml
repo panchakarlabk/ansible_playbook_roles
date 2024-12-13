@@ -42,20 +42,13 @@
     relevant_alerts_ignore: >
       {{
         parsed_json
-        | rejectattr('monitorObjectName', 'in', ignore_conditions
-          | selectattr('monitorObjectName', 'defined')
-          | map(attribute='monitorObjectName')
-          | flatten
-          | map('regex_escape')
-          | map('regex_replace', '\\*', '.*'))
-        | rejectattr('resourceTemplateName', 'in', ignore_conditions
-          | selectattr('resourceTemplateName', 'defined')
-          | map(attribute='resourceTemplateName')
-          | flatten
-          | map('regex_escape')
-          | map('regex_replace', '\\*', '.*'))
+        | selectattr('monitorObjectName', 'defined')
+        | selectattr('resourceTemplateName', 'defined')
+        | selectattr('monitorObjectName', 'search', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten | map('regex_escape') | map('regex_replace', '\\*', '.*') | join('|'))
+        | selectattr('resourceTemplateName', 'search', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten | map('regex_escape') | map('regex_replace', '\\*', '.*') | join('|'))
         | list
       }}
+
 
 
 - name: Append epoch time from groups.date
