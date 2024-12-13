@@ -1,10 +1,10 @@
 class FilterModule(object):
     def filters(self):
         return {
-            'filter_nodes': self.filter_nodes,
+            'lm_filter': self.lm_filter,
         }
 
-    def filter_nodes(self, nodes, ignore_conditions):
+    def lm_filter(self, nodes, ignore_conditions):
         """
         Filters out nodes that match any condition in ignore_conditions.
         Supports:
@@ -50,9 +50,9 @@ class FilterModule(object):
             return False
 
         # Filter out nodes that match any condition in ignore_conditions
-        filtered_nodes = [
+        lm_filter = [
             node for node in nodes
             if not any(matches_condition(node, condition) for condition in ignore_conditions)
         ]
 
-        return filtered_nodes
+        return lm_filter

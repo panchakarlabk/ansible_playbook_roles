@@ -28,7 +28,7 @@
 
 - name: Apply custom filter to remove ignored nodes
   set_fact:
-    relevant_alerts_ignore: "{{ parsed_json | filter_nodes(ignore_conditions) }}"
+    relevant_alerts_ignore: "{{ parsed_json | lm_filter(ignore_conditions) }}"
 
 # - name: Filter relevant alerts
 #   set_fact:
