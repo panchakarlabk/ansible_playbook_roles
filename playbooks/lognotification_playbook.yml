@@ -6,7 +6,7 @@
     - host_config.yml    # Load the configuration file
   roles:
     - restore_status
-    # - logicmonitor_status
+    - logicmonitor_status
 
   # Conditional role inclusion
   tasks:
