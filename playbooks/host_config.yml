@@ -17,7 +17,6 @@ ignore_alerts_rules:
     ignore_if:
       - monitorObjectName: "DatabaseServer1*"
       - monitorObjectName: "CacheServer3"
-      - askComment: "OTHER789"
   - code: "rule_002"
     decription: "app/business alerts"
     ignore_if:
