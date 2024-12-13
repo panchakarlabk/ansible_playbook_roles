@@ -26,15 +26,15 @@
   debug:
     var: ignore_conditions
 
-- name: Filter relevant alerts
-  set_fact:
-    relevant_alerts_ignore: >
-      {{
-        parsed_json
-        | rejectattr('monitorObjectName', 'in', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten)
-        | rejectattr('resourceTemplateName', 'in', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten)
-        | list
-      }}
+# - name: Filter relevant alerts
+#   set_fact:
+#     relevant_alerts_ignore: >
+#       {{
+#         parsed_json
+#         | rejectattr('monitorObjectName', 'in', ignore_conditions | selectattr('monitorObjectName', 'defined') | map(attribute='monitorObjectName') | flatten)
+#         | rejectattr('resourceTemplateName', 'in', ignore_conditions | selectattr('resourceTemplateName', 'defined') | map(attribute='resourceTemplateName') | flatten)
+#         | list
+#       }}
 
 - name: Filter relevant alerts with fixed regex for wildcards
   set_fact:

@@ -36,7 +36,7 @@
           "id": "3",
           "askComment": "OTHER789",
           "monitorObjectName": "CacheServer3",
-          "resourceTemplateName": "RedisTemplate",
+          "resourceTemplateName": "RedisTemplate  Apache",
           "item": "test" ,
           "SDT":
           {
