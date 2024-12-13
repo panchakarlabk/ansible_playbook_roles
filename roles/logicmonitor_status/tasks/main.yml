@@ -36,28 +36,34 @@
 #         | list
 #       }}
 
-- name: Filter relevant alerts with wildcards
+- name: Filter relevant alerts with fixed regex for wildcards
   set_fact:
     relevant_alerts_ignore: >
       {{
         parsed_json
         | rejectattr(
-            'monitorObjectName', 
-            'match', 
-            '(' + (ignore_conditions 
-              | selectattr('monitorObjectName', 'defined') 
-              | map(attribute='monitorObjectName') 
-              | map('regex_replace', '\\*', '.*') 
-              | join('|')) + ')'
+            'monitorObjectName',
+            'match',
+            '(' + (
+              ignore_conditions
+              | selectattr('monitorObjectName', 'defined')
+              | map(attribute='monitorObjectName')
+              | map('regex_escape')  # Escape special characters
+              | map('regex_replace', '\\*', '.*')  # Replace '*' with '.*'
+              | join('|')
+            ) + ')'
           )
         | rejectattr(
-            'resourceTemplateName', 
-            'match', 
-            '(' + (ignore_conditions 
-              | selectattr('resourceTemplateName', 'defined') 
-              | map(attribute='resourceTemplateName') 
-              | map('regex_replace', '\\*', '.*') 
-              | join('|')) + ')'
+            'resourceTemplateName',
+            'match',
+            '(' + (
+              ignore_conditions
+              | selectattr('resourceTemplateName', 'defined')
+              | map(attribute='resourceTemplateName')
+              | map('regex_escape')  # Escape special characters
+              | map('regex_replace', '\\*', '.*')  # Replace '*' with '.*'
+              | join('|')
+            ) + ')'
           )
         | list
       }}
