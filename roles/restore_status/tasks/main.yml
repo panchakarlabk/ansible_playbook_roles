@@ -10,7 +10,7 @@
   with_subelements:
     - "{{ dba_automation | dict2items | map(attribute='value') | list }}"
     - hosts
-  when: inventory_hostname == item.1
+  when: inventory_hostname is match(item.1 | replace('*', '.*'))
 
 - name: Display the log path for each host
   debug:
