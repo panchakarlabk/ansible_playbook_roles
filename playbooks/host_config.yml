@@ -1,4 +1,4 @@
-dba_automation_prod:
+dba_automation_dev:
   process_001_mysql:
     config:
       log_path: "/home/bharat/logs/logs.txt"
@@ -14,7 +14,7 @@ dba_automation_prod:
       - ip: 192.168.162.130
     tail: 25
 
-dba_automation_dev:
+dba_automation_prod:
   process_001_mysql:
     config:
       log_path: "/home/bharat/logs/logs.txt"
