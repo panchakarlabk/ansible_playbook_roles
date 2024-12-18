@@ -23,12 +23,21 @@
 
 - name: Initialize tail_cmd added wich is tail not presnt 
   ansible.builtin.set_fact:
-    tail_cmd: "tail {{ host_log_path }} | grep $(date +%Y/%m/%d)"
+    tail_cmd: "tail -n {{ tail_log }} {{ host_log_path }}"
   delegate_to: localhost
   run_once: true
   when: 
     - host_log_path is defined
     - tail_log is defined
+
+- name: Initialize tail_cmd added wich is tail not presnt 
+  ansible.builtin.set_fact:
+    tail_cmd: "tail {{ host_log_path }} | grep $(date +%Y/%m/%d)"
+  delegate_to: localhost
+  run_once: true
+  when: 
+    - host_log_path is defined
+    - tail_log is not defined
 
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
