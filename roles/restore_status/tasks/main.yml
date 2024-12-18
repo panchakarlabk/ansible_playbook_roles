@@ -10,7 +10,7 @@
     host_log_path: "{{ item.0.config.log_path }}"
     tail_log: "{{ item.0.tail | default(omit) }}" 
   with_subelements:
-    - "{{ dba_automation | dict2items | map(attribute='value') | list }}"
+    - "{{ dba_automation_dev | dict2items | map(attribute='value') | list }}"
     - hosts
   when: inventory_hostname is match(item.1 | replace('*', '.*'))
   delegate_to: localhost
