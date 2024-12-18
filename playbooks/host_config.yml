@@ -8,7 +8,7 @@ dba_automation_prod:
     config:
       log_path: "/home/bharat/logs.log"
     hosts:
-      - 192.168.162.136
+      - 192.168.162.128
     tail: 25
 
 dba_automation_dev:
