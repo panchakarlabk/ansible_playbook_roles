@@ -7,6 +7,7 @@
 - name: Set log path for each host dynamically
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
+    tail_lines: "{{ item.0.tail | default(omit) }}"  # Set tail_lines only if tail is defined
   with_subelements:
     - "{{ dba_automation | dict2items | map(attribute='value') | list }}"
     - hosts
@@ -23,7 +24,19 @@
     tail "{{ host_log_path }}" | grep "$(date +%Y/%m/%d)"
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
-  when: host_log_path is defined
+  when: 
+   - host_log_path is defined
+   - tail_lines is not defined
+
+# Step 1: Collect logs and append them to a single file
+- name: Daily Monitor Logs DR PE restore log status
+  ansible.builtin.shell: | 
+    tail -n {{ tail_lines }} "{{ host_log_path }}" | grep "$(date +'%a %d %b')"
+  ignore_errors: yes  # Continue even if there are issues
+  register: all_logs
+  when: 
+   - host_log_path is defined
+   - tail_lines is defined 
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
