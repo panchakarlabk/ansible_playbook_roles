@@ -79,7 +79,6 @@
 - name: Debug the automation dev output
   debug:
     msg: "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
-  when: hosts
 
 - name: Set hostname_resolve dynamically based on inventory_hostname
   set_fact:
