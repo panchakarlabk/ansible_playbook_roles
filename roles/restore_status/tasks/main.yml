@@ -76,17 +76,9 @@
   debug:
     var: logs_status
 
-- name: Set hostname_resolve dynamically based on inventory_hostname
-  set_fact:
-    config_files_items: item
-  with_subelements:
-    - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
-    - hosts
-  delegate_to: localhost
-
-- name: logs status Variable
+- name: Debug the automation dev output
   debug:
-    var: config_files_items
+    msg: "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
 
 - name: Set hostname_resolve dynamically based on inventory_hostname
   set_fact:
