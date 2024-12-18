@@ -3,13 +3,13 @@ dba_automation_dev:
     config:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
-      - 192.168.162*
+      # - 192.168.162.130
       # - 192.168.162.136  # Assuming you meant different hosts here, otherwise it will be duplicate
   process_002_orcale:
     config:
       log_path: "/home/bharat/logs.log"
     hosts:
-      - 192.168.162.136
+      - 192.168.162.128
     tail: 25
 
 dba_automation_prod:
@@ -17,7 +17,7 @@ dba_automation_prod:
     config:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
-      - 192.168.162.44
+      - 192.168.162.130
       # - 192.168.162.136  # Assuming you meant different hosts here, otherwise it will be duplicate
   process_002_orcale:
     config:
