@@ -7,6 +7,7 @@
 - name: Set log path for each host dynamically
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
+    tail_log: "{{ item.0.config.tail }}"
   with_subelements:
     - "{{ dba_automation | dict2items | map(attribute='value') | list }}"
     - hosts
@@ -17,10 +18,18 @@
     msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
   when: host_log_path is defined
 
+- name: Initialize tail_cmd added wich is tail not presnt 
+  ansible.builtin.set_fact:
+    tail_cmd: "tail {{ host_log_path }} | grep "$(date +%Y/%m/%d)""
+  delegate_to: localhost
+  run_once: true
+  when: 
+    - host_log_path is defined
+    - tail_log is not defined
+
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
-  ansible.builtin.shell: | 
-    tail "{{ host_log_path }}" | grep "$(date +%Y/%m/%d)"
+  ansible.builtin.shell: "{{ tail_cmd }}"
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
   when: host_log_path is defined
