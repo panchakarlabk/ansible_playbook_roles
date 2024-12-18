@@ -31,7 +31,7 @@
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: | 
-    tail -n {{ tail_lines }} "{{ host_log_path }}"
+    grep -B {{ tail_lines }} "End Import of the dump" "{{ host_log_path }}"
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
   when: 
