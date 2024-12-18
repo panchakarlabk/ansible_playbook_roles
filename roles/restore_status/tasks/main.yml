@@ -29,10 +29,12 @@
     - host_log_path is defined
     - tail_log is defined
 
-- name: Display the log path for each host
+- name: Display the tail command 
   debug:
     msg: "Tail command {{ tail_cmd }}"
-  when: host_log_path is defined
+  when: 
+    - host_log_path is defined
+    - tail_log is defined
   delegate_to: localhost
 
 - name: Initialize tail_cmd added wich is tail not presnt 
@@ -43,12 +45,22 @@
     - host_log_path is defined
     - tail_log is not defined
 
+- name: Display the tail command 
+  debug:
+    msg: "Tail command {{ tail_cmd }}"
+  when: 
+    - host_log_path is defined
+    - tail_log is defined
+  delegate_to: localhost
+  
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: "{{ tail_cmd }}"
   ignore_errors: yes  # Continue even if there are issues
   register: all_logs
-  when: host_log_path is defined
+  when: 
+    - host_log_path is defined
+    - tail_log is defined
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
