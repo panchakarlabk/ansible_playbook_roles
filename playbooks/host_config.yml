@@ -1,29 +1,16 @@
-dba_automation_prod:
+dba_automation:
   process_001_mysql:
     config:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
-      # - 192.168.162.130
-      - 192.168.162.136  # Assuming you meant different hosts here, otherwise it will be duplicate
-  process_002_orcale:
-    config:
-      log_path: "/home/bharat/logs/logs.txt"
-    hosts:
-      - 192.168.162.128
-
-dba_automation_dev:
-  process_001_mysql:
-    config:
-      log_path: "/home/bharat/logs/logs.txt"
-    hosts:
-      - 192.168.162.130
+      - 192.168.162*
       # - 192.168.162.136  # Assuming you meant different hosts here, otherwise it will be duplicate
   process_002_orcale:
     config:
-      log_path: "/home/bharat/logs/logs.txt"
+      log_path: "/home/bharat/logs.log"
     hosts:
-      # - 192.168.162.128
-    # tail: 25
+      - 192.168.162.136
+    tail: 25
 
 ignore_alerts_rules:
   - code: "rule_001"
