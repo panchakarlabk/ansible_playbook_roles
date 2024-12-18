@@ -78,6 +78,18 @@
 
 - name: Set hostname_resolve dynamically based on inventory_hostname
   set_fact:
+    config_files_items: item
+  with_subelements:
+    - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
+    - hosts
+  delegate_to: localhost
+
+- name: logs status Variable
+  debug:
+    var: config_files_items
+
+- name: Set hostname_resolve dynamically based on inventory_hostname
+  set_fact:
     hostname_resolve: >-
       {% if item.ip == inventory_hostname and item.hostname is defined %}
       {{ item.hostname }}
