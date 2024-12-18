@@ -3,7 +3,7 @@ dba_automation_dev:
     config:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
-      - 192.168.162.136
+      - ip: 192.168.162.136
   process_002_orcale:
     config:
       log_path: "/home/bharat/logs.log"

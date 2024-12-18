@@ -88,8 +88,8 @@
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
   when:
-    - item.ip == inventory_hostname
-    - item.ip is defined
+    - item.hosts.ip == inventory_hostname
+    - item.hosts.ip is defined
   delegate_to: localhost
 
 - name: Append logs with CET time
