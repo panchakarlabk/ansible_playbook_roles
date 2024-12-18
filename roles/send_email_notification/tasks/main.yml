@@ -4,7 +4,7 @@
     src: email_template.j2
     dest: /tmp/email_body.txt
   delegate_to: localhost
-  run_once: true
+  # run_once: true
 
 - name: Display the collected logs
   ansible.builtin.command: cat /tmp/email_body.txt
