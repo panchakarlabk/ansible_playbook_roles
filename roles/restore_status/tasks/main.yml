@@ -76,10 +76,6 @@
   debug:
     var: logs_status
 
-- name: Debug the automation dev output
-  debug:
-    msg: "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
-
 - name: Set hostname_resolve dynamically based on inventory_hostname
   set_fact:
     hostname_resolve: >-
@@ -107,6 +103,7 @@
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
   when: logs_status is defined
+  become: true
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
