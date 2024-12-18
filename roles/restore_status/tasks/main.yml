@@ -120,7 +120,7 @@
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
-  ansible.builtin.command: cat /tmp/all_logs_collected.txt
+  ansible.builtin.shell: cat /tmp/all_logs_collected.txt
   delegate_to: localhost
   register: consolidated_logs
   run_once: true
