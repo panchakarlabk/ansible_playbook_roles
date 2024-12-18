@@ -28,6 +28,11 @@
    - host_log_path is defined
    - tail_lines is not defined
 
+- name: Display the log path for each host
+  debug:
+    var: all_logs
+  when: host_log_path is defined
+
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
   ansible.builtin.shell: | 
@@ -37,6 +42,11 @@
   when: 
    - host_log_path is defined
    - tail_lines is defined 
+
+- name: Display the log path for each host
+  debug:
+    var: all_logs
+  when: host_log_path is defined
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
