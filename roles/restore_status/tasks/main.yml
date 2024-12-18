@@ -90,20 +90,33 @@
   when: item.1.ip == inventory_hostname
   delegate_to: localhost
 
+# - name: Append logs with CET time
+#   ansible.builtin.shell: |
+#     echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+#     echo -e "**Status** {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
+#     if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
+#       echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
+#     else
+#       echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+#     fi
+#     echo -e "End of logs from {{ hostname_resolve }}\n" >> /tmp/all_logs_collected.txt
+#   delegate_to: localhost
+#   ignore_errors: yes  # Continue even if there are issues
+#   when: logs_status is defined
+
 - name: Append logs with CET time
   ansible.builtin.shell: |
     echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
     echo -e "**Status** {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
-    if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
+    if [ -z "{{ all_logs.stdout_lines | join('') | default('') }}" ]; then
       echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
     else
-      echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+      echo -e "{{ all_logs.stdout_lines | join('\n') | default('') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of logs from {{ hostname_resolve }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
-  ignore_errors: yes  # Continue even if there are issues
+  ignore_errors: yes
   when: logs_status is defined
-  become: true
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
