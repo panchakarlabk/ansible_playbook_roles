@@ -7,7 +7,7 @@
 - name: Set log path for each host dynamically
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
-    tail_log: "{{ item.0.config.tail }}"
+    tail_log: "{{ item.0.tail | default(omit) }}" 
   with_subelements:
     - "{{ dba_automation | dict2items | map(attribute='value') | list }}"
     - hosts
