@@ -21,20 +21,24 @@
   when: host_log_path is defined
   delegate_to: localhost
 
-- name: Initialize tail_cmd added wich is tail not presnt 
+- name: Initialize tail_cmd added wich is tail presnt 
   ansible.builtin.set_fact:
     tail_cmd: "tail -n {{ tail_log }} {{ host_log_path }}"
   delegate_to: localhost
-  run_once: true
   when: 
     - host_log_path is defined
     - tail_log is defined
+
+- name: Display the log path for each host
+  debug:
+    msg: "Tail command {{ tail_cmd }}"
+  when: host_log_path is defined
+  delegate_to: localhost
 
 - name: Initialize tail_cmd added wich is tail not presnt 
   ansible.builtin.set_fact:
     tail_cmd: "tail {{ host_log_path }} | grep $(date +%Y/%m/%d)"
   delegate_to: localhost
-  run_once: true
   when: 
     - host_log_path is defined
     - tail_log is not defined
