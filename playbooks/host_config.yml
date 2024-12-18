@@ -7,7 +7,7 @@ dba_automation:
       # - 192.168.162.136  # Assuming you meant different hosts here, otherwise it will be duplicate
   process_002_orcale:
     config:
-      log_path: "/home/bharat/logs.txt"
+      log_path: "/home/bharat/logs/logs.txt"
     hosts:
       - 192.168.162.128
     tail: 25
