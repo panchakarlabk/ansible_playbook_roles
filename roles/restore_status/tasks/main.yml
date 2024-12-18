@@ -45,7 +45,6 @@
   register: all_logs
   when: 
     - host_log_path is defined
-    - tail_log is defined
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
