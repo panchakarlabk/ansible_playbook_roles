@@ -3,6 +3,7 @@
 - name: Get human-readable datetime
   ansible.builtin.command: date "+%Y-%m-%d %H:%M:%S"
   register: datetime_output
+  delegate_to: localhost
 
 - name: Set log path for each host dynamically
   set_fact:
@@ -12,11 +13,13 @@
     - "{{ dba_automation | dict2items | map(attribute='value') | list }}"
     - hosts
   when: inventory_hostname is match(item.1 | replace('*', '.*'))
+  delegate_to: localhost
 
 - name: Display the log path for each host
   debug:
     msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
   when: host_log_path is defined
+  delegate_to: localhost
 
 - name: Initialize tail_cmd added wich is tail not presnt 
   ansible.builtin.set_fact:
@@ -25,7 +28,7 @@
   run_once: true
   when: 
     - host_log_path is defined
-    - tail_log is not defined
+    - tail_log is defined
 
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
