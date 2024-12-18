@@ -83,17 +83,15 @@
 - name: Set hostname_resolve dynamically based on inventory_hostname
   set_fact:
     hostname_resolve: >-
-      {% if item.ip == inventory_hostname and item.hostname is defined %}
-      {{ item.hostname }}
-      {% elif item.ip == inventory_hostname %}
-      {{ item.ip }}
+      {% if item.1.ip == inventory_hostname and item.1.hostname is defined %}
+      {{ item.1.hostname }}
+      {% elif item.1.ip == inventory_hostname %}
+      {{ item.1.ip }}
       {% endif %}
   with_subelements:
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
-  when:
-    - item.hosts.ip == inventory_hostname
-    - item.hosts.ip is defined
+  when: item.1.ip == inventory_hostname
   delegate_to: localhost
 
 - name: Append logs with CET time
