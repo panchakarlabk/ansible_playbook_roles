@@ -28,7 +28,7 @@
    - host_log_path is defined
    - tail_lines is not defined
 
-- name: Display the log path for each host
+- name: Display the log of tail not defined
   debug:
     var: all_logs
   when: host_log_path is defined
@@ -38,14 +38,14 @@
   ansible.builtin.shell: | 
     tail -n {{ tail_lines }} "{{ host_log_path }}"
   ignore_errors: yes  # Continue even if there are issues
-  register: all_logs
+  register: all_logs.stdout_lines
   when: 
    - host_log_path is defined
    - tail_lines is defined 
 
-- name: Display the log path for each host
+- name: Display the logs tail defined
   debug:
-    var: all_logs
+    var: all_logs.stdout_lines
   when: host_log_path is defined
 
 # Step 3: Check for errors in logs
