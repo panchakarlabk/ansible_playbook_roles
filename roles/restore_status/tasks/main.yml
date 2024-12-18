@@ -104,6 +104,12 @@
 #   ignore_errors: yes  # Continue even if there are issues
 #   when: logs_status is defined
 
+- name: Ensure /tmp/all_logs_collected.txt exists
+  ansible.builtin.file:
+    path: /tmp/all_logs_collected.txt
+    state: touch
+  delegate_to: localhost
+
 - name: Append logs with CET time
   ansible.builtin.shell: |
     echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
@@ -115,7 +121,7 @@
     fi
     echo -e "End of logs from {{ hostname_resolve }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
-  ignore_errors: yes
+  # ignore_errors: yes
   when: logs_status is defined
 
 # Step 5: Display the collected logs
