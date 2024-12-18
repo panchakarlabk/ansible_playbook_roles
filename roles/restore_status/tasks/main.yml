@@ -32,6 +32,9 @@
   when: host_log_path is defined
   delegate_to: localhost
 
+###Working
+
+
 - name: Display the constructed tail command
   debug:
     msg: "Constructed tail command: {{ tail_cmd }}"
@@ -45,6 +48,10 @@
   register: all_logs
   when: 
     - host_log_path is defined
+
+- name: All Logs Variable
+  debug:
+    var: all_logs
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
@@ -64,6 +71,10 @@
   delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
   when: all_logs.stdout_lines is defined
+
+- name: logs status Variable
+  debug:
+    var: logs_status
 
 - name: Append logs with CET time
   ansible.builtin.shell: |
@@ -86,6 +97,10 @@
   register: consolidated_logs
   run_once: true
 
+- name: consolidated logs Variable
+  debug:
+    var: consolidated_logs
+
 - name: Initialize email_body variable
   ansible.builtin.set_fact:
     email_body: []
@@ -102,11 +117,17 @@
     - consolidated_logs is defined
     - consolidated_logs.stdout_lines is defined
 
+- name: restore logs Variable
+  debug:
+    var: restore_logs
+
 - name: Set restore_status_result 
   ansible.builtin.set_fact:
     restore_status_result:
       success: true
       message: "Restore status completed successfully."
 
-
+- name: restore_status_result Variable
+  debug:
+    var: restore_status_result
 
