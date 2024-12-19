@@ -88,6 +88,11 @@
   delegate_to: localhost
   register: consolidated_logs
 
+- name: Intialize restore_logs
+  ansible.builtin.set_fact:
+    restore_logs: []
+  delegate_to: localhost
+
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
