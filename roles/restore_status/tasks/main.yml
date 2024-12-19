@@ -97,7 +97,9 @@
       echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
-  when: logs_status is defined
+  when: 
+    - logs_status is defined
+    - all_logs.stdout_lines is defined
   delegate_to: localhost
 
 # Step 5: Display the collected logs
