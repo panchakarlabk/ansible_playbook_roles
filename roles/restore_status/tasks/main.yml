@@ -81,7 +81,7 @@
   set_fact:
     current_host_name: "{{ item.friendlyname }}"
   when: 
-    - inventory_hostname is match("{{ item.hostname | regex_replace('*', '.*') }}")
+    - inventory_hostname is match("{{ item.hostname | regex_replace('*', '*') }}")
   loop: "{{ dba_host_list }}"
   loop_control:
     label: "{{ item.hostname }}"
