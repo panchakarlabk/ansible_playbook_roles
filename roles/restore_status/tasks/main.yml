@@ -75,6 +75,7 @@
       {% else %}
         {{ inventory_hostname }}
       {% endif %}
+  delegate_to: localhost
 
 - name: current_host_name 
   debug:
