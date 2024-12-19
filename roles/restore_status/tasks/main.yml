@@ -66,17 +66,28 @@
   when: all_logs.stdout_lines is defined
   delegate_to: localhost
 
-- name: Determine the current host name or friendly name with wildcard matching
-  ansible.builtin.set_fact:
-    current_host_name: >-
-      {% set friendlyname = (dba_host_list | selectattr('hostname', 'search', inventory_hostname | replace('*', '*')) | map(attribute='friendlyname') | list) %}
-      {% if friendlyname and friendlyname[0] is defined %}
-        {{ friendlyname[0] }}
-      {% else %}
-        {{ inventory_hostname }}
-      {% endif %}
-  delegate_to: localhost
+# - name: Determine the current host name or friendly name with wildcard matching
+#   ansible.builtin.set_fact:
+#     current_host_name: >-
+#       {% set friendlyname = (dba_host_list | selectattr('hostname', 'search', inventory_hostname | replace('*', '*')) | map(attribute='friendlyname') | list) %}
+#       {% if friendlyname and friendlyname[0] is defined %}
+#         {{ friendlyname[0] }}
+#       {% else %}
+#         {{ inventory_hostname }}
+#       {% endif %}
+#   delegate_to: localhost
 
+
+- name: Replace current_host_name with friendlyname if defined
+  set_fact:
+    current_host_name: "{{ item.friendlyname }}"
+  when: 
+    - current_host_name is match("{{ item.hostname | regex_replace('*', '.*') }}")
+  loop: "{{ dba_host_list }}"
+  loop_control:
+    label: "{{ item.hostname }}"
+  delegate_to: localhost
+  
 - name: current_host_name 
   debug:
     var: current_host_name
