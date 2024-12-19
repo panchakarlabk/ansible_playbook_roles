@@ -69,14 +69,14 @@
 - name: Determine the current host name or friendly name with wildcard matching
   ansible.builtin.set_fact:
     current_host_name: >-
-      {% set friendlyname = (dba_host_list | selectattr('hostname', 'search', inventory_hostname | regex_replace('*', '.*')) | map(attribute='friendlyname') | list) %}
+      {% set friendlyname = (dba_host_list | selectattr('hostname', 'search', inventory_hostname | replace('*', '*')) | map(attribute='friendlyname') | list) %}
       {% if friendlyname and friendlyname[0] is defined %}
         {{ friendlyname[0] }}
       {% else %}
         {{ inventory_hostname }}
       {% endif %}
   delegate_to: localhost
-  when: inventory_hostname is match(dba_host_list | selectattr('hostname', 'search', inventory_hostname | regex_replace('*', '.*')))
+  when: inventory_hostname is match(dba_host_list | selectattr('hostname', 'search', inventory_hostname | replace('*', '*')))
 
 - name: current_host_name 
   debug:
