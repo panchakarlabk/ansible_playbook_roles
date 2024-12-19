@@ -75,7 +75,7 @@
   set_fact:
     current_host_name: "{{ item.friendlyname if item.friendlyname is defined else inventory_hostname }}"
   when: 
-    - inventory_hostname is match("{{ item.hostname | replace('*', '.*') }}")
+    - inventory_hostname is match(item.hostname | replace('*', '.*'))
     - item.friendlyname is defined
   loop: "{{ dba_host_list }}"
   loop_control:
