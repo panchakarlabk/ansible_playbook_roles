@@ -66,14 +66,6 @@
   when: all_logs.stdout_lines is defined
   delegate_to: localhost
 
-# - name: Replace current_host_name with friendlyname if inventory_hostname matches, else set to inventory_hostname
-#   set_fact:
-#     current_host_name: "{{ item.friendlyname if (inventory_hostname is match(item.hostname | replace('*', '.*')) and item.friendlyname is defined) else inventory_hostname }}"
-#   loop: "{{ dba_host_list }}"
-#   loop_control:
-#     label: "{{ item.hostname }}"
-#   delegate_to: localhost
-
 - name: Replace current_host_name with friendlyname if inventory_hostname matches
   set_fact:
     current_host_name: "{{ item.friendlyname if (inventory_hostname is match(item.hostname | replace('*', '.*')) and item.friendlyname is defined) else inventory_hostname }}"
