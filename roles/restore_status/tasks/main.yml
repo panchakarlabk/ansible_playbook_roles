@@ -72,6 +72,7 @@
     current_host_name: "{{ item.friendlyname }}"
   when: 
     - inventory_hostname is match("{{ item.hostname | replace('*', '.*') }}")
+    - item.friendlyname is defined
   loop: "{{ dba_host_list }}"
   loop_control:
     label: "{{ item.hostname }}"
