@@ -77,17 +77,17 @@
 #       {% endif %}
 #   delegate_to: localhost
 
-
-- name: Replace current_host_name with friendlyname if defined
+- name: Replace current_host_name with friendlyname if inventory_hostname matches
   set_fact:
     current_host_name: "{{ item.friendlyname }}"
   when: 
-    - current_host_name is match("{{ item.hostname | regex_replace('*', '.*') }}")
+    - inventory_hostname is match("{{ item.hostname | regex_replace('*', '.*') }}")
   loop: "{{ dba_host_list }}"
   loop_control:
     label: "{{ item.hostname }}"
   delegate_to: localhost
-  
+
+
 - name: current_host_name 
   debug:
     var: current_host_name
