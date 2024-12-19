@@ -69,9 +69,9 @@
 - name: Determine the current host name or friendly name
   ansible.builtin.set_fact:
     current_host_name: >-
-      {% set friendlyname = (dba_host_list | selectattr('hostname', 'equalto', inventory_hostname) | map(attribute='friendlyname') | list) %}
-      {% if friendlyname and friendlyname[0] is defined %}
-        {{ friendlyname[0] }}
+      {% set match = (dba_host_list | selectattr('hostname', 'match', inventory_hostname | regex_escape) | list) %}
+      {% if match and match[0].friendlyname is defined %}
+        {{ match[0].friendlyname }}
       {% else %}
         {{ inventory_hostname }}
       {% endif %}
