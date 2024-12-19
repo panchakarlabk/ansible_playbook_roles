@@ -1,5 +1,5 @@
 dba_host_list:
-  - hostname:  "192.168.162*""
+  - hostname:  "192.168.162*"
     friendlyname: "rhel 9 host"
 
   - hostname:  "192.168.162.128"
