@@ -3,7 +3,6 @@ dba_host_list:
     friendlyname: "rhel 9 host"
 
   - hostname:  192.168.162.128
-    friendlyname: "rhel 8 host"
 
 dba_automation_prod:
   process_001_mysql:

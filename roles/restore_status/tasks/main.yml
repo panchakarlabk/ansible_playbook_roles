@@ -66,6 +66,20 @@
   when: all_logs.stdout_lines is defined
   delegate_to: localhost
 
+- name: Determine the current host name or friendly name
+  ansible.builtin.set_fact:
+    current_host_name: >-
+      {% set friendlyname = (dba_host_list | selectattr('hostname', 'equalto', inventory_hostname) | map(attribute='friendlyname') | list) %}
+      {% if friendlyname and friendlyname[0] is defined %}
+        {{ friendlyname[0] }}
+      {% else %}
+        {{ inventory_hostname }}
+      {% endif %}
+
+- name: current_host_name 
+  debug:
+    var: current_host_name
+
 - name: Append logs with CET time
   ansible.builtin.shell: |
     echo -e "DR PE {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
