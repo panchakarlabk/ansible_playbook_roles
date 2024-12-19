@@ -66,6 +66,10 @@
   when: all_logs.stdout_lines is defined
   delegate_to: localhost
 
+- name: Initialize current_host_name with a fallback
+  set_fact:
+    current_host_name: "{{ inventory_hostname }}"  # Default value if it's not defined
+  when: current_host_name is not defined
 
 - name: Replace current_host_name with friendlyname if inventory_hostname matches
   set_fact:
