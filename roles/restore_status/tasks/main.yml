@@ -87,6 +87,7 @@
   ansible.builtin.command: cat /tmp/all_logs_collected.txt
   delegate_to: localhost
   register: consolidated_logs
+  run_once: true
 
 - name: Intialize restore_logs
   ansible.builtin.set_fact:
