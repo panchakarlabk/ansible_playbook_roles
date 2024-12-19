@@ -76,7 +76,7 @@
         {{ inventory_hostname }}
       {% endif %}
   delegate_to: localhost
-  when: inventory_hostname is match(dba_host_list | selectattr('hostname', 'map', 'replace("*", ".*")'))
+  when: inventory_hostname is match(dba_host_list | selectattr('hostname', 'map', 'replace("*", "*")'))
 
 - name: current_host_name 
   debug:
