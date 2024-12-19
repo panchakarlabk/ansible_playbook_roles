@@ -13,13 +13,13 @@
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
   when: inventory_hostname is match(item.1 | replace('*', '.*'))
-
+  delegate_to: localhost
 
 - name: Display the log path for each host
   debug:
     msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
   when: host_log_path is defined
-
+  delegate_to: localhost
 
 - name: Initialize the tail command
   set_fact:
@@ -30,16 +30,14 @@
       tail {{ host_log_path }} | grep "$(date +%Y/%m/%d)"
       {% endif %}
   when: host_log_path is defined
-
+  delegate_to: localhost
 
 ###Working
-
-
 - name: Display the constructed tail command
   debug:
     msg: "Constructed tail command: {{ tail_cmd }}"
   when: host_log_path is defined
-
+  delegate_to: localhost
 
 # Step 1: Collect logs and append them to a single file
 - name: Daily Monitor Logs DR PE restore log status
@@ -48,10 +46,6 @@
   register: all_logs
   when: 
     - host_log_path is defined
-
-- name: All Logs Variable
-  debug:
-    var: all_logs
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
@@ -70,10 +64,7 @@
       {% endif %}
   ignore_errors: yes  # Continue even if there are issues
   when: all_logs.stdout_lines is defined
-
-- name: logs status Variable
-  debug:
-    var: logs_status
+  delegate_to: localhost
 
 - name: Append logs with CET time
   ansible.builtin.shell: |
@@ -95,11 +86,6 @@
   delegate_to: localhost
   register: consolidated_logs
 
-- name: consolidated logs Variable
-  debug:
-    var: consolidated_logs
-
-
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
@@ -108,10 +94,7 @@
     - logs_status is defined
     - consolidated_logs is defined
     - consolidated_logs.stdout_lines is defined
-
-- name: restore logs Variable
-  debug:
-    var: restore_logs
+  delegate_to: localhost
 
 - name: Set restore_status_result 
   ansible.builtin.set_fact:
