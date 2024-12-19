@@ -85,7 +85,7 @@
   debug:
     msg: "The global status is: {{ global_status }}"
   delegate_to: localhost
-  
+
 - name: Append logs with CET time
   ansible.builtin.shell: |
     echo -e "DR PE {{ ansible_date_time.iso8601 }} CET" > /tmp/all_logs_collected.txt
@@ -97,7 +97,6 @@
       echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
-  ignore_errors: yes  # Continue even if there are issues
   when: logs_status is defined
   delegate_to: localhost
 
