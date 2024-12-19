@@ -66,6 +66,26 @@
   when: all_logs.stdout_lines is defined
   delegate_to: localhost
 
+# Step 4: Update global status based on logs_status
+- name: Update global status
+  ansible.builtin.set_fact:
+    global_status: >-
+      {% if logs_status == 'not ok' %}
+      not ok 
+      {% elif logs_status == 'ok' and (global_status is not defined or global_status != 'not ok') %}
+      ok
+      {% else %}
+      {{ global_status | default('unknown') }}
+      {% endif %}
+  when: logs_status is defined
+  delegate_to: localhost
+
+# Step 5: Display global status
+- name: Show global status
+  debug:
+    msg: "The global status is: {{ global_status }}"
+  delegate_to: localhost
+  
 - name: Append logs with CET time
   ansible.builtin.shell: |
     echo -e "DR PE {{ ansible_date_time.iso8601 }} CET" > /tmp/all_logs_collected.txt
