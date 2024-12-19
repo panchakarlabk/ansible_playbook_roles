@@ -69,7 +69,7 @@
 
 - name: Replace current_host_name with friendlyname if inventory_hostname matches
   set_fact:
-    current_host_name: "{{ if item.friendlyname and item.friendlyname is defined) else inventory_hostname }}"
+    current_host_name: "{{ item.friendlyname if item.friendlyname is defined else inventory_hostname }}"
   when: 
     - inventory_hostname is match("{{ item.hostname | replace('*', '.*') }}")
     - item.friendlyname is defined
