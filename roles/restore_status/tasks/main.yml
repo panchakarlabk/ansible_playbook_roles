@@ -22,6 +22,15 @@
   when: host_log_path is defined
   delegate_to: localhost
 
+- name: Verify Oracle log files exist
+  ansible.builtin.stat:
+    path: "{{ host_log_path }}/{{ item }}"
+  register: log_file_status
+  loop: "{{ log_files_to_collect }}"
+  loop_control:
+    label: "{{ item }}"
+  when: log_files_to_collect | length > 0 
+
 - name: Initialize the tail command
   set_fact:
     tail_cmd: >-
