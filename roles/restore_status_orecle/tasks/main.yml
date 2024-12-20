@@ -5,16 +5,15 @@
   register: datetime_output
   delegate_to: localhost
 
-- name: Extract Oracle configuration
+- name: Set log path and tail dynamically for process_002_oracle
   ansible.builtin.set_fact:
-    oracle_config: "{{ dba_automation_prod.process_002_orecle }}"
-
-- name: Process Oracle logs for specific hosts
-  ansible.builtin.include_tasks: process_oracle_logs.yml
-  vars:
-    log_path: "{{ oracle_config.config.log_path }}"
-    log_files_to_collect: "{{ oracle_config.config.log_files_to_collect }}"
-  when: inventory_hostname in oracle_config.hosts
+    log_path: "{{ item.config.log_path }}"
+    log_files_to_collect: "{{ item.config.log_files_to_collect }}"
+  with_items: "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
+  when: 
+    - item.log_files_to_collect is defined
+    - inventory_hostname is match(item.1 | replace('*', '.*'))
+  delegate_to: localhost
 
 - name: Verify Oracle log files exist
   ansible.builtin.stat:
