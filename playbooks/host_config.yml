@@ -9,12 +9,21 @@ dba_automation_prod:
     hosts:
       - 192.168.162.136
     tail: 25
-  process_002_orcale:
+  process_002_mysql:
     config:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
-      - 192.168.162.128
+      - 192.168.162.125
     tail: 25
+  process_002_orcale:
+  config:
+    log_path: "/var/log/my_logs"  # Base directory where logs are stored
+    log_files_to_collect:
+      - logs1.txt
+      - logs2.txt
+      - logs3.txt
+  hosts:
+    - 192.168.162.128
 
 dba_automation_dev:
   process_001_mysql:

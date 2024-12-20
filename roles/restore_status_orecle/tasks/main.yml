@@ -1,0 +1,52 @@
+---
+
+- name: Get human-readable datetime
+  ansible.builtin.command: date "+%Y-%m-%d %H:%M:%S"
+  register: datetime_output
+  delegate_to: localhost
+
+- name: Extract Oracle configuration
+  ansible.builtin.set_fact:
+    oracle_config: "{{ dba_automation_prod.process_002_oracle }}"
+
+- name: Process Oracle logs for specific hosts
+  ansible.builtin.include_tasks: process_oracle_logs.yml
+  vars:
+    log_path: "{{ oracle_config.config.log_path }}"
+    log_files_to_collect: "{{ oracle_config.config.log_files_to_collect }}"
+  when: inventory_hostname in oracle_config.hosts
+
+- name: Verify Oracle log files exist
+  ansible.builtin.stat:
+    path: "{{ log_path }}/{{ item }}"
+  register: log_file_status
+  loop: "{{ log_files_to_collect }}"
+  loop_control:
+    label: "{{ item }}"
+
+- name: Display missing log files
+  ansible.builtin.debug:
+    msg: "Log file {{ item.item }} does not exist."
+  with_items: "{{ log_file_status.results }}"
+  when: not item.stat.exists
+
+- name: Read and display content of each log file
+  ansible.builtin.shell: |
+    cat {{ log_path }}/{{ item }}
+  register: log_content
+  loop: "{{ log_files_to_collect }}"
+  loop_control:
+    label: "{{ item }}"
+  when: log_file_status.results[loop.index0].stat.exists
+  changed_when: false
+
+- name: Display combined log file contents
+  ansible.builtin.debug:
+    msg: |
+      Logs from {{ inventory_hostname }}:
+      {% for log in log_content.results %}
+      - File: {{ log.item }}
+        Content:
+        {{ log.stdout }}
+      {% endfor %}
+

@@ -5,8 +5,9 @@
   vars_files: 
     - host_config.yml    # Load the configuration file
   roles:
-    - restore_status
-    - logicmonitor_status
+    # - restore_status
+    # - logicmonitor_status
+    - restore_status_orecle
 
   # Conditional role inclusion
   tasks:
@@ -16,5 +17,5 @@
       when: 
         - restore_status_result is defined
         - restore_status_result.success
-        - logicmonitor_status_result is defined
-        - logicmonitor_status_result.success
+        # - logicmonitor_status_result is defined
+        # - logicmonitor_status_result.success
