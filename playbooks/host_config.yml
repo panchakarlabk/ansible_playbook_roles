@@ -21,6 +21,7 @@ dba_automation_prod:
         - logs1.txt
         - logs2.txt
         - logs3.txt
+      tail: orecle
     hosts:
       - 192.168.162.128
 
