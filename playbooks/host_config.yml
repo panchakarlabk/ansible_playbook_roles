@@ -17,7 +17,7 @@ dba_automation_prod:
     tail: 25
   process_002_orecle:
     config:
-      log_path: "/var/log/logs"  # Base directory where logs are stored
+      log_path: "/home/bharat/logs"  # Base directory where logs are stored
       log_files_to_collect:
         - logs1.txt
         - logs2.txt
