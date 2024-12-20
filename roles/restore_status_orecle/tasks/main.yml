@@ -7,7 +7,7 @@
 
 - name: Extract Oracle configuration
   ansible.builtin.set_fact:
-    oracle_config: "{{ dba_automation_prod.process_002_oracle }}"
+    oracle_config: "{{ dba_automation_prod.process_002_orecle }}"
 
 - name: Process Oracle logs for specific hosts
   ansible.builtin.include_tasks: process_oracle_logs.yml

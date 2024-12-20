@@ -15,7 +15,7 @@ dba_automation_prod:
     hosts:
       - 192.168.162.125
     tail: 25
-  process_002_orcale:
+  process_002_orecle:
   config:
     log_path: "/var/log/my_logs"  # Base directory where logs are stored
     log_files_to_collect:
@@ -31,7 +31,7 @@ dba_automation_dev:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
       - 192.168.162.130
-  process_002_orcale:
+  process_002_orecle:
     config:
       log_path: "/home/bharat/logs.log"
     hosts:
