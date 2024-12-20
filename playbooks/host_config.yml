@@ -16,14 +16,14 @@ dba_automation_prod:
       - 192.168.162.125
     tail: 25
   process_002_orecle:
-  config:
-    log_path: "/var/log/my_logs"  # Base directory where logs are stored
-    log_files_to_collect:
-      - logs1.txt
-      - logs2.txt
-      - logs3.txt
-  hosts:
-    - 192.168.162.128
+    config:
+      log_path: "/var/log/my_logs"  # Base directory where logs are stored
+      log_files_to_collect:
+        - logs1.txt
+        - logs2.txt
+        - logs3.txt
+    hosts:
+      - 192.168.162.128
 
 dba_automation_dev:
   process_001_mysql:
