@@ -5,19 +5,20 @@
   register: datetime_output
   delegate_to: localhost
 
-- name: Set log path and tail dynamically for process_002_oracle
-  ansible.builtin.set_fact:
-    log_path: "{{ item.config.log_path }}"
-    log_files_to_collect: "{{ item.config.log_files_to_collect }}"
-  with_items: "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
-  when: 
-    - item.log_files_to_collect is defined
-    - inventory_hostname is match(item.1 | replace('*', '.*'))
+- name: Set log path for each host dynamically
+  set_fact:
+    host_log_path: "{{ item.0.config.log_path }}"
+    tail_log: "{{ item.0.tail | default(omit) }}" 
+    log_files_to_collect: "{{ item.0.config.log_files_to_collect }}"
+  with_subelements:
+    - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
+    - hosts
+  when: inventory_hostname is match(item.1 | replace('*', '.*'))
   delegate_to: localhost
 
 - name: Verify Oracle log files exist
   ansible.builtin.stat:
-    path: "{{ log_path }}/{{ item }}"
+    path: "{{ host_log_path }}/{{ item }}"
   register: log_file_status
   loop: "{{ log_files_to_collect }}"
   loop_control:
@@ -31,7 +32,7 @@
 
 - name: Read and display content of each log file
   ansible.builtin.shell: |
-    cat {{ log_path }}/{{ item }}
+    cat {{ host_log_path }}/{{ item }}
   register: log_content
   loop: "{{ log_files_to_collect }}"
   loop_control:

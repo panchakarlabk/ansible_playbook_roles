@@ -82,6 +82,7 @@
     label: "{{ item.hostname }}"
   delegate_to: localhost
 
+
 - name: current_host_name 
   debug:
     var: current_host_name
