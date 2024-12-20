@@ -12,7 +12,7 @@ dba_automation_prod:
     config:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
-      - 192.168.162.128
+      - 192.168.162.125
     tail: 25
   process_002_orecle:
     config:
@@ -22,7 +22,7 @@ dba_automation_prod:
         - logs2.txt
         - logs3.txt
     hosts:
-      - 192.168.162.125
+      - 192.168.162.128
 
 dba_automation_dev:
   process_001_mysql:
