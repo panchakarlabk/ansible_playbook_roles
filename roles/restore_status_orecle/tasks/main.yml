@@ -15,7 +15,7 @@
     - hosts
   when: inventory_hostname is match(item.1 | replace('*', '.*'))
   delegate_to: localhost
-  
+
 - name: Verify Oracle log files exist
   ansible.builtin.stat:
     path: "{{ host_log_path }}/{{ item }}"
@@ -24,18 +24,11 @@
   loop_control:
     label: "{{ item }}"
 
-- name: Display missing log files
-  ansible.builtin.debug:
-    msg: "Log file {{ item.item }} does not exist."
-  with_items: "{{ log_file_status.results }}"
-  when: not item.stat.exists
-
 - name: Read and display content of each log file
   ansible.builtin.shell: |
     cat {{ host_log_path }}/{{ item.item }}
   register: log_content
   with_items: "{{ log_file_status.results }}"
-  when: item.stat.exists
   changed_when: false
 
 - name: Display combined log file contents
