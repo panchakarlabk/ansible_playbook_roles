@@ -9,7 +9,6 @@
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
     tail_log: "{{ item.0.tail | default(omit) }}" 
-    log_files_to_collect: "{{ item.0.config.log_files_to_collect | default([]) }}"
   with_subelements:
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
@@ -21,15 +20,6 @@
     msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
   when: host_log_path is defined
   delegate_to: localhost
-
-- name: Verify Oracle log files exist
-  ansible.builtin.stat:
-    path: "{{ host_log_path }}/{{ item }}"
-  register: log_file_status
-  loop: "{{ log_files_to_collect }}"
-  loop_control:
-    label: "{{ item }}"
-  when: log_files_to_collect | length > 0 
 
 - name: Initialize the tail command
   set_fact:
@@ -91,7 +81,6 @@
   loop_control:
     label: "{{ item.hostname }}"
   delegate_to: localhost
-
 
 - name: current_host_name 
   debug:
