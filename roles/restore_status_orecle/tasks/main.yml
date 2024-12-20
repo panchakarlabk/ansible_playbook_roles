@@ -9,7 +9,7 @@
   set_fact:
     host_log_path: "{{ item.0.config.log_path | default(omit) }}"
     tail_log: "{{ item.0.tail | default(omit) }}" 
-    log_files_to_collect: "{{ item.0.config.log_files_to_collect | default(omit) }}"
+    log_files_to_collect: "{{ item.0.config.log_files_to_collect | default([]) }}"
   with_subelements:
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
@@ -23,6 +23,7 @@
   loop: "{{ log_files_to_collect }}"
   loop_control:
     label: "{{ item }}"
+  when: log_files_to_collect | length > 0  # Only run if log_files_to_collect is not empty
 
 - name: Read and display content of each log file
   ansible.builtin.shell: |
