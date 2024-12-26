@@ -54,7 +54,7 @@
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
-    restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
+    restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.results }] }}"
   when: 
     - logs_status is defined
     - consolidated_logs is defined

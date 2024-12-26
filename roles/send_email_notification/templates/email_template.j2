@@ -43,6 +43,10 @@
         {% for line in entry.logs %}
         {{ line }}
         {% endfor %}
+        Logs from {{ inventory_hostname }}:
+        {% for log in consolidated_logs.results %}
+        {{ log.item.item }}
+        {% endfor %}
         </pre>
         </div>
         <hr />
