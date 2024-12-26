@@ -34,7 +34,7 @@
 
 - name: Display combined log file contents
   ansible.builtin.debug:
-    msg: consolidated_logs.stdout_lines
+    msg: consolidated_logs.results
 
 - name: Display combined log file contents
   ansible.builtin.debug:
