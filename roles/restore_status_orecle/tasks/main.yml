@@ -60,18 +60,6 @@
   register: consolidated_logs
   run_once: true
 
-- name: Display combined log file contents
-  ansible.builtin.debug:
-    msg: |
-      Logs from {{ inventory_hostname }}:
-      {% for log in consolidated_logs.results %}
-      - File: {{ log.item.item }}
-        Content:
-        {{ log.stdout }}
-      {% endfor %}
-  run_once: true
-  delegate_to: localhost
-
 - name: Intialize restore_logs
   ansible.builtin.set_fact:
     restore_logs: []
@@ -81,7 +69,7 @@
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
-    restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.results }] }}"
+    restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
   when: 
     - logs_status is defined
     - consolidated_logs is defined
