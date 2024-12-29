@@ -32,6 +32,26 @@
   with_items: "{{ log_file_status.results }}"
   changed_when: false
 
+  # Step 3: Check for errors in logs
+- name: Identify errors in logs
+  ansible.builtin.set_fact:
+    logs_status: >-
+      {% if not item.stdout_lines | default([])  %}
+      no logs found
+      {% elif 'error' in (item.stdout_lines | default([])  | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (item.stdout_lines | default([])  | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (item.stdout_lines | default([])  | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  ignore_errors: yes  # Continue even if there are issues
+  when: individual_logs.stdout_lines is defined
+  delegate_to: localhost
+  with_items: "{{ individual_logs.results }}"
+
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
     echo -e "Log Path: {{ host_log_path }}/{{ item.item }}" >> /tmp/all_logs_collected.txt
@@ -44,6 +64,7 @@
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
   with_items: "{{ individual_logs.results }}"
+
 
 
 # Step 3: Display the collected logs
@@ -62,7 +83,7 @@
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
-    restore_logs: "{{ [{'host': inventory_hostname,'logs': consolidated_logs.stdout_lines }] }}"
+    restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
   delegate_to: localhost
   run_once: true
 
