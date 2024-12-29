@@ -43,14 +43,14 @@
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
     echo -e "Host: {{ inventory_hostname }}" >> /tmp/all_logs_collected.txt
-    if [ -z "{{ individual_logs.stdout_lines | join('') }}" ]; then
+    if [ -z "{{ item.stdout_lines | default([]) | join('') }}" ]; then
       echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
-      echo -e "{{ individual_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+      echo -e "{{ item.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
-  with_items: "{{ log_file_status.results }}"
+  with_items: "{{ individual_logs.results }}"
   changed_when: false
 
 # Step 3: Display the collected logs
