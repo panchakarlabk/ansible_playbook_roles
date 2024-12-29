@@ -51,6 +51,10 @@
   delegate_to: localhost
   with_items: "{{ individual_logs.results }}"
 
+- name: individual_logs.results 
+  debug:
+    msg: individual_logs.results
+
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
     echo -e "Log Path: " >> /tmp/all_logs_collected.txt
