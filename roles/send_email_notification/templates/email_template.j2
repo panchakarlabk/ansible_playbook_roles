@@ -28,7 +28,7 @@
       Logs from {{ inventory_hostname }}:
       {% for log in consolidated_logs.results %}
       {{ log.item.item }}
-      {{ log.stdout }}
+      {{ log.stdout_lines }}
       {% endfor %}
     <p><strong>DR PE Database Restore</strong></p>
   {% if restore_logs is defined and restore_logs | length > 0 %}
