@@ -37,15 +37,14 @@
     echo -e "DR PE {{ host_log_path }}" >> /tmp/all_logs_collected.txt
     echo -e "Host: {{ inventory_hostname }}" >> /tmp/all_logs_collected.txt
     if [ "{{ item.stdout_lines | default([]) | join('') }}" = "" ]; then
-      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
+        echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
-      echo -e "{{ item.stdout_lines | default([]) | join('\n') }}" >> /tmp/all_logs_collected.txt
+        echo -e "{{ item.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
   with_items: "{{ individual_logs.results }}"
   changed_when: false
-
 
 # Step 3: Display the collected logs
 - name: Display the collected logs
