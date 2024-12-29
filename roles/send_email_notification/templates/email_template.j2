@@ -24,12 +24,6 @@
     <p>Time: {{ datetime_output.stdout  | default('N/A') }} </p>
     <p><strong>Database hosts monitoring status:</strong></p>
     <p><strong>Logic Monitore alerts </strong></p>
-      <p><strong>DR PE Database Restore oracle</strong></p>
-      Logs from {{ inventory_hostname }}:
-      {% for log in consolidated_logs.results %}
-      {{ log.item.item }}
-      {{ log.stdout_lines }}
-      {% endfor %}
     <p><strong>DR PE Database Restore</strong></p>
   {% if restore_logs is defined and restore_logs | length > 0 %}
     {% for entry in restore_logs %}
@@ -48,14 +42,6 @@
         <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
         {% for line in entry.logs %}
         {{ line }}
-        {% endfor %}
-        Logs from {{ inventory_hostname }}:
-        {% for log in consolidated_logs.results %}
-        {{ log.item.item }}
-        {% endfor %}
-        </pre>
-        </div>
-        <hr />
         {% endfor %}
   {% else %}
     <p>No restore_logs content available.</p>
