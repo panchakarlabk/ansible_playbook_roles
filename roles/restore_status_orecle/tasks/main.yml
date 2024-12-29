@@ -53,7 +53,7 @@
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
-    echo -e "Log Path: {{ path }}" >> /tmp/all_logs_collected.txt
+    echo -e "Log Path: " >> /tmp/all_logs_collected.txt
     echo -e "Host: {{ inventory_hostname }}" >> /tmp/all_logs_collected.txt
     if [ "{{ item.stdout_lines | default([]) | join('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
