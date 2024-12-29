@@ -63,10 +63,6 @@
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
     restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
-  when: 
-    - logs_status is defined
-    - consolidated_logs is defined
-    - consolidated_logs.stdout_lines is defined
   delegate_to: localhost
   run_once: true
 
