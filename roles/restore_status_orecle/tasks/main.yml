@@ -34,7 +34,7 @@
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
-    echo -e "Log Path:{{ host_log_path }}/{{ item }}" >> /tmp/all_logs_collected.txt
+    echo -e "Log Path: {{ host_log_path }}/{{ item.item }}" >> /tmp/all_logs_collected.txt
     echo -e "Host: {{ inventory_hostname }}" >> /tmp/all_logs_collected.txt
     if [ "{{ item.stdout_lines | default([]) | join('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
@@ -44,11 +44,6 @@
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
   with_items: "{{ individual_logs.results }}"
-  loop: "{{ log_files_to_collect }}"
-  loop_control:
-    label: "{{ item }}"
-  when: log_files_to_collect | length > 0  # Only run if log_files_to_collect is not empty
-
 
 
 # Step 3: Display the collected logs
