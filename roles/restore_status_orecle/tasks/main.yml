@@ -48,7 +48,6 @@
       ok
       {% endif %}
   ignore_errors: yes  # Continue even if there are issues
-  when: individual_logs.stdout_lines is defined
   delegate_to: localhost
   with_items: "{{ individual_logs.results }}"
 
