@@ -35,6 +35,8 @@
 - name: Display combined log file contents
   ansible.builtin.debug:
     msg: consolidated_logs.results
+  delegate_to: localhost
+  run_once: true
 
 - name: Display combined log file contents
   ansible.builtin.debug:
@@ -45,11 +47,14 @@
         Content:
         {{ log.stdout }}
       {% endfor %}
+  run_once: true
+  delegate_to: localhost
 
 - name: Intialize restore_logs
   ansible.builtin.set_fact:
     restore_logs: []
   delegate_to: localhost
+  run_once: true
 
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
@@ -60,6 +65,7 @@
     - consolidated_logs is defined
     - consolidated_logs.stdout_lines is defined
   delegate_to: localhost
+  run_once: true
 
 - name: Set restore_status_result 
   ansible.builtin.set_fact:
