@@ -69,7 +69,6 @@
   with_items: "{{ individual_logs.results }}"
   when: 
     - logs_status is defined
-    - all_logs.stdout_lines is defined
   delegate_to: localhost
 
 # Step 3: Display the collected logs
