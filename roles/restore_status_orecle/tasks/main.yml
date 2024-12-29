@@ -25,17 +25,40 @@
     label: "{{ item }}"
   when: log_files_to_collect | length > 0  # Only run if log_files_to_collect is not empty
 
+# - name: Read and display content of each log file
+#   ansible.builtin.shell: |
+#     cat {{ host_log_path }}/{{ item.item }}
+#   register: consolidated_logs
+#   with_items: "{{ log_file_status.results }}"
+#   changed_when: false
+# Step 1: Read and display content of each log file
 - name: Read and display content of each log file
   ansible.builtin.shell: |
     cat {{ host_log_path }}/{{ item.item }}
-  register: consolidated_logs
+  register: individual_logs
   with_items: "{{ log_file_status.results }}"
   changed_when: false
 
-- name: Display combined log file contents
-  ansible.builtin.debug:
-    msg: consolidated_logs.results
+# Step 2: Append logs to /tmp/all_logs_collected.txt
+- name: Append logs to /tmp/all_logs_collected.txt
+  ansible.builtin.shell: |
+    echo -e "DR PE {{ host_log_path }}" >> /tmp/all_logs_collected.txt
+    echo -e "Host: {{ inventory_hostname }}" >> /tmp/all_logs_collected.txt
+    if [ -z "{{ individual_logs.stdout_lines | join('') }}" ]; then
+      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
+    else
+      echo -e "{{ individual_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+    fi
+    echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
+  with_items: "{{ log_file_status.results }}"
+  changed_when: false
+
+# Step 3: Display the collected logs
+- name: Display the collected logs
+  ansible.builtin.command: cat /tmp/all_logs_collected.txt
+  delegate_to: localhost
+  register: consolidated_logs
   run_once: true
 
 - name: Display combined log file contents
