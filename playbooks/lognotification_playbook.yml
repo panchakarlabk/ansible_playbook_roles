@@ -7,7 +7,7 @@
   roles:
     - restore_status
     - logicmonitor_status
-    # - restore_status_orecle
+    - restore_status_orecle
 
   # Conditional role inclusion
   tasks:
