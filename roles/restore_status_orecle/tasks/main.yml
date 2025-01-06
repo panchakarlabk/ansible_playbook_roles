@@ -59,8 +59,7 @@
   debug:
     var: logs_status
   delegate_to: localhost
-
-
+  with_items: "{{ all_logs.results }}"
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
