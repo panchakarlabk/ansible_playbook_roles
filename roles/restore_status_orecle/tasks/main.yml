@@ -49,6 +49,7 @@
       {% endif %}
   ignore_errors: yes  # Continue even if there are issues
   delegate_to: localhost
+  register: logs_status
   with_items: "{{ all_logs.results }}"
 
 
@@ -56,7 +57,7 @@
   debug:
     var: logs_status
   delegate_to: localhost
-  with_items: "{{ all_logs.results }}"
+  with_items: "{{ logs_status.results }}"
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
