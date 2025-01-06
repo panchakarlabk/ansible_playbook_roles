@@ -28,7 +28,7 @@
 - name: Read and display content of each log file
   ansible.builtin.shell: |
     cat {{ host_log_path }}/{{ item.item }}
-  register: individual_logs
+  register: all_logs
   with_items: "{{ log_file_status.results }}"
   changed_when: false
 
@@ -49,11 +49,7 @@
       {% endif %}
   ignore_errors: yes  # Continue even if there are issues
   delegate_to: localhost
-  with_items: "{{ individual_logs.results }}"
-
-- name: individual_logs.results 
-  debug:
-    msg: individual_logs.results
+  with_items: "{{ all_logs.results }}"
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
@@ -66,7 +62,7 @@
         echo -e "{{ item.stdout_lines | default([]) | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
-  with_items: "{{ individual_logs.results }}"
+  with_items: "{{ all_logs.results }}"
   when: 
     - logs_status is defined
   delegate_to: localhost
