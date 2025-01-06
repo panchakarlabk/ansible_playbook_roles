@@ -41,7 +41,7 @@
     logs_status: >-
       {{
         logs_status | combine({
-          (item.stat.path | default('unknown_path') | basename): (
+          (item.cmd | default([]) | basename): (
             'no logs found'
             if not item.stdout_lines | default([]) else
             ('not ok' if (
