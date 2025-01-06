@@ -57,7 +57,7 @@
 
 - name: Display logs_status Variable
   debug:
-    var: item.logs_status
+    var: logs_status
   delegate_to: localhost
   with_items: "{{ all_logs.results }}"
 
