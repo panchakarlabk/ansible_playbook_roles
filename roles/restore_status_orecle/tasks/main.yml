@@ -49,7 +49,7 @@
           )
         })
       }}
-  with_items: "{{ log_file_status.results }}"
+  with_items: "{{ all_logs.results }}"
   delegate_to: localhost
 
 # Step 4: Display the logs_status variable
