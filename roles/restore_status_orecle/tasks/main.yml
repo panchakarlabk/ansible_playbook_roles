@@ -41,7 +41,7 @@
     logs_status: >-
       {{
         logs_status | combine({
-          ({{ item.stat.path | default([]) }}) | basename): (
+          ({{ item.cmd | default([]) }}) | basename): (
             'no logs found'
             if not item.stdout_lines | default([]) else
             ('not ok' if (
@@ -57,7 +57,7 @@
 
 - name: Display logs_status Variable
   debug:
-    var: logs_status
+    var: item.logs_status
   delegate_to: localhost
   with_items: "{{ all_logs.results }}"
 
