@@ -32,30 +32,34 @@
   with_items: "{{ log_file_status.results }}"
   changed_when: false
 
-  # Step 3: Check for errors in logs
-- name: Identify errors in logs
+- name: Initialize logs_status dictionary
+  ansible.builtin.set_fact:
+    logs_status: {}
+
+- name: Identify errors in logs and update logs_status
   ansible.builtin.set_fact:
     logs_status: >-
-      {% if not item.stdout_lines | default([])  %}
-      no logs found
-      {% elif 'error' in (item.stdout_lines | default([])  | join(' ') | lower) %}
-      not ok
-      {% elif 'fail' in (item.stdout_lines | default([])  | join(' ') | lower) %}
-      not ok
-      {% elif 'exception' in (item.stdout_lines | default([])  | join(' ') | lower) %}
-      not ok
-      {% else %}
-      ok
-      {% endif %}
-  ignore_errors: yes  # Continue even if there are issues
-  delegate_to: localhost
+      {{
+        logs_status | combine({
+          (item.stat.path | default('unknown_path') | basename): (
+            'no logs found'
+            if not item.stdout_lines | default([]) else
+            ('not ok' if (
+              'error' in (item.stdout_lines | join(' ') | lower) or
+              'fail' in (item.stdout_lines | join(' ') | lower) or
+              'exception' in (item.stdout_lines | join(' ') | lower)
+            ) else 'ok')
+          )
+        })
+      }}
   with_items: "{{ all_logs.results }}"
+  delegate_to: localhost
 
-- name: logs_status Variable
+- name: Display logs_status Variable
   debug:
     var: logs_status
   delegate_to: localhost
-  with_items: "{{ all_logs.results }}"
+
 
 
 - name: Append logs to /tmp/all_logs_collected.txt
