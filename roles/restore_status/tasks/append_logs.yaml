@@ -2,7 +2,7 @@
   ansible.builtin.set_fact:
     logs_status: {}
 
-- name: Identify errors in Log
+- name: Identify errors in logs and update logs_status
   ansible.builtin.set_fact:
     logs_status: >-
       {{
@@ -22,16 +22,14 @@
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
-    echo -e "Log Path: {{ oracle_log.item | default('') }}" >> /tmp/all_logs_collected.txt
+    echo -e "Log Path: {{ oracle_log.item | default([]) }}" >> /tmp/all_logs_collected.txt
     echo -e "Status: {{ logs_status }}" >> /tmp/all_logs_collected.txt
-    echo -e "Host: {{ inventory_hostname | default('') }}" >> /tmp/all_logs_collected.txt
-    
-    if [ -z "{{ oracle_log.stdout_lines | default([]) | join('') }}" ]; then
+    echo -e "Host: {{ inventory_hostname | default([])  }}" >> /tmp/all_logs_collected.txt
+    if [ "{{ oracle_log.stdout_lines | default([]) | join('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
         echo -e "{{ oracle_log.stdout_lines | default([]) | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
-    
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   when: 
     - logs_status is defined
