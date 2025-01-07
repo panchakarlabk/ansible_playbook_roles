@@ -31,7 +31,6 @@
   register: all_logs
   with_items: "{{ log_file_status.results }}"
   changed_when: false
-
 #
 - name: Append Logs
   include_tasks: append_logs.yaml

@@ -6,15 +6,17 @@
   ansible.builtin.set_fact:
     logs_status: >-
       {{
-        logs_status | union([
-          'no logs found'
-          if not oracle_log.stdout_lines | default([]) else
-          ('not ok' if (
-            'error' in (oracle_log.stdout_lines | join(' ') | lower) or
-            'fail' in (oracle_log.stdout_lines | join(' ') | lower) or
-            'exception' in (oracle_log.stdout_lines | join(' ') | lower)
-          ) else 'ok')
-        ])
+        logs_status | combine({
+          (oracle_log.item | default('unknown_path') | basename): (
+            'no logs found'
+            if not oracle_log.stdout_lines | default([]) else
+            ('not ok' if (
+              'error' in (oracle_log.stdout_lines | join(' ') | lower) or
+              'fail' in (oracle_log.stdout_lines | join(' ') | lower) or
+              'exception' in (oracle_log.stdout_lines | join(' ') | lower)
+            ) else 'ok')
+          )
+        })
       }}
   delegate_to: localhost
 
