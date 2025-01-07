@@ -39,7 +39,9 @@
 - name: Display the constructed tail command
   debug:
     msg: "Constructed tail command: {{ tail_cmd }}"
-  when: host_log_path is defined
+  when: 
+    - host_log_path is defined
+    - dr_type == "mysql"
   delegate_to: localhost
 
 # Step 1: Collect logs and append them to a single file
@@ -49,6 +51,7 @@
   register: all_logs
   when: 
     - host_log_path is defined
+    - dr_type == "mysql"
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
@@ -66,7 +69,9 @@
       ok
       {% endif %}
   ignore_errors: yes  # Continue even if there are issues
-  when: all_logs.stdout_lines is defined
+  when: 
+   - all_logs.stdout_lines is defined
+   - dr_type == "mysql"
   delegate_to: localhost
 
 - name: Initialize current_host_name with a fallback
