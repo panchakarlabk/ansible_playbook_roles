@@ -28,7 +28,7 @@
 
 - name: Read and display content of each log file
   ansible.builtin.shell: |
-    grep -E 'Import Release|Job "SYS"' {{ host_log_path }}/{{ item.item }}
+    grep -E 'Import Release|Job "SYS"' {{ host_log_path }}/{{ item.item }} | tail -n 6
   register: all_logs
   with_items: "{{ log_file_status.results }}"
   changed_when: false
