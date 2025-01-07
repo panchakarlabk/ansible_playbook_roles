@@ -8,6 +8,7 @@ dba_automation_prod:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
       - 192.168.162.136
+    dr_type: mysql
   process_002_mysql:
     config:
       log_path: "/home/bharat/logs/logs.txt"
