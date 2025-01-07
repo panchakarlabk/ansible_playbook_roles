@@ -23,6 +23,7 @@ dba_automation_prod:
         - logs2.txt
         - logs3.txt
     type: oracle
+    tail: 25
     hosts:
       - 192.168.162.128
 
