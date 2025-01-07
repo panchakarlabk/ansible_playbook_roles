@@ -14,6 +14,7 @@ dba_automation_prod:
     hosts:
       - 192.168.162.125
     tail: 25
+    type: mysql
   process_002_orecle:
     config:
       log_path: "/home/bharat/logs"  # Base directory where logs are stored
@@ -21,7 +22,7 @@ dba_automation_prod:
         - logs1.txt
         - logs2.txt
         - logs3.txt
-      tail: oracle
+    type: oracle
     hosts:
       - 192.168.162.128
 
