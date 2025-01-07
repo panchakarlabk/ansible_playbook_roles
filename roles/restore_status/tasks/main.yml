@@ -9,6 +9,7 @@
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
     tail_log: "{{ item.0.tail | default(omit) }}" 
+    dr_type: "{{ item.0.dr_type | default(omit) }}" 
   with_subelements:
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
@@ -29,7 +30,9 @@
       {% else %}
       tail {{ host_log_path }} | grep "$(date +%Y/%m/%d)"
       {% endif %}
-  when: host_log_path is defined
+  when: 
+    - host_log_path is defined
+    - dr_type == "mysql"
   delegate_to: localhost
 
 ###Working
