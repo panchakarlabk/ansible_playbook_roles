@@ -1,0 +1,123 @@
+---
+- name: Display the log path for each host
+  debug:
+    msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
+  when: host_log_path is defined
+  delegate_to: localhost
+
+- name: Initialize the tail command
+  set_fact:
+    tail_cmd: >-
+      {% if tail_log is defined %}
+      tail -n {{ tail_log }} {{ host_log_path }} 
+      {% else %}
+      tail {{ host_log_path }} | grep "$(date +%Y/%m/%d)"
+      {% endif %}
+  when: 
+    - host_log_path is defined
+  delegate_to: localhost
+
+###Working
+- name: Display the constructed tail command
+  debug:
+    msg: "Constructed tail command: {{ tail_cmd }}"
+  when: 
+    - host_log_path is defined
+  delegate_to: localhost
+
+# Step 1: Collect logs and append them to a single file
+- name: Daily Monitor Logs DR PE restore log status
+  ansible.builtin.shell: "{{ tail_cmd }}"
+  ignore_errors: yes  # Continue even if there are issues
+  register: all_logs
+  when: 
+    - host_log_path is defined
+
+# Step 3: Check for errors in logs
+- name: Identify errors in logs
+  ansible.builtin.set_fact:
+    logs_status: >-
+      {% if not all_logs.stdout_lines %}
+      no logs found
+      {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  ignore_errors: yes  # Continue even if there are issues
+  when: 
+   - all_logs.stdout_lines is defined
+  delegate_to: localhost
+
+- name: Initialize current_host_name with a fallback
+  set_fact:
+    current_host_name: "{{ inventory_hostname }}"  # Default value if it's not defined
+  when: current_host_name is not defined
+
+- name: Replace current_host_name with friendlyname if inventory_hostname matches
+  set_fact:
+    current_host_name: "{{ item.friendlyname if item.friendlyname is defined else inventory_hostname }}"
+  when: 
+    - inventory_hostname is match(item.hostname | replace('*', '.*'))
+    - item.friendlyname is defined
+  loop: "{{ dba_host_list }}"
+  loop_control:
+    label: "{{ item.hostname }}"
+  delegate_to: localhost
+
+- name: current_host_name 
+  debug:
+    var: current_host_name
+
+- name: Append logs with CET time
+  ansible.builtin.shell: |
+    echo -e "DR PE {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
+    echo -e "Status {{ logs_status }}" >> /tmp/all_logs_collected.txt
+    echo -e "host {{ current_host_name }}" >> /tmp/all_logs_collected.txt
+    if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
+      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
+    else
+      echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+    fi
+    echo -e "End of logs from {{ current_host_name }}\n" >> /tmp/all_logs_collected.txt
+  when: 
+    - logs_status is defined
+    - all_logs.stdout_lines is defined
+  delegate_to: localhost
+
+# Step 5: Display the collected logs
+- name: Display the collected logs
+  ansible.builtin.command: cat /tmp/all_logs_collected.txt
+  delegate_to: localhost
+  register: consolidated_logs
+  run_once: true
+
+- name: Intialize restore_logs
+  ansible.builtin.set_fact:
+    restore_logs: []
+  delegate_to: localhost
+
+# Step 4: Collect the status and logs for each host in a list
+- name: Create a list of logs and statuses
+  ansible.builtin.set_fact:
+    restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
+  when: 
+    - logs_status is defined
+    - consolidated_logs is defined
+    - consolidated_logs.stdout_lines is defined
+  delegate_to: localhost
+
+- name: Set restore_status_result 
+  ansible.builtin.set_fact:
+    restore_status_result:
+      success: true
+      message: "Restore status completed successfully."
+
+- name: restore_status_result Variable
+  debug:
+    var: restore_status_result
+
