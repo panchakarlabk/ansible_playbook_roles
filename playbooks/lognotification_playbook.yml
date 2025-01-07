@@ -1,13 +1,13 @@
 ---
 - name: This is my test plabook 
-  hosts: "{{ targets }}"
+  hosts: 192.168.162.128
   become: false
   vars_files: 
     - host_config.yml    # Load the configuration file
   roles:
-    - restore_status
+    # - restore_status
     # - logicmonitor_status
-    #- restore_status_orecle
+    - restore_status_orecle
 
   # Conditional role inclusion
   tasks:
