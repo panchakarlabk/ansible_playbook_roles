@@ -32,11 +32,11 @@
   with_items: "{{ log_file_status.results }}"
   changed_when: false
 #
-- name: Append Logs
-  include_tasks: append_logs.yaml
-  with_items: "{{ all_logs.results }}"
-  loop_control:
-    loop_var: oracle_log
+# - name: Append Logs
+#   include_tasks: append_logs.yaml
+#   with_items: "{{ all_logs.results }}"
+#   loop_control:
+#     loop_var: oracle_log
 
 # Step 3: Display the collected logs
 - name: Display the collected logs
