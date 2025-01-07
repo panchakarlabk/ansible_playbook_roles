@@ -5,7 +5,7 @@
   vars_files: 
     - host_config.yml    # Load the configuration file
   roles:
-    # - restore_status
+    - restore_status
     # - logicmonitor_status
     - restore_status_orecle
 
