@@ -7,7 +7,7 @@
     logs_status: >-
       {{
         logs_status | combine({
-          (oracle_log.item | default('unknown_path') | string | basename): (
+          (oracle_log.item | default('unknown_path') | basename): (
             'no logs found'
             if not oracle_log.stdout_lines | default([]) else
             ('not ok' if (
@@ -20,16 +20,34 @@
       }}
   delegate_to: localhost
 
+- name: Identify errors in Log
+  ansible.builtin.set_fact:
+    logs_status: >-
+      {{
+        logs_status | union([
+          'no logs found'
+          if not oracle_log.stdout_lines | default([]) else
+          ('not ok' if (
+            'error' in (oracle_log.stdout_lines | join(' ') | lower) or
+            'fail' in (oracle_log.stdout_lines | join(' ') | lower) or
+            'exception' in (oracle_log.stdout_lines | join(' ') | lower)
+          ) else 'ok')
+        ])
+      }}
+  delegate_to: localhost
+
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
-    echo -e "Log Path: {{ oracle_log.item | default([]) | string }}" >> /tmp/all_logs_collected.txt
+    echo -e "Log Path: {{ oracle_log.item | default('') }}" >> /tmp/all_logs_collected.txt
     echo -e "Status: {{ logs_status }}" >> /tmp/all_logs_collected.txt
-    echo -e "Host: {{ inventory_hostname | default([]) }}" >> /tmp/all_logs_collected.txt
-    if [ "{{ oracle_log.stdout_lines | default([]) | join('') }}" = "" ]; then
+    echo -e "Host: {{ inventory_hostname | default('') }}" >> /tmp/all_logs_collected.txt
+    
+    if [ -z "{{ oracle_log.stdout_lines | default([]) | join('') }}" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
         echo -e "{{ oracle_log.stdout_lines | default([]) | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
+    
     echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   when: 
     - logs_status is defined
