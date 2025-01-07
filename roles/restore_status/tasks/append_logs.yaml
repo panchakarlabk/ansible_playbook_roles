@@ -20,19 +20,19 @@
       }}
   delegate_to: localhost
 
-- name: Append logs to {{ OutputFile }}
+- name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
-    echo -e "Log Path: {{ oracle_log.item | default('') }}" >> "{{ OutputFile }}"
-    echo -e "Status: {{ logs_status }}" >> "{{ OutputFile }}"
-    echo -e "Host: {{ inventory_hostname | default('') }}" >> "{{ OutputFile }}"
+    echo -e "Log Path: {{ oracle_log.item | default('') }}" >> /tmp/all_logs_collected.txt
+    echo -e "Status: {{ logs_status }}" >> /tmp/all_logs_collected.txt
+    echo -e "Host: {{ inventory_hostname | default('') }}" >> /tmp/all_logs_collected.txt
     
     if [ -z "{{ oracle_log.stdout_lines | default([]) | join('') }}" ]; then
-        echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> "{{ OutputFile }}"
+        echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
-        echo -e "{{ oracle_log.stdout_lines | default([]) | join('\n') }}" >> "{{ OutputFile }}"
+        echo -e "{{ oracle_log.stdout_lines | default([]) | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     
-    echo -e "End of logs from {{ inventory_hostname }}\n" >> "{{ OutputFile }}"
+    echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   when: 
     - logs_status is defined
   delegate_to: localhost
