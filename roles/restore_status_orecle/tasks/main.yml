@@ -52,11 +52,11 @@
       {% else %}
       ok
       {% endif %}
-  ignore_errors: yes  # Continue even if there are issues
   loop: "{{ all_logs.results }}"
   loop_control:
     label: "{{ item.item }}"
   delegate_to: localhost
+  when: item.stdout_lines is defined
 
 - name: Display logs_status Variable
   debug:
@@ -81,9 +81,9 @@
       {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
     log_status: >-
       {{ all_logs.results 
-         | selectattr('item.item', 'equalto', item) 
-         | map(attribute='ansible_facts.logs_status') 
-         | first | default('Unknown') }}
+        | selectattr('item.item', 'equalto', item) 
+        | map(attribute='ansible_facts.logs_status') 
+        | first | default('Unknown') }}
   when: 
     - logs_status is defined
   delegate_to: localhost
