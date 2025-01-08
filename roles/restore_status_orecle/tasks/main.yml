@@ -37,22 +37,22 @@
   ansible.builtin.set_fact:
     logs_status: {}
 
-- name: Identify errors in logs and update logs_status
+# Step 3: Check for errors in logs
+- name: Identify errors in logs
   ansible.builtin.set_fact:
     logs_status: >-
-      {{
-        logs_status | combine({
-          (item.cmd | default('unknown_path') | basename): (
-            'no logs found'
-            if not item.stdout_lines | default([]) else
-            ('not ok' if (
-              'error' in (item.stdout_lines | join(' ') | lower) or
-              'fail' in (item.stdout_lines | join(' ') | lower) or
-              'exception' in (item.stdout_lines | join(' ') | lower)
-            ) else 'ok')
-          )
-        })
-      }}
+      {% if not all_logs.stdout_lines %}
+      no logs found
+      {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  ignore_errors: yes  # Continue even if there are issues
   with_items: "{{ all_logs.results }}"
   delegate_to: localhost
 
