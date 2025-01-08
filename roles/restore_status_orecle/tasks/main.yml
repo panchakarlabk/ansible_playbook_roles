@@ -52,11 +52,9 @@
       {% else %}
       ok
       {% endif %}
-  loop: "{{ all_logs.results }}"
-  loop_control:
-    label: "{{ item.item }}"
+  ignore_errors: yes  # Continue even if there are issues
+  with_items: "{{ all_logs.results }}"
   delegate_to: localhost
-  when: item.stdout_lines is defined
 
 - name: Display logs_status Variable
   debug:
@@ -66,7 +64,7 @@
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
-    echo -e "Status: {{ log_status | default('Unknown') }}" >> /tmp/all_logs_collected.txt
+    echo -e "Status: {{ status | default('Unknown') }}" >> /tmp/all_logs_collected.txt
     if [ "{{ log_content.stdout_lines | default([]) | join('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
@@ -79,7 +77,7 @@
     log_file: "{{ item }}"
     log_content: >-
       {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
-    log_status: >-
+    status: >-
       {{ all_logs.results 
         | selectattr('item.item', 'equalto', item) 
         | map(attribute='ansible_facts.logs_status') 
