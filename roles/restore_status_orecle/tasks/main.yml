@@ -32,13 +32,11 @@
   register: all_logs
   with_items: "{{ log_file_status.results }}"
   changed_when: false
-
-- name: Initialize logs_status dictionary
-  ansible.builtin.set_fact:
-    logs_status: {}
+  when: 
+    - dr_type == 'oracle'
 
 # Step 3: Check for errors in logs
-- name: Identify errors in logs
+- name: Identify errors in logs oracle
   ansible.builtin.set_fact:
     logs_status: >-
       {% if not all_logs.stdout_lines %}
@@ -52,9 +50,10 @@
       {% else %}
       ok
       {% endif %}
-  ignore_errors: yes  # Continue even if there are issues
   with_items: "{{ all_logs.results }}"
   delegate_to: localhost
+  when: 
+    - dr_type == 'oracle'
 
 - name: Display logs_status Variable
   debug:
