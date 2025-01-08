@@ -39,7 +39,9 @@
 - name: Display the constructed tail command
   debug:
     msg: "Constructed tail command: {{ tail_cmd }}"
-  when: host_log_path is defined
+  when: 
+    - host_log_path is defined
+    - dr_type == "mysql"
   delegate_to: localhost
 
 # Step 1: Collect logs and append them to a single file
