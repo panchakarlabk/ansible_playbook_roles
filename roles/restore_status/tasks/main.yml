@@ -51,6 +51,7 @@
   register: all_logs
   when: 
     - host_log_path is defined
+    - dr_type == "mysql"
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
