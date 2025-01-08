@@ -61,7 +61,7 @@
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
     echo -e "Log File: {{ log_file }}" >> /tmp/all_logs_collected.txt
-    echo -e "Status: {{ logs_status[log_file] | default('Unknown') }}" >> /tmp/all_logs_collected.txt
+    echo -e "Status: {{ logs_status | default('Unknown') }}" >> /tmp/all_logs_collected.txt
     if [ "{{ log_content.stdout | default('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
