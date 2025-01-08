@@ -37,7 +37,7 @@
 
 - name: Identify errors in logs oracle
   ansible.builtin.set_fact:
-    logs_status: "{{ logs_status | default({}) | combine({ item.item: log_status }) }}"
+    logs_status: "{{ logs_status | default({}) | combine({ (item.item | string): log_status }) }}"
   vars:
     log_status: >-
       {% if not item.stdout %}
