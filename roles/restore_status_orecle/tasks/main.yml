@@ -35,10 +35,9 @@
   when: 
     - dr_type == 'oracle'
 
-# Step 1: Identify errors in logs
 - name: Identify errors in logs oracle
   ansible.builtin.set_fact:
-    logs_status: "{{ logs_status | default({}) | combine({ item.item: log_status }) }}"
+    logs_status: "{{ logs_status | default({}) | combine({ (item.item | string): log_status }) }}"
   vars:
     log_status: >-
       {% if not item.stdout %}
@@ -56,6 +55,7 @@
   delegate_to: localhost
   when: 
     - dr_type == 'oracle'
+
 
 # Step 2: Append logs to a file
 - name: Append logs to /tmp/all_logs_collected.txt
