@@ -56,9 +56,9 @@
 # Step 3: Check for errors in logs
 - name: Identify errors in logs oracle
   ansible.builtin.set_fact:
-    logs_status: "{{ logs_status + [{ 'file': item.item, 'status': log_status }] }}"
+    logs_status: "{{ log_status_test + [{ 'file': item.item, 'status': log_status }] }}"
   vars:
-    log_status: >-
+    log_status_test: >-
       {% if not item.stdout_lines %}
       no logs found
       {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
