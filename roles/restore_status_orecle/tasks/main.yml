@@ -39,46 +39,46 @@
 #   debug:
 #     var: all_logs.results
 
-# - name: Append Logs To The File
-#   include_tasks: test.yaml
-#   when: 
-#     - dr_type == 'oracle'
-#   loop: "{{ all_logs.results }}"
-#   loop_control:
-#     loop_var: oracle_log
-
-- name: Initialize logs_status
-  ansible.builtin.set_fact:
-    logs_status: []
-  delegate_to: localhost
-  run_once: true
-
-# Step 3: Check for errors in logs
-- name: Identify errors in logs oracle
-  ansible.builtin.set_fact:
-    logs_status: "{{ log_status_test + [{ 'file': item.item, 'status': log_status }] }}"
-  vars:
-    log_status_test: >-
-      {% if not item.stdout_lines %}
-      no logs found
-      {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% else %}
-      ok
-      {% endif %}
-  with_items: "{{ all_logs.results }}"
-  delegate_to: localhost
-  when:
+- name: Append Logs To The File
+  include_tasks: test.yaml
+  when: 
     - dr_type == 'oracle'
+  loop: "{{ all_logs.results }}"
+  loop_control:
+    loop_var: oracle_log
 
-- name: Display logs_status Variable
-  debug:
-    var: logs_status
-  delegate_to: localhost
+# - name: Initialize logs_status
+#   ansible.builtin.set_fact:
+#     logs_status: []
+#   delegate_to: localhost
+#   run_once: true
+
+# # Step 3: Check for errors in logs
+# - name: Identify errors in logs oracle
+#   ansible.builtin.set_fact:
+#     logs_status: "{{ log_status_test + [{ 'file': item.item, 'status': log_status }] }}"
+#   vars:
+#     log_status_test: >-
+#       {% if not item.stdout_lines %}
+#       no logs found
+#       {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
+#       not ok
+#       {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
+#       not ok
+#       {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
+#       not ok
+#       {% else %}
+#       ok
+#       {% endif %}
+#   with_items: "{{ all_logs.results }}"
+#   delegate_to: localhost
+#   when:
+#     - dr_type == 'oracle'
+
+# - name: Display logs_status Variable
+#   debug:
+#     var: logs_status
+#   delegate_to: localhost
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
