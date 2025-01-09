@@ -64,7 +64,7 @@
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
-    echo -e "**Status** {{ logs_status }} " >> /tmp/all_logs_collected.txt
+    echo -e "**Status** {{ item_logs_status }} " >> /tmp/all_logs_collected.txt
     if [ "{{ log_content.stdout_lines | default([]) | join('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
@@ -77,6 +77,8 @@
     log_file: "{{ item }}"
     log_content: >-
       {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
+    item_logs_status: >-
+      {{ logs_status[item] | default('unknown status') }}
   delegate_to: localhost
 
 # Step 3: Display the collected logs
@@ -88,7 +90,7 @@
 
 - name: Display logs_status Variable
   debug:
-    var: consolidated_logs
+    var: consolidated_logs.stdout_lines
   delegate_to: localhost
 
 - name: Intialize restore_logs
