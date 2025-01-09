@@ -53,6 +53,8 @@
   ignore_errors: yes 
   with_items: "{{ log_file_status.results }}"
   delegate_to: localhost
+  when: 
+    - dr_type == 'oracle'
 
 # Step 2: Append logs to a file
 - name: Append logs to /tmp/all_logs_collected.txt
