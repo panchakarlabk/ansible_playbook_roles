@@ -25,6 +25,7 @@
   loop_control:
     label: "{{ item }}"
   when: log_files_to_collect | length > 0  # Only run if log_files_to_collect is not empty
+  
 - name: Read and display content of each log file
   ansible.builtin.shell: |
     grep -E 'Import Release|Job "SYS"' {{ host_log_path }}/{{ item.item }} | tail -n 6
