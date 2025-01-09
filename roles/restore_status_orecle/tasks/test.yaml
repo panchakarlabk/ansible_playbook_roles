@@ -19,7 +19,7 @@
     if [ "{{ oracle_log.stdout_lines | default([]) | join('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
-        echo -e "Content of : {{ oracle_log.item | default('') }}" >> /tmp/all_logs_collected.txt
+        echo -e "Content of : {{ oracle_log.item.stat.path | default('') }}" >> /tmp/all_logs_collected.txt
         echo -e "{{ oracle_log.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of Content of {{ oracle_log }}\n" >> /tmp/all_logs_collected.txt
