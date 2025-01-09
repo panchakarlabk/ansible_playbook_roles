@@ -58,12 +58,13 @@
 
 - name: Display logs_status Variable
   debug:
-    var: status
+    var: 
   delegate_to: localhost
   with_items: "{{ status.results }}"
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
+    echo -e "**Status** {{ logs_status }} " >> /tmp/all_logs_collected.txt
     if [ "{{ log_content.stdout_lines | default([]) | join('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
