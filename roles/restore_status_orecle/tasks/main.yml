@@ -36,13 +36,12 @@
     - dr_type == 'oracle'
 
 - name: Append Logs To The File
-  import_tasks: test.yaml
+  include_tasks: test.yaml
   when: 
     - dr_type == 'oracle'
   loop: "{{ all_logs.results }}"
   loop_control:
     loop_var: oracle_log
-  delegate_to: localhost
 
 
 # Step 3: Check for errors in logs

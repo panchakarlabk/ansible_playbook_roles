@@ -26,3 +26,4 @@
   vars:
     log_content: >-
       {{ oracle_log | selectattr('oracle_log.item', 'equalto', item) | first | default({}) }}
+  delegate_to: localhost
