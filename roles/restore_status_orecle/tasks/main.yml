@@ -39,7 +39,7 @@
 - name: Identify errors in logs oracle
   ansible.builtin.set_fact:
     logs_status: >-
-      {% if not all_logs.stdout_lines %}
+      {% if not item.stdout_lines %}
       no logs found
       {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
       not ok
