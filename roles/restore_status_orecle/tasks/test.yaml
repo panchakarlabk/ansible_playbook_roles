@@ -25,5 +25,5 @@
     echo -e "End of Content of {{ oracle_log }}\n" >> /tmp/all_logs_collected.txt
   vars:
     log_content: >-
-      {{ oracle_log | selectattr('item.item', 'equalto', item) | first | default({}) }}
+      {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
   delegate_to: localhost
