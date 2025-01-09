@@ -61,11 +61,11 @@
   ansible.builtin.shell: |
     echo -e "Log File: {{ log_file }}" >> /tmp/all_logs_collected.txt
     echo -e "Status: ok " >> /tmp/all_logs_collected.txt
-    if [ "{{ log_content.stdout | default('') }}" = "" ]; then
+    if [ "{{ log_content.stdout_lines | default('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
         echo -e "Content of {{ log_file }}:" >> /tmp/all_logs_collected.txt
-        echo -e "{{ log_content.stdout }}" >> /tmp/all_logs_collected.txt
+        echo -e "{{ log_content.stdout_lines }}" >> /tmp/all_logs_collected.txt
     fi
     echo -e "End of Content of {{ log_file }}\n" >> /tmp/all_logs_collected.txt
   loop: "{{ log_files_to_collect }}"
