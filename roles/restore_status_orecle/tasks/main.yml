@@ -77,7 +77,7 @@
 
 - name: Display logs_status Variable
   debug:
-    var: logs_status
+    var: logs_status.0.path
   delegate_to: localhost
 
 - name: Append logs to /tmp/all_logs_collected.txt
