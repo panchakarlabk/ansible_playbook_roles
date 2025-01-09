@@ -35,58 +35,63 @@
   when: 
     - dr_type == 'oracle'
 
-- name: See All LOGS
-  debug:
-    var: all_logs.results
+# - name: See All LOGS
+#   debug:
+#     var: all_logs.results
 
-- name: Append Logs To The File
-  include_tasks: test.yaml
-  when: 
-    - dr_type == 'oracle'
-  loop: "{{ all_logs.results }}"
-  loop_control:
-    loop_var: oracle_log
-
-
-# Step 3: Check for errors in logs
-# - name: Identify errors in logs oracle
-#   ansible.builtin.set_fact:
-#     logs_status: >-
-#       {% if not item.stdout_lines %}
-#       no logs found
-#       {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
-#       not ok
-#       {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
-#       not ok
-#       {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
-#       not ok
-#       {% else %}
-#       ok
-#       {% endif %}
-#   with_items: "{{ all_logs.results }}"
-#   register: status
-#   delegate_to: localhost
+# - name: Append Logs To The File
+#   include_tasks: test.yaml
 #   when: 
 #     - dr_type == 'oracle'
+#   loop: "{{ all_logs.results }}"
+#   loop_control:
+#     loop_var: oracle_log
 
-# - name: Append logs to /tmp/all_logs_collected.txt
-#   ansible.builtin.shell: |
-#     echo -e "**Status** {{ item_logs_status }} " >> /tmp/all_logs_collected.txt
-#     if [ "{{ log_content.stdout_lines | default([]) | join('') }}" = "" ]; then
-#         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
-#     else
-#         echo -e "Content of {{ log_file }}:" >> /tmp/all_logs_collected.txt
-#         echo -e "{{ log_content.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
-#     fi
-#     echo -e "End of Content of {{ log_file }}\n" >> /tmp/all_logs_collected.txt
-#   loop: "{{ log_files_to_collect }}"
-#   vars:
-#     log_file: "{{ item }}"
-#     log_content: >-
-#       {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
-#     item_logs_status: >-
-#       {{ logs_status[item] | default('unknown status') }}
-#   delegate_to: localhost
+- name: Intialize restore_logs
+  ansible.builtin.set_fact:
+    logs_status: []
+  delegate_to: localhost
+  run_once: true
+
+Step 3: Check for errors in logs
+- name: Identify errors in logs oracle
+  ansible.builtin.set_fact:
+    logs_status: >-
+      {% if not item.stdout_lines %}
+      no logs found
+      {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  with_items: "{{ all_logs.results }}"
+  register: status
+  delegate_to: localhost
+  when: 
+    - dr_type == 'oracle'
+
+- name: Append logs to /tmp/all_logs_collected.txt
+  ansible.builtin.shell: |
+    echo -e "**Status** {{ item_logs_status }} " >> /tmp/all_logs_collected.txt
+    if [ "{{ log_content.stdout_lines | default([]) | join('') }}" = "" ]; then
+        echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
+    else
+        echo -e "Content of {{ log_file }}:" >> /tmp/all_logs_collected.txt
+        echo -e "{{ log_content.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+    fi
+    echo -e "End of Content of {{ log_file }}\n" >> /tmp/all_logs_collected.txt
+  loop: "{{ log_files_to_collect }}"
+  vars:
+    log_file: "{{ item }}"
+    log_content: >-
+      {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
+    item_logs_status: >-
+      {{ logs_status.results | selectattr('item.item', 'equalto', item) | first | default({})}}
+  delegate_to: localhost
 
 # Step 3: Display the collected logs
 - name: Display the collected logs
