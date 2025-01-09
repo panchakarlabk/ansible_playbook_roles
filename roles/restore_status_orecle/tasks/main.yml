@@ -42,6 +42,7 @@
   loop: "{{ all_logs.results }}"
   loop_control:
     loop_var: oracle_log
+  delegate_to: localhost
 
 
 # Step 3: Check for errors in logs
