@@ -56,9 +56,15 @@
   when: 
     - dr_type == 'oracle'
 
-- name: Display logs_status Variable
+- name: Display logs_status
   debug:
     var: logs_status
+  delegate_to: localhost
+  with_items: "{{ status.results }}"
+
+- name: Display log_files_to_collect
+  debug:
+    var: log_files_to_collect
   delegate_to: localhost
   with_items: "{{ status.results }}"
 
@@ -80,6 +86,12 @@
     item_logs_status: >-
       {{ logs_status[item] | default('unknown status') }}
   delegate_to: localhost
+
+- name: Display item_logs_status
+  debug:
+    var: item_logs_status
+  delegate_to: localhost
+  with_items: "{{ status.results }}"
 
 # Step 3: Display the collected logs
 - name: Display the collected logs
