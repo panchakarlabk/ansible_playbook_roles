@@ -36,7 +36,7 @@
     - dr_type == 'oracle'
 
 - name: Append Logs To The File
-  include_tasks: test.yaml
+  import_tasks: test.yaml
   when: 
     - dr_type == 'oracle'
   loop: "{{ all_logs.results }}"
