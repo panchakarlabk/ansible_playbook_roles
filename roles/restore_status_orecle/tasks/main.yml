@@ -35,9 +35,9 @@
   when: 
     - dr_type == 'oracle'
 
-# - name: See All LOGS
-#   debug:
-#     var: all_logs.results
+- name: See All LOGS
+  debug:
+    var: all_logs.results
 
 - name: Append Logs To The File
   include_tasks: test.yaml
