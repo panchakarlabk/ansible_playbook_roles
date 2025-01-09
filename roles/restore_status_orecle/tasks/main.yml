@@ -35,31 +35,31 @@
   when: 
     - dr_type == 'oracle'
 
-# # Step 3: Check for errors in logs
-# - name: Identify errors in logs oracle
-#   ansible.builtin.set_fact:
-#     logs_status: >-
-#       {% if not all_logs.stdout_lines %}
-#       no logs found
-#       {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
-#       not ok
-#       {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
-#       not ok
-#       {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
-#       not ok
-#       {% else %}
-#       ok
-#       {% endif %}
-#   with_items: "{{ all_logs.results }}"
-#   delegate_to: localhost
-#   when: 
-#     - dr_type == 'oracle'
+# Step 3: Check for errors in logs
+- name: Identify errors in logs oracle
+  ansible.builtin.set_fact:
+    logs_status: >-
+      {% if not all_logs.stdout_lines %}
+      no logs found
+      {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  with_items: "{{ all_logs.results }}"
+  delegate_to: localhost
+  when: 
+    - dr_type == 'oracle'
 
-# - name: Display logs_status Variable
-#   debug:
-#     var: logs_status
-#   delegate_to: localhost
-#   with_items: "{{ all_logs.results }}"
+- name: Display logs_status Variable
+  debug:
+    var: logs_status
+  delegate_to: localhost
+  with_items: "{{ all_logs.results }}"
 
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
