@@ -52,8 +52,6 @@
       {% endif %}
   ignore_errors: yes 
   with_items: "{{ log_file_status.results }}"
- # Continue even if there are issues
-  when: all_logs.stdout_lines is defined
   delegate_to: localhost
 
 # Step 2: Append logs to a file
