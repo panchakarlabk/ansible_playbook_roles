@@ -104,7 +104,6 @@
     fi
     echo -e "End of logs from {{ current_host_name }}\n" >> /tmp/all_logs_collected.txt
   when: 
-    - logs_status is defined
     - all_logs.stdout_lines is defined
   delegate_to: localhost
 
