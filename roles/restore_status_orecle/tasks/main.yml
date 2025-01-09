@@ -86,6 +86,11 @@
   register: consolidated_logs
   run_once: true
 
+- name: Display logs_status Variable
+  debug:
+    var: consolidated_logs
+  delegate_to: localhost
+
 - name: Intialize restore_logs
   ansible.builtin.set_fact:
     restore_logs: []
