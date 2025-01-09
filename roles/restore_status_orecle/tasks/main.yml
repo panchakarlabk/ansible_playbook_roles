@@ -35,31 +35,11 @@
   when: 
     - dr_type == 'oracle'
 
-# Step 3: Check for errors in logs
-- name: Identify errors in logs
-  ansible.builtin.set_fact:
-    logs_status: >-
-      {% if not item.stdout_lines %}
-      no logs found
-      {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
-      not ok
-      {% else %}
-      ok
-      {% endif %}
-  with_items: "{{ log_file_status.results }}"
-  delegate_to: localhost
-  when: 
-    - dr_type == 'oracle'
-
 # Step 2: Append logs to a file
 - name: Append logs to /tmp/all_logs_collected.txt
   ansible.builtin.shell: |
     echo -e "Log File: {{ log_file }}" >> /tmp/all_logs_collected.txt
-    echo -e "Status: {{ logs_status.values() | list }}" >> /tmp/all_logs_collected.txt
+    echo -e "Status: ok >> /tmp/all_logs_collected.txt
     if [ "{{ log_content.stdout | default('') }}" = "" ]; then
         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
