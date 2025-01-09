@@ -50,7 +50,6 @@
       {% else %}
       ok
       {% endif %}
-  ignore_errors: yes 
   with_items: "{{ log_file_status.results }}"
   delegate_to: localhost
   when: 
