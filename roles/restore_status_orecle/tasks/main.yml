@@ -75,8 +75,6 @@
     log_file: "{{ item }}"
     log_content: >-
       {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
-  when: 
-    - logs_status is defined
   delegate_to: localhost
 
 # Step 3: Display the collected logs
