@@ -53,7 +53,7 @@
   delegate_to: localhost
   run_once: true
 
-Step 3: Check for errors in logs
+#Step 3: Check for errors in logs
 - name: Identify errors in logs oracle
   ansible.builtin.set_fact:
     logs_status: >-
