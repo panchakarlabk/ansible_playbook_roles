@@ -1,13 +1,13 @@
 - name: Identify errors in logs oracle
   ansible.builtin.set_fact:
     logs_status: >-
-      {% if not item.stdout_lines %}
+      {% if not oracle_log.stdout_lines %}
       no logs found
-      {% elif 'error' in (item.stdout_lines | join(' ') | lower) %}
+      {% elif 'error' in (oracle_log.stdout_lines | join(' ') | lower) %}
       not ok
-      {% elif 'fail' in (item.stdout_lines | join(' ') | lower) %}
+      {% elif 'fail' in (oracle_log.stdout_lines | join(' ') | lower) %}
       not ok
-      {% elif 'exception' in (item.stdout_lines | join(' ') | lower) %}
+      {% elif 'exception' in (oracle_log.stdout_lines | join(' ') | lower) %}
       not ok
       {% else %}
       ok
@@ -26,5 +26,5 @@
     echo -e "End of Content of {{ oracle_log }}\n" >> /tmp/all_logs_collected.txt
   vars:
     log_content: >-
-      {{ oracle_log | selectattr('item.item', 'equalto', item) | first | default({}) }}
+      {{ oracle_log | selectattr('oracle_log.item', 'equalto', item) | first | default({}) }}
   delegate_to: localhost
