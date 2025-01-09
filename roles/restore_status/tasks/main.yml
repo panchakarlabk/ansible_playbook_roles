@@ -113,6 +113,8 @@
   delegate_to: localhost
   register: consolidated_logs
   run_once: true
+  when: 
+    - all_logs.stdout_lines is defined
 
 - name: Intialize restore_logs
   ansible.builtin.set_fact:
