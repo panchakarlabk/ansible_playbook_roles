@@ -1,0 +1,18 @@
+# - name: Append logs to /tmp/all_logs_collected.txt
+#   ansible.builtin.shell: |
+#     echo -e "**Status** {{ item_log_status.status }}" >> /tmp/all_logs_collected.txt
+#     if [ "{{ log_content.stdout_lines | default([]) | join('') }}" = "" ]; then
+#         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
+#     else
+#         echo -e "Content of {{ log_file }}:" >> /tmp/all_logs_collected.txt
+#         echo -e "{{ log_content.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
+#     fi
+#     echo -e "End of Content of {{ log_file }}\n" >> /tmp/all_logs_collected.txt
+#   loop: "{{ log_files_to_collect }}"
+#   vars:
+#     log_file: "{{ item }}"
+#     log_content: >-
+#       {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
+#     item_log_status: >-
+#       {{ logs_status | selectattr('file', 'equalto', item) | first | default({}) }}
+#   delegate_to: localhost

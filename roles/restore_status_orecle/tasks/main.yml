@@ -76,56 +76,38 @@
 #     var: logs_status
 #   delegate_to: localhost
 
-# - name: Append logs to /tmp/all_logs_collected.txt
-#   ansible.builtin.shell: |
-#     echo -e "**Status** {{ item_log_status.status }}" >> /tmp/all_logs_collected.txt
-#     if [ "{{ log_content.stdout_lines | default([]) | join('') }}" = "" ]; then
-#         echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
-#     else
-#         echo -e "Content of {{ log_file }}:" >> /tmp/all_logs_collected.txt
-#         echo -e "{{ log_content.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
-#     fi
-#     echo -e "End of Content of {{ log_file }}\n" >> /tmp/all_logs_collected.txt
-#   loop: "{{ log_files_to_collect }}"
-#   vars:
-#     log_file: "{{ item }}"
-#     log_content: >-
-#       {{ all_logs.results | selectattr('item.item', 'equalto', item) | first | default({}) }}
-#     item_log_status: >-
-#       {{ logs_status | selectattr('file', 'equalto', item) | first | default({}) }}
+
+# # Step 3: Display the collected logs
+# - name: Display the collected logs
+#   ansible.builtin.command: cat /tmp/all_logs_collected.txt
+#   delegate_to: localhost
+#   register: consolidated_logs
+#   run_once: true
+
+# - name: Display logs_status Variable
+#   debug:
+#     var: consolidated_logs.stdout_lines
 #   delegate_to: localhost
 
-# Step 3: Display the collected logs
-- name: Display the collected logs
-  ansible.builtin.command: cat /tmp/all_logs_collected.txt
-  delegate_to: localhost
-  register: consolidated_logs
-  run_once: true
+# - name: Intialize restore_logs
+#   ansible.builtin.set_fact:
+#     restore_logs: []
+#   delegate_to: localhost
+#   run_once: true
 
-- name: Display logs_status Variable
-  debug:
-    var: consolidated_logs.stdout_lines
-  delegate_to: localhost
+# # Step 4: Collect the status and logs for each host in a list
+# - name: Create a list of logs and statuses
+#   ansible.builtin.set_fact:
+#     restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
+#   delegate_to: localhost
+#   run_once: true
 
-- name: Intialize restore_logs
-  ansible.builtin.set_fact:
-    restore_logs: []
-  delegate_to: localhost
-  run_once: true
+# - name: Set restore_status_result 
+#   ansible.builtin.set_fact:
+#     restore_status_result:
+#       success: true
+#       message: "Restore status completed successfully."
 
-# Step 4: Collect the status and logs for each host in a list
-- name: Create a list of logs and statuses
-  ansible.builtin.set_fact:
-    restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
-  delegate_to: localhost
-  run_once: true
-
-- name: Set restore_status_result 
-  ansible.builtin.set_fact:
-    restore_status_result:
-      success: true
-      message: "Restore status completed successfully."
-
-- name: restore_status_result Variable
-  debug:
-    var: restore_status_result
+# - name: restore_status_result Variable
+#   debug:
+#     var: restore_status_result
