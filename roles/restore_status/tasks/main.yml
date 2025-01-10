@@ -24,7 +24,6 @@
   when: host_log_path is defined
   delegate_to: localhost
 
-
 - name: Initialize the tail command
   set_fact:
     tail_cmd: >-

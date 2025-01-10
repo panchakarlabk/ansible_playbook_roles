@@ -9,13 +9,13 @@
     # - logicmonitor_status
     - restore_status_orecle
 
-  # Conditional role inclusion
-  tasks:
-    - name: Include send_email_notification role if conditions are met
-      include_role:
-        name: send_email_notification
-      when: 
-        - restore_status_result is defined
-        - restore_status_result.success
+  # # Conditional role inclusion
+  # tasks:
+  #   - name: Include send_email_notification role if conditions are met
+  #     include_role:
+  #       name: send_email_notification
+  #     when: 
+  #       - restore_status_result is defined
+  #       - restore_status_result.success
         # - logicmonitor_status_result is defined
         # - logicmonitor_status_result.success
