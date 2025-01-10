@@ -8,21 +8,18 @@
 - name: Set log path for each host dynamically
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
-    tail_log: "{{ item.0.tail | default(omit) }}"
-    dr_type: "{{ item.0.db_type | default(omit) }}"
+    tail_log: "{{ item.0.tail | default(omit) }}" 
   with_subelements:
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
-  when: 
-    - inventory_hostname is match(item.1 | replace('*', '.*'))
-    - item.0.db_type is defined and item.0.db_type == 'mysql'
+  when: inventory_hostname is match(item.1 | replace('*', '.*'))
   delegate_to: localhost
 
 - name: Display the log path for each host
   debug:
-    msg: 
-      - "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
-      - "dr_type {{ dr_type }}"
+    msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
+  when: host_log_path is defined
+  delegate_to: localhost
 
 - name: Initialize the tail command
   set_fact:
@@ -32,18 +29,16 @@
       {% else %}
       tail {{ host_log_path }} | grep "$(date +%Y/%m/%d)"
       {% endif %}
-  when: 
-    - host_log_path is defined
-    - dr_type == "mysql"
+  when: host_log_path is defined
   delegate_to: localhost
 
 ###Working
+
+
 - name: Display the constructed tail command
   debug:
     msg: "Constructed tail command: {{ tail_cmd }}"
-  when: 
-    - host_log_path is defined
-    - dr_type == "mysql"
+  when: host_log_path is defined
   delegate_to: localhost
 
 # Step 1: Collect logs and append them to a single file
@@ -53,7 +48,10 @@
   register: all_logs
   when: 
     - host_log_path is defined
-    - dr_type == "mysql"
+
+- name: All Logs Variable
+  debug:
+    var: all_logs
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
@@ -70,44 +68,27 @@
       {% else %}
       ok
       {% endif %}
+  delegate_to: localhost
   ignore_errors: yes  # Continue even if there are issues
   when: all_logs.stdout_lines is defined
-  delegate_to: localhost
 
-- name: Initialize current_host_name with a fallback
-  set_fact:
-    current_host_name: "{{ inventory_hostname }}"  # Default value if it's not defined
-  when: current_host_name is not defined
-
-- name: Replace current_host_name with friendlyname if inventory_hostname matches
-  set_fact:
-    current_host_name: "{{ item.friendlyname if item.friendlyname is defined else inventory_hostname }}"
-  when: 
-    - inventory_hostname is match(item.hostname | replace('*', '.*'))
-    - item.friendlyname is defined
-  loop: "{{ dba_host_list }}"
-  loop_control:
-    label: "{{ item.hostname }}"
-  delegate_to: localhost
-
-- name: current_host_name 
+- name: logs status Variable
   debug:
-    var: current_host_name
+    var: logs_status
 
 - name: Append logs with CET time
   ansible.builtin.shell: |
-    echo -e "DR PE {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
-    echo -e "host {{ current_host_name }}" >> /tmp/all_logs_collected.txt
+    echo -e "**DR PE** {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
     echo -e "**Status** {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
     if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
-      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
+      echo -e "No logs collected as of {{ ansible_date_time.iso8601 }} CET" >> /tmp/all_logs_collected.txt
     else
       echo -e "{{ all_logs.stdout_lines | join('\n') }}" >> /tmp/all_logs_collected.txt
     fi
-    echo -e "End of logs from {{ current_host_name }}\n" >> /tmp/all_logs_collected.txt
-  when: 
-    - all_logs.stdout_lines is defined
+    echo -e "End of logs from {{ inventory_hostname }}\n" >> /tmp/all_logs_collected.txt
   delegate_to: localhost
+  ignore_errors: yes  # Continue even if there are issues
+  when: logs_status is defined
 
 # Step 5: Display the collected logs
 - name: Display the collected logs
@@ -115,23 +96,30 @@
   delegate_to: localhost
   register: consolidated_logs
   run_once: true
-  when: 
-    - all_logs.stdout_lines is defined
 
-- name: Intialize restore_logs
+- name: consolidated logs Variable
+  debug:
+    var: consolidated_logs
+
+- name: Initialize email_body variable
   ansible.builtin.set_fact:
-    restore_logs: []
+    email_body: []
   delegate_to: localhost
+  run_once: true
 
 # Step 4: Collect the status and logs for each host in a list
 - name: Create a list of logs and statuses
   ansible.builtin.set_fact:
     restore_logs: "{{ [{'host': inventory_hostname, 'logs_status': logs_status, 'logs': consolidated_logs.stdout_lines }] }}"
+  delegate_to: localhost
   when: 
     - logs_status is defined
     - consolidated_logs is defined
     - consolidated_logs.stdout_lines is defined
-  delegate_to: localhost
+
+- name: restore logs Variable
+  debug:
+    var: restore_logs
 
 - name: Set restore_status_result 
   ansible.builtin.set_fact:
