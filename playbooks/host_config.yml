@@ -25,7 +25,6 @@ dba_automation_prod:
         - logs2.txt
         - logs3.txt
     dr_type: oracle
-    tail: 25
     hosts:
       - 192.168.162.128
   process_003_orecle:
@@ -36,7 +35,6 @@ dba_automation_prod:
         - logs6.txt
         - logs7.txt
     dr_type: oracle
-    tail: 25
     hosts:
       - 192.168.162.136
 
@@ -51,8 +49,6 @@ dba_automation_dev:
       log_path: "/home/bharat/logs.log"
     hosts:
       - 192.168.162.135
-    tail: 25
-
 ignore_alerts_rules:
   - code: "rule_001"
     decription: "dummy stuff not DBA topic"
