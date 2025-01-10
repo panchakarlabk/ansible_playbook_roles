@@ -9,7 +9,7 @@
   set_fact:
     host_log_path: "{{ item.0.config.log_path }}"
     tail_log: "{{ item.0.tail | default(omit) }}"
-    dr_type: "{{ item.0.dr_type | default(omit) }}"
+    dr_type: "{{ item.0.db_type | default(omit) }}"
   with_subelements:
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
@@ -20,9 +20,9 @@
 
 - name: Display the log path for each host
   debug:
-    msg: "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
-  when: host_log_path is defined
-  delegate_to: localhost
+    msg: 
+      - "Log path for {{ inventory_hostname }} is {{ host_log_path }}"
+      - "dr_type {{ dr_type }}"
 
 - name: Initialize the tail command
   set_fact:
