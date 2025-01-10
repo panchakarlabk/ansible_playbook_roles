@@ -5,8 +5,8 @@
     mysql_hosts: >-
       {{
         dba_automation_prod | dict2items
-        | selectattr('value.db_type', 'equalto', 'mysql')
-        | selectattr('value.hosts', 'select', inventory_hostname)
+        | selectattr('value.db_type', 'equalto', 'mysql')  # Filter by db_type
+        | selectattr('value.hosts', 'search', inventory_hostname)  # Check if inventory_hostname is in hosts
         | map(attribute='value')
         | list
       }}
@@ -17,8 +17,8 @@
     oracle_hosts: >-
       {{
         dba_automation_prod | dict2items
-        | selectattr('value.db_type', 'equalto', 'oracle')
-        | selectattr('value.hosts', 'select', inventory_hostname)
+        | selectattr('value.db_type', 'equalto', 'oracle')  # Filter by db_type
+        | selectattr('value.hosts', 'search', inventory_hostname)  # Check if inventory_hostname is in hosts
         | map(attribute='value')
         | list
       }}
