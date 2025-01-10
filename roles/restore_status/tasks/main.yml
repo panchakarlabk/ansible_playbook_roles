@@ -13,9 +13,7 @@
   with_subelements:
     - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
     - hosts
-  when: 
-    - inventory_hostname is match(item.1 | replace('*', '.*'))
-    - item.0.db_type is defined and item.0.db_type == 'mysql'
+  when: "'mysql' in (host_config | filter_roles(inventory_hostname) | map(attribute='config.db_type') | list)"
   delegate_to: localhost
 
 - name: Display the log path for each host
