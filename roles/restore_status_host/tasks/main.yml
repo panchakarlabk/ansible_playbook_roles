@@ -1,16 +1,34 @@
 ---
+# Use the custom filter to filter MySQL hosts where inventory_hostname matches
 - name: Filter MySQL hosts where inventory_hostname matches
   set_fact:
-    mysql_hosts: "{{ hosts | host_filter([{'db_type': 'mysql', 'hostname': inventory_hostname}]) }}"
+    mysql_hosts: >-
+      {{
+        dba_automation_prod | dict2items
+        | selectattr('value.db_type', 'equalto', 'mysql')
+        | selectattr('value.hosts', 'select', inventory_hostname)
+        | map(attribute='value')
+        | list
+      }}
 
+# Use the custom filter to filter Oracle hosts where inventory_hostname matches
 - name: Filter Oracle hosts where inventory_hostname matches
   set_fact:
-    oracle_hosts: "{{ hosts | host_filter([{'db_type': 'oracle', 'hostname': inventory_hostname}]) }}"
+    oracle_hosts: >-
+      {{
+        dba_automation_prod | dict2items
+        | selectattr('value.db_type', 'equalto', 'oracle')
+        | selectattr('value.hosts', 'select', inventory_hostname)
+        | map(attribute='value')
+        | list
+      }}
 
+# Debug: Display filtered MySQL hosts
 - name: Display filtered MySQL hosts
   debug:
     msg: "{{ mysql_hosts }}"
 
+# Debug: Display filtered Oracle hosts
 - name: Display filtered Oracle hosts
   debug:
     msg: "{{ oracle_hosts }}"
