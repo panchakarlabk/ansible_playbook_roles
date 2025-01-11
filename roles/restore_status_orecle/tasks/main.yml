@@ -5,16 +5,18 @@
   register: datetime_output
   delegate_to: localhost
 
+- name: Filter hosts and set dynamic log path for each host
+  set_fact:
+    filtered_data: "{{ (dba_automation_prod | combine(dba_automation_dev)) | filter_hosts(inventory_hostname, 'mysql') }}"
+
 - name: Set log path for each host dynamically
   set_fact:
-    host_log_path: "{{ item.0.config.log_path | default(omit) }}"
-    tail_log: "{{ item.0.tail | default('Unknown') | default(omit) }}" 
-    dr_type: "{{ item.0.dr_type | default(omit) }}" 
-    log_files_to_collect: "{{ item.0.config.log_files_to_collect | default([]) }}"
-  with_subelements:
-    - "{{ lookup('vars', 'dba_automation_' + env) | dict2items | map(attribute='value') | list }}"
-    - hosts
-  when: inventory_hostname is match(item.1 | replace('*', '.*'))
+    host_log_path: "{{ item.config.log_path | default(omit) }}"
+    tail_log: "{{ item.tail | default('Unknown') | default(omit) }}" 
+    dr_type: "{{ item.db_type | default(omit) }}" 
+    log_files_to_collect: "{{ item.config.log_files_to_collect | default([]) }}"
+  loop: "{{ filtered_data }}"
+  when: item.get('hosts', []) | select('match', inventory_hostname) | list | length > 0
   delegate_to: localhost
 
 - name: Verify Oracle log files exist
