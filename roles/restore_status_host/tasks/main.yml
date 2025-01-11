@@ -9,10 +9,10 @@
 
 - name: Display filtered MySQL processes
   debug:
-    msg: "MySQL Process: {{ item.process_name }}, Config: {{ item.config }}, Hosts: {{ item.hosts }}"
+    msg: "MySQL Process: Config: {{ item.config }}, Hosts: {{ item.hosts }}"
   with_items: "{{ mysql_processes }}"
 
 - name: Display filtered Oracle processes
   debug:
-    msg: "Oracle Process: {{ item.process_name }}, Config: {{ item.config }}, Hosts: {{ item.hosts }}"
+    msg: "Oracle Process: Config: {{ item.config }}, Hosts: {{ item.hosts }}"
   with_items: "{{ oracle_processes }}"
