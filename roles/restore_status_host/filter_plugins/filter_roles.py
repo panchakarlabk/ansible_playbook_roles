@@ -27,7 +27,6 @@ class FilterModule(object):
                 if (inventory_hostname in process_data['hosts'] and 
                         process_data['db_type'] == db_type):
                     filtered_processes.append({
-                        "process_name": process_name,
                         "config": process_data['config'],
                         "db_type": process_data['db_type'],
                         "hosts": process_data['hosts']
