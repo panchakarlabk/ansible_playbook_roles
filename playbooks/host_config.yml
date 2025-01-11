@@ -1,5 +1,7 @@
 dba_host_list:
   - hostname: 192.168.162.128
+    friendlyname: "rokcy host"
+  - hostname: 192.168.162.136
     friendlyname: "rhel 9 host"
 
 dba_automation_prod:

@@ -3,67 +3,34 @@ from ansible.errors import AnsibleFilterError
 class FilterModule(object):
     def filters(self):
         return {
-            'host_filter': self.host_filter,
+            'filter_hosts': self.filter_hosts,
         }
 
-    def host_filter(self, hosts, conditions):
+    def filter_hosts(self, dba_automation, inventory_hostname, db_type):
         """
-        Filters a list of hosts based on multiple conditions.
-        Supports:
-        - Forward wildcards (e.g., "Database*")
-        - Backward wildcards (e.g., "*Database")
-        - Bidirectional wildcards (e.g., "*Database*")
-        - Exact matches
-        - Case-insensitive matching
-        - Multi-condition matching (e.g., hostname and db_type)
-
-        :param hosts: List of host dictionaries to filter.
-        :param conditions: List of dictionaries with key-value pairs to match.
-        :return: Filtered list of hosts.
+        Filters the dba_automation data to return processes where:
+        - inventory_hostname matches the 'hosts' list
+        - db_type matches the provided value
         """
-        if not isinstance(hosts, list):
-            raise AnsibleFilterError("The 'hosts' parameter must be a list of dictionaries.")
+        if not isinstance(dba_automation, dict):
+            raise AnsibleFilterError("Expected 'dba_automation' to be a dictionary.")
 
-        if not isinstance(conditions, list):
-            raise AnsibleFilterError("The 'conditions' parameter must be a list of dictionaries.")
+        if not inventory_hostname:
+            raise AnsibleFilterError("inventory_hostname cannot be empty.")
 
-        def matches_condition(host, condition):
-            for key, value in condition.items():
-                if key in host:
-                    host_value = str(host[key]).lower()
-                    condition_value = str(value).lower()
+        if not db_type:
+            raise AnsibleFilterError("db_type cannot be empty.")
 
-                    # Forward wildcard (e.g., "Database*")
-                    if condition_value.endswith('*') and not condition_value.startswith('*'):
-                        prefix = condition_value[:-1]
-                        if host_value.startswith(prefix):
-                            return True
+        filtered_processes = []
+        for process_name, process_data in dba_automation.items():
+            if 'hosts' in process_data and 'db_type' in process_data:
+                if (inventory_hostname in process_data['hosts'] and 
+                        process_data['db_type'] == db_type):
+                    filtered_processes.append({
+                        "process_name": process_name,
+                        "config": process_data['config'],
+                        "db_type": process_data['db_type'],
+                        "hosts": process_data['hosts']
+                    })
 
-                    # Backward wildcard (e.g., "*Database")
-                    if condition_value.startswith('*') and not condition_value.endswith('*'):
-                        suffix = condition_value[1:]
-                        if host_value.endswith(suffix):
-                            return True
-
-                    # Bidirectional wildcard (e.g., "*Database*")
-                    if condition_value.startswith('*') and condition_value.endswith('*'):
-                        substring = condition_value[1:-1]
-                        if substring in host_value:
-                            return True
-
-                    # Exact match
-                    if condition_value == host_value:
-                        return True
-
-                else:
-                    # If a required key is missing in the host, condition doesn't match
-                    return False
-
-            return False
-
-        # Filter hosts that match all conditions
-        return [
-            host for host in hosts
-            if all(matches_condition(host, condition) for condition in conditions)
-            and host.get("hostname") == conditions[0].get("hostname")
-        ]
+        return filtered_processes

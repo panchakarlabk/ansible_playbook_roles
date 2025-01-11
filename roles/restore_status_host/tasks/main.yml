@@ -1,34 +1,18 @@
 ---
-# Use the custom filter to filter MySQL hosts where inventory_hostname matches
 - name: Filter MySQL hosts where inventory_hostname matches
   set_fact:
-    mysql_hosts: >-
-      {{
-        dba_automation_prod | dict2items
-        | selectattr('value.db_type', 'equalto', 'mysql')  # Filter by db_type
-        | selectattr('value.hosts', 'search', inventory_hostname)  # Check if inventory_hostname is in hosts
-        | map(attribute='value')
-        | list
-      }}
+    mysql_processes: "{{ dba_automation_prod | filter_hosts(inventory_hostname, 'mysql') }}"
 
-# Use the custom filter to filter Oracle hosts where inventory_hostname matches
 - name: Filter Oracle hosts where inventory_hostname matches
   set_fact:
-    oracle_hosts: >-
-      {{
-        dba_automation_prod | dict2items
-        | selectattr('value.db_type', 'equalto', 'oracle')  # Filter by db_type
-        | selectattr('value.hosts', 'search', inventory_hostname)  # Check if inventory_hostname is in hosts
-        | map(attribute='value')
-        | list
-      }}
+    oracle_processes: "{{ dba_automation_prod | filter_hosts(inventory_hostname, 'oracle') }}"
 
-# Debug: Display filtered MySQL hosts
-- name: Display filtered MySQL hosts
+- name: Display filtered MySQL processes
   debug:
-    msg: "{{ mysql_hosts }}"
+    msg: "MySQL Process: {{ item.process_name }}, Config: {{ item.config }}, Hosts: {{ item.hosts }}"
+  with_items: "{{ mysql_processes }}"
 
-# Debug: Display filtered Oracle hosts
-- name: Display filtered Oracle hosts
+- name: Display filtered Oracle processes
   debug:
-    msg: "{{ oracle_hosts }}"
+    msg: "Oracle Process: {{ item.process_name }}, Config: {{ item.config }}, Hosts: {{ item.hosts }}"
+  with_items: "{{ oracle_processes }}"
