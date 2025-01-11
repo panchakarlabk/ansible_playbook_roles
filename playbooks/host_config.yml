@@ -26,7 +26,7 @@ dba_automation_prod:
         - logs1.txt
         - logs2.txt
         - logs3.txt
-    dd_type: oracle
+    db_type: oracle
     hosts:
       - 192.168.162.129
   process_003_orecle:
@@ -36,7 +36,7 @@ dba_automation_prod:
         - logs5.txt
         - logs6.txt
         - logs7.txt
-    dr_type: oracle
+    db_type: oracle
     hosts:
       - 192.168.162.128
 
