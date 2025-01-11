@@ -51,14 +51,25 @@ dba_automation_dev:
       log_path: "/home/bharat/logs.log"
     hosts:
       - 192.168.162.135
-ignore_alerts_rules:
-  - code: "rule_001"
-    decription: "dummy stuff not DBA topic"
-    ignore_if:
-      - monitorObjectName: "DatabaseServer*"
-  - code: "rule_002"
-    decription: "app/business alerts"
-    ignore_if:
-      - resourceTemplateName: "Apache*"
+  process_003_orecle:
+    config:
+      log_path: "/home/bharat/logs"  # Base directory where logs are stored
+      log_files_to_collect:
+        - logs9.txt
+        - logs10.txt
+        - logs11.txt
+    db_type: oracle
+    hosts:
+      - 192.168.162.136
+
+# ignore_alerts_rules:
+#   - code: "rule_001"
+#     decription: "dummy stuff not DBA topic"
+#     ignore_if:
+#       - monitorObjectName: "DatabaseServer*"
+#   - code: "rule_002"
+#     decription: "app/business alerts"
+#     ignore_if:
+#       - resourceTemplateName: "Apache*"
   
 
