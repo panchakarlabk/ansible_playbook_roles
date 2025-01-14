@@ -98,12 +98,7 @@
   ansible.builtin.shell: |
     echo -e "DR PE {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     echo -e "host {{ current_host_name }}" >> /tmp/all_logs_collected.txt
-    # Add color-coded log status
-    {% if "{{ logs_status }}" == 'ok' %}
-    echo -e "<p style='color: green;'><strong>Status: {{ logs_status }} CET</strong></p>" >> /tmp/all_logs_collected.html
-    {% else %}
-    echo -e "<p style='color: red;'><strong>Status: {{ logs_status }} CET</strong></p>" >> /tmp/all_logs_collected.html
-    {% endif %}
+    echo -e "**Status** {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
     if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
       echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
