@@ -60,15 +60,15 @@
   ansible.builtin.set_fact:
     logs_status: >-
       {% if not all_logs.stdout_lines %}
-      <p style="color:green;">not ok</p>
+      '<p style="color:red;">not ok</p>'
       {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-      <p style="color:green;">not ok</p>
+      '<p style="color:red;">not ok</p>'
       {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-      <p style="color:green;">not ok</p>
+      '<p style="color:red;">not ok</p>'
       {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-      <p style="color:green;">not ok</p>
+      '<p style="color:green;">not ok</p>'
       {% else %}
-      <p style="color:green;">ok</p>
+      '<p style="color:green;">ok</p>'
       {% endif %}
   ignore_errors: yes  # Continue even if there are issues
   when: all_logs.stdout_lines is defined
@@ -98,7 +98,7 @@
   ansible.builtin.shell: |
     echo -e "DR PE {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     echo -e "host {{ current_host_name }}" >> /tmp/all_logs_collected.txt
-    echo -e "Status {{ logs_status }} CET" >> /tmp/all_logs_collected.txt
+    echo -e "Status {{ logs_status }}" >> /tmp/all_logs_collected.txt
     if [ -z "{{ all_logs.stdout_lines | join('') }}" ]; then
       echo -e "No logs collected as of {{ ansible_date_time.iso8601 }}" >> /tmp/all_logs_collected.txt
     else
