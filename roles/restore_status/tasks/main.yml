@@ -66,9 +66,9 @@
       {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
       not ok
       {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-      <p style='color: red;'>not ok</p>
+      <p style="color:green;">not ok</p>
       {% else %}
-       <p style='color: red;'>ok</p>
+      <p style="color:green;">ok</p>
       {% endif %}
   ignore_errors: yes  # Continue even if there are issues
   when: all_logs.stdout_lines is defined
