@@ -60,11 +60,11 @@
   ansible.builtin.set_fact:
     logs_status: >-
       {% if not all_logs.stdout_lines %}
-      no logs found
+      <p style="color:green;">not ok</p>
       {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
+      <p style="color:green;">not ok</p>
       {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-      not ok
+      <p style="color:green;">not ok</p>
       {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
       <p style="color:green;">not ok</p>
       {% else %}
