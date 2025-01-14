@@ -60,17 +60,17 @@
   ansible.builtin.set_fact:
     logs_status: >-
       {% if not all_logs.stdout_lines %}
-      '<p style="color:red;">not ok</p>'
+      "<p style='color:red;'>not ok</p>"
       {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-      '<p style="color:red;">not ok</p>'
+      "<p style='color:red;'>not ok</p>"
       {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-      '<p style="color:red;">not ok</p>'
+      "<p style='color:red;'>not ok</p>"
       {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-      '<p style="color:green;">not ok</p>'
+      "<p style='color:green;'>not ok</p>"
       {% else %}
-      '<p style="color:green;">ok</p>'
+      "<p style='color:green;'>ok</p>"
       {% endif %}
-  ignore_errors: yes  # Continue even if there are issues
+  ignore_errors: yes
   when: all_logs.stdout_lines is defined
   delegate_to: localhost
 
