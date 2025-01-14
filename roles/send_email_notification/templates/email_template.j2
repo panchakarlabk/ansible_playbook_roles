@@ -29,15 +29,9 @@
     {% for entry in restore_logs %}
       <div>
         <p>Host: <strong>{{ entry.host }}</strong></p>
-        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
-       {% for line in entry.logs %}
-        {% if loop.first and logs_status == 'ok' %}
-        <p style="color: green;"><strong>Status: {{ logs_status }} CET</strong></p>
-        {% elif loop.first and logs_status != 'ok' %}
-        <p style="color: red;"><strong>Status: {{ logs_status }} CET</strong></p>
-        {% endif %}
-       {{ line }}<br>
-    {% endfor %}
+        {% for line in entry.logs %}
+        {{ line }}<br>
+        {% endfor %}
         </div>
         <hr />
         {% endfor %}
