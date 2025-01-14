@@ -38,19 +38,15 @@
             <span style="color: orange;">{{ entry.logs_status }}</span>
           {% endif %}
         </p>
-        <p><strong>Logs:</strong></p>
-        <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px;">
+        <p><strong>Logs:</strong></p>    
       {% for line in entry.logs %}
-      <!-- Check if the current log line is the log_status -->
       {% if loop.first and logs_status == 'ok' %}
         <p style="color: green;"><strong>Status: {{ logs_status }} CET</strong></p>
       {% elif loop.first and logs_status != 'ok' %}
         <p style="color: red;"><strong>Status: {{ logs_status }} CET</strong></p>
       {% endif %}
-      
-      <pre>{{ line }}</pre>
-    {% endfor %}
-        </pre>
+      {{ line }}
+      {% endfor %}
         </div>
         <hr />
         {% endfor %}
