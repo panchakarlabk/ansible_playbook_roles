@@ -45,7 +45,7 @@
       {% elif loop.first and logs_status != 'ok' %}
         <p style="color: red;"><strong>Status: {{ logs_status }} CET</strong></p>
       {% endif %}
-      {{ line }}
+      {{ line }}<br>
       {% endfor %}
         </div>
         <hr />
