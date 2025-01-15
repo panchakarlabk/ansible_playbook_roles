@@ -29,7 +29,6 @@
     {% for entry in restore_logs %}
       <div>
         <p>Host: <strong>{{ entry.host }}</strong></p>
-        {% for line in entry.logs %}
         <p>Status: 
           {% if entry.logs_status == 'ok' %}
             <span style="color: green;">{{ entry.logs_status }}</span>
@@ -39,6 +38,7 @@
             <span style="color: orange;">{{ entry.logs_status }}</span>
           {% endif %}
         </p>
+        {% for line in entry.logs %}
         {{ line }}<br>
         {% endfor %}
         </div>
