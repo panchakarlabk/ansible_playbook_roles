@@ -60,19 +60,19 @@
   ansible.builtin.set_fact:
     logs_status: >-
       {% if not all_logs.stdout_lines %}
-      "<p style='color:red;'>not ok</p>"
+      no logs found
       {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-      "<p style='color:red;'>not ok</p>"
+      not ok
       {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-      "<p style='color:red;'>not ok</p>"
+      not ok
       {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-      "<p style='color:green;'>not ok</p>"
+      not ok
       {% else %}
-      "<p style='color:green;'>ok</p>"
+      ok
       {% endif %}
-  ignore_errors: yes
-  when: all_logs.stdout_lines is defined
   delegate_to: localhost
+  ignore_errors: yes  # Continue even if there are issues
+  when: all_logs.stdout_lines is defined
 
 - name: Initialize current_host_name with a fallback
   set_fact:
