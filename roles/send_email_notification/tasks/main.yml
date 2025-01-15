@@ -4,6 +4,8 @@
     src: email_template.j2
     dest: /tmp/email_body.txt
   delegate_to: localhost
+  vars:
+  host_logs: "{{ all_logs.results }}"
   # run_once: true
 
 - name: Display the collected logs

@@ -12,26 +12,30 @@
 </head>
 <body>
     <h3>Daily Monitor Logs Report</h3>
-    <p>
-        {% if not all_logs.stdout_lines %}
-            <span class="status-not-ok">No logs found</span>
-        {% elif 'error' in (all_logs.stdout_lines | join(' ') | lower) %}
-            <span class="status-not-ok">Not OK</span>
-        {% elif 'fail' in (all_logs.stdout_lines | join(' ') | lower) %}
-            <span class="status-not-ok">Not OK</span>
-        {% elif 'exception' in (all_logs.stdout_lines | join(' ') | lower) %}
-            <span class="status-not-ok">Not OK</span>
-        {% else %}
-            <span class="status-ok">OK</span>
-        {% endif %}
-    </p>
-    <h4>Logs:</h4>
-    <pre>
-        {% if all_logs.stdout_lines %}
-            {{ all_logs.stdout_lines | join('\n') }}
-        {% else %}
-            No logs available.
-        {% endif %}
-    </pre>
+    <ul>
+        {% for host_result in host_logs %}
+            <li>
+                <strong>{{ host_result.invocation.module_args._raw_params }}</strong> (Host: {{ host_result.item }}): 
+                {% if not host_result.stdout_lines %}
+                    <span class="status-not-ok">No logs found</span>
+                {% elif 'error' in (host_result.stdout_lines | join(' ') | lower) %}
+                    <span class="status-not-ok">Not OK</span>
+                {% elif 'fail' in (host_result.stdout_lines | join(' ') | lower) %}
+                    <span class="status-not-ok">Not OK</span>
+                {% elif 'exception' in (host_result.stdout_lines | join(' ') | lower) %}
+                    <span class="status-not-ok">Not OK</span>
+                {% else %}
+                    <span class="status-ok">OK</span>
+                {% endif %}
+            </li>
+            <pre>
+                {% if host_result.stdout_lines %}
+                    {{ host_result.stdout_lines | join('\n') }}
+                {% else %}
+                    No logs available.
+                {% endif %}
+            </pre>
+        {% endfor %}
+    </ul>
 </body>
 </html>
