@@ -30,16 +30,16 @@
       <div>
         <p>Host: <strong>{{ entry.host }}</strong></p>
         {% for line in entry.logs %}
-        <div>
-            {% if line.logs_status == "ok" %}
-                <span style="color: green;">{{ line.logs_status }}</span>
-            {% else %}
-                <span style="color: red;">{{ line.logs_status }}</span>
-            {% endif %}
-            {{ line }}<br>
-        </div>
+        {% if line.logs_status == "ok" %}
+        <span style="color: green;">{{ line.logs_status }}</span>
+         {% else %}
+        <span style="color: red;">{{ line.logs_status }}</span>
+         {% endif %}
+        {{ line }}<br>
         {% endfor %}
+        </div>
         <hr />
+        {% endfor %}
   {% else %}
     <p>No restore_logs content available.</p>
   {% endif %}
