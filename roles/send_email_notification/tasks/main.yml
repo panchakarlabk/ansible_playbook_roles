@@ -1,11 +1,15 @@
 ---
+- name: Gather all logs from all hosts
+  ansible.builtin.set_fact:
+    aggregated_logs: "{{ hostvars | dict2items | map(attribute='value.all_logs') | list }}"
+
 - name: Render the email body template
   template:
     src: email_template.j2
-    dest: /tmp/email_body.txt
+    dest: /tmp/email_body.html
   delegate_to: localhost
   vars:
-    host_logs: "{{ all_logs.results }}"
+    host_logs: "{{ aggregated_logs }}"
   # run_once: true
 
 - name: Display the collected logs
