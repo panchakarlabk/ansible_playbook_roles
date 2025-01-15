@@ -30,6 +30,15 @@
       <div>
         <p>Host: <strong>{{ entry.host }}</strong></p>
         {% for line in entry.logs %}
+        <p>Status: 
+          {% if entry.logs_status == 'ok' %}
+            <span style="color: green;">{{ entry.logs_status }}</span>
+          {% elif entry.logs_status == 'not ok' %}
+            <span style="color: red;">{{ entry.logs_status }}</span>
+          {% else %}
+            <span style="color: orange;">{{ entry.logs_status }}</span>
+          {% endif %}
+        </p>
         {{ line }}<br>
         {% endfor %}
         </div>
