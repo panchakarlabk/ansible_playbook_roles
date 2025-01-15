@@ -57,8 +57,9 @@
     
 - name: Gather all logs from all hosts
   ansible.builtin.set_fact:
-    aggregated_logs: "{{ hostvars | dict2items | map(attribute='value.all_logs') | list }}"
-    
+    aggregated_logs: "{{ (aggregated_logs | default([])) + [ { 'host': inventory_hostname, 'logs': all_logs } ] }}"
+  delegate_to: localhost
+
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
   ansible.builtin.set_fact:
