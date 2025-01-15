@@ -54,12 +54,7 @@
   when: 
     - host_log_path is defined
     - dr_type == "mysql"
-
-- name: Gather all logs from all hosts
-  ansible.builtin.set_fact:
-    aggregated_logs: "{{ (aggregated_logs | default([])) + [ { 'host': inventory_hostname, 'logs': all_logs.stdout_lines | default([]) } ] }}"
-  delegate_to: localhost
-
+    
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
   ansible.builtin.set_fact:
