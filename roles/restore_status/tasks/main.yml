@@ -80,7 +80,7 @@
 
 - name: Convert log_timestamp to ansible_date_time.date format
   ansible.builtin.set_fact:
-    formatted_log_timestamp: "{{ log_timestamp | trim | | to_datetime('%a %b %d %H:%M:%S %Y')).timestamp() | int }}"
+    formatted_log_timestamp: "{{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y')).timestamp() | int }}"
 
 - name: Debug Extract log timestamp from logs
   ansible.builtin.debug:
