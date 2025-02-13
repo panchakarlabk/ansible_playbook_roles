@@ -93,7 +93,7 @@
 
 - name: Debug expected_restore_time
   ansible.builtin.debug:
-    msg: "expected_restore_time: {{ expected_restore_time }}"
+    msg: "expected_restore_datetime: {{ expected_restore_datetime }}"
 
 - name: Compare log timestamp with expected restore time
   ansible.builtin.set_fact:
