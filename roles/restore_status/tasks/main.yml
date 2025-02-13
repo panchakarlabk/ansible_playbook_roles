@@ -103,7 +103,7 @@
       {% else %}
       ok
       {% endif %}
-  when: latest_log_entry is defined
+  when: all_logs.stdout_lines is defined
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
