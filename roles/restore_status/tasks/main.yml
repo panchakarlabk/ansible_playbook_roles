@@ -91,13 +91,25 @@
     expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M') }}"
   when: expected_restore_time is defined
 
+
+
 - name: Convert log timestamp to standard format
   ansible.builtin.set_fact:
-    formatted_log_timestamp: "{{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y', default=None) | strftime('%Y-%m-%d %H:%M:%S') if log_timestamp | trim is not none else '' }}"
+    formatted_log_timestamp: >-
+      {% if log_timestamp | length > 0 %}
+        {{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y') | strftime('%Y-%m-%d %H:%M:%S') }}
+      {% else %}
+        ''
+      {% endif %}
 
 - name: Convert expected restore datetime to standard format
   ansible.builtin.set_fact:
-    formatted_expected_restore_datetime: "{{ expected_restore_datetime | trim | to_datetime('%Y-%m-%d %H:%M:%S', default=None) | strftime('%Y-%m-%d %H:%M:%S') if expected_restore_datetime | trim is not none else '' }}"
+    formatted_expected_restore_datetime: >-
+      {% if expected_restore_datetime | length > 0 %}
+        {{ expected_restore_datetime | trim | to_datetime('%Y-%m-%d %H:%M:%S') | strftime('%Y-%m-%d %H:%M:%S') }}
+      {% else %}
+        ''
+      {% endif %}
 
 - name: Ensure both timestamps are valid
   ansible.builtin.fail:
