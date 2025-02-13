@@ -54,7 +54,57 @@
   when: 
     - host_log_path is defined
     - dr_type == "mysql"
-    
+
+- name: Get current date and time
+  ansible.builtin.shell: date "+%Y-%m-%d %H:%M:%S"
+  register: current_time
+  changed_when: false
+
+- name: Debug all_logs.stdout_lines
+  ansible.builtin.debug:
+    msg: "all_logs.stdout_lines: {{ all_logs }}"
+
+- name: Extract job completion timestamp (success or error)
+  ansible.builtin.set_fact:
+    log_timestamp: >-
+      {% set success_lines = all_logs.stdout_lines | select('search', 'Job .* successfully completed at') | list %}
+      {% set error_lines = all_logs.stdout_lines | select('search', 'Job .* completed with .* error') | list %}
+      {% if success_lines | length > 0 %}
+        {{ success_lines[-1] | regex_replace('.* successfully completed at ', '') | regex_replace(' elapsed.*', '') }}
+      {% elif error_lines | length > 0 %}
+        {{ error_lines[-1] | regex_replace('.* completed with .* error\(s\) at ', '') | regex_replace(' elapsed.*', '') }}
+      {% else %}
+        ""
+      {% endif %}
+  delegate_to: localhost
+
+- name: Debug Extract log timestamp from logs
+  ansible.builtin.debug:
+    msg: "log_timestamp: {{ log_timestamp }}"
+
+- name: Get current system time in Unix format
+  ansible.builtin.set_fact:
+    current_unix_time: "{{ ansible_date_time.epoch | int }}"
+
+- name: Set expected restore time with today's date if not provided with a date
+  ansible.builtin.set_fact:
+    expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M') }}"
+  when: expected_restore_time is defined
+
+- name: Convert log timestamp and expected restore time to Unix time
+  ansible.builtin.set_fact:
+    log_unix_time: >-
+      {% if log_timestamp | length > 0 %}
+        {% set cleaned_log_timestamp = log_timestamp | trim %}
+        {{ (cleaned_log_timestamp | to_datetime('%a %b %d %H:%M:%S %Y')).timestamp() | int }}
+      {% else %}
+        0
+      {% endif %}
+    expected_unix_time: "{{ expected_restore_datetime.timestamp() | int }}"
+  when:
+    - expected_restore_time is defined
+    - log_timestamp is defined
+
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
   ansible.builtin.set_fact:
