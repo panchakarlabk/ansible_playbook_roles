@@ -90,6 +90,7 @@
   ansible.builtin.set_fact:
     expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M') }}"
   when: expected_restore_time is defined
+
 - name: Convert log timestamp to proper format
   ansible.builtin.set_fact:
     formatted_log_timestamp: "{{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y') | strftime('%Y-%m-%d %H:%M:%S') }}"
@@ -99,9 +100,12 @@
     log_unix_time: "{{ formatted_log_timestamp | to_datetime('%Y-%m-%d %H:%M:%S') | timestamp | int }}"
     expected_unix_time: "{{ expected_restore_datetime | to_datetime('%Y-%m-%d %H:%M:%S') | timestamp | int }}"
 
-- name: Debug converted Unix timestamps
+- name: Debug converted timestamps
   ansible.builtin.debug:
-    msg: "Log timestamp (Unix): {{ log_unix_time }}, Expected restore time (Unix): {{ expected_unix_time }}"
+    msg: 
+      - "Formatted Log Timestamp: {{ formatted_log_timestamp }}"
+      - "Log Timestamp (Unix): {{ log_unix_time }}"
+      - "Expected Restore Timestamp (Unix): {{ expected_unix_time }}"
 
 - name: Compare log timestamp with expected restore time
   ansible.builtin.set_fact:
@@ -109,7 +113,8 @@
 
 - name: Debug Restore Status
   ansible.builtin.debug:
-    msg: "Is restore OK? {{ is_restore_ok }}"
+    msg: "Restore Status: {{ 'OK' if is_restore_ok else 'FAILED' }}"
+
 
 
 # Step 3: Check for errors in logs
