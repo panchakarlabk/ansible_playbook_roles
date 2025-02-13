@@ -80,7 +80,7 @@
 
 - name: Convert log_timestamp to ansible_date_time.date format
   ansible.builtin.set_fact:
-    formatted_log_timestamp: "{{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y')  }}"
+    formatted_log_timestamp: "{{ log_timestamp | trim | | to_datetime('%a %b %d %H:%M:%S %Y')).timestamp() | int }}"
 
 - name: Debug Extract log timestamp from logs
   ansible.builtin.debug:
@@ -88,7 +88,7 @@
 
 - name: Set expected restore time with today's date if not provided with a date
   ansible.builtin.set_fact:
-    expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M') }}"
+    expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M')).timestamp() | int }}"
   when: expected_restore_time is defined
 
 - name: Debug expected_restore_time
