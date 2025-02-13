@@ -95,13 +95,15 @@
   ansible.builtin.debug:
     msg: "expected_restore_datetime: {{ expected_restore_datetime }}"
 
-- name: Convert log_timestamp to the desired format
+- name: Convert log_timestamp to desired format
   ansible.builtin.set_fact:
-    formatted_log_timestamp: "{{ log_timestamp | trim | ansible.builtin.date('%a %b %d %H:%M:%S %Y', '%Y-%m-%d %H:%M:%S') }}"
+    formatted_log_timestamp: >-
+      {{ log_timestamp | trim | community.general.strftime('%a %b %d %H:%M:%S %Y', '%Y-%m-%d 23:00:00') }}
 
 - name: Debug the formatted log timestamp
   ansible.builtin.debug:
     msg: "log_timestamp: {{ formatted_log_timestamp }}"
+
 
 
 
