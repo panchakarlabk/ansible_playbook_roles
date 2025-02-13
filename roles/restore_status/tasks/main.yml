@@ -84,11 +84,20 @@
 
 - name: Debug Extract log timestamp from logs
   ansible.builtin.debug:
-    msg: "log_timestamp: {{ formatted_log_timestamp | ansible.builtin.date('%a %b %d %H:%M:%S %Y', '%Y-%m-%d')}}"
+    msg: "log_timestamp: {{ formatted_log_timestamp }}"
+
+- name: Set expected restore time with today's date if not provided with a date
+  ansible.builtin.set_fact:
+    expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M') }}"
+  when: expected_restore_time is defined
+
+- name: Debug expected_restore_time
+  ansible.builtin.debug:
+    msg: "expected_restore_time: {{ expected_restore_time }}"
 
 - name: Compare log timestamp with expected restore time
   ansible.builtin.set_fact:
-    is_restore_ok: "{{ log_timestamp <= expected_unix_time }}"
+    is_restore_ok: "{{ log_timestamp <= expected_restore_datetime }}"
 
 - name: Debug Restore Status
   ansible.builtin.debug:
