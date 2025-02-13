@@ -91,19 +91,30 @@
     expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M') }}"
   when: expected_restore_time is defined
 
-- name: Convert log timestamp to proper format
+- name: Convert log timestamp to standard format
   ansible.builtin.set_fact:
-    formatted_log_timestamp: "{{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y') | strftime('%Y-%m-%d %H:%M:%S') }}"
+    formatted_log_timestamp: "{{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y', default=None) | strftime('%Y-%m-%d %H:%M:%S') if log_timestamp | trim is not none else '' }}"
 
-- name: Convert formatted timestamp to Unix time
+- name: Convert expected restore datetime to standard format
+  ansible.builtin.set_fact:
+    formatted_expected_restore_datetime: "{{ expected_restore_datetime | trim | to_datetime('%Y-%m-%d %H:%M:%S', default=None) | strftime('%Y-%m-%d %H:%M:%S') if expected_restore_datetime | trim is not none else '' }}"
+
+- name: Ensure both timestamps are valid
+  ansible.builtin.fail:
+    msg: "Error: One or both timestamps are invalid! log_timestamp={{ formatted_log_timestamp }}, expected_restore_datetime={{ formatted_expected_restore_datetime }}"
+  when: 
+    - formatted_log_timestamp == '' or formatted_expected_restore_datetime == ''
+
+- name: Convert timestamps to Unix time
   ansible.builtin.set_fact:
     log_unix_time: "{{ formatted_log_timestamp | to_datetime('%Y-%m-%d %H:%M:%S') | timestamp | int }}"
-    expected_unix_time: "{{ expected_restore_datetime | to_datetime('%Y-%m-%d %H:%M:%S') | timestamp | int }}"
+    expected_unix_time: "{{ formatted_expected_restore_datetime | to_datetime('%Y-%m-%d %H:%M:%S') | timestamp | int }}"
 
-- name: Debug converted timestamps
+- name: Debug timestamps
   ansible.builtin.debug:
-    msg: 
+    msg:
       - "Formatted Log Timestamp: {{ formatted_log_timestamp }}"
+      - "Formatted Expected Restore Timestamp: {{ formatted_expected_restore_datetime }}"
       - "Log Timestamp (Unix): {{ log_unix_time }}"
       - "Expected Restore Timestamp (Unix): {{ expected_unix_time }}"
 
@@ -114,6 +125,7 @@
 - name: Debug Restore Status
   ansible.builtin.debug:
     msg: "Restore Status: {{ 'OK' if is_restore_ok else 'FAILED' }}"
+
 
 
 
