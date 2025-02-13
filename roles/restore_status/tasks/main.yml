@@ -95,6 +95,16 @@
   ansible.builtin.debug:
     msg: "expected_restore_datetime: {{ expected_restore_datetime }}"
 
+- name: Compare log timestamp with expected restore time
+  ansible.builtin.set_fact:
+    restore_status: >-
+      {% if formatted_log_timestamp < expected_restore_datetime %}
+      not ok
+      {% else %}
+      ok
+      {% endif %}
+  when: latest_log_entry is defined
+
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
   ansible.builtin.set_fact:
