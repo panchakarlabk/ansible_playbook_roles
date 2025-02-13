@@ -80,7 +80,7 @@
 
 - name: Debug Extract log timestamp from logs
   ansible.builtin.debug:
-    msg: "log_timestamp: {{ log_timestamp }}"
+    msg: "log_timestamp: {{ log_timestamp | trim }}"
 
 - name: Get current system time in Unix format
   ansible.builtin.set_fact:
@@ -100,9 +100,9 @@
       {% else %}
         0
       {% endif %}
-    expected_unix_time: "{{ expected_restore_datetime.timestamp() | int }}"
+    expected_unix_time: "{{ expected_restore_datetime | to_datetime('%Y-%m-%d %H:%M:%S').timestamp() | int }}"
   when:
-    - expected_restore_time is defined
+    - expected_restore_datetime is defined
     - log_timestamp is defined
 
 # Step 3: Check for errors in logs
