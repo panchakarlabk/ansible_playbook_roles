@@ -1,4 +1,4 @@
 ---
 # defaults file for ariba_install_role
 #log_path: "/var/log/messages"
-expected_restore_time: "23:00"
+expected_restore_time: "07:00"
