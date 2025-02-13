@@ -78,61 +78,17 @@
       {% endif %}
   delegate_to: localhost
 
+- name: Convert log_timestamp to ansible_date_time.date format
+  ansible.builtin.set_fact:
+    formatted_log_timestamp: "{{ log_timestamp | trim | ansible.builtin.date('%a %b %d %H:%M:%S %Y', '%Y-%m-%d') }}"
+
 - name: Debug Extract log timestamp from logs
   ansible.builtin.debug:
-    msg: "log_timestamp: {{ log_timestamp | trim | strptime('%a %b %d %H:%M:%S %Y') | strftime('%Y-%m-%d') }}"
-
-- name: Get current system time in Unix format
-  ansible.builtin.set_fact:
-    current_unix_time: "{{ ansible_date_time.epoch | int }}"
-
-- name: Set expected restore time with today's date if not provided with a date
-  ansible.builtin.set_fact:
-    expected_restore_datetime: "{{ (ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M') }}"
-  when: expected_restore_time is defined
-
-
-
-- name: Convert log timestamp to standard format
-  ansible.builtin.set_fact:
-    formatted_log_timestamp: >-
-      {% if log_timestamp | length > 0 %}
-        {{ log_timestamp | trim | to_datetime('%a %b %d %H:%M:%S %Y') | strftime('%Y-%m-%d %H:%M:%S') }}
-      {% else %}
-        ''
-      {% endif %}
-
-- name: Convert expected restore datetime to standard format
-  ansible.builtin.set_fact:
-    formatted_expected_restore_datetime: >-
-      {% if expected_restore_datetime | length > 0 %}
-        {{ expected_restore_datetime | trim | to_datetime('%Y-%m-%d %H:%M:%S') | strftime('%Y-%m-%d %H:%M:%S') }}
-      {% else %}
-        ''
-      {% endif %}
-
-- name: Ensure both timestamps are valid
-  ansible.builtin.fail:
-    msg: "Error: One or both timestamps are invalid! log_timestamp={{ formatted_log_timestamp }}, expected_restore_datetime={{ formatted_expected_restore_datetime }}"
-  when: 
-    - formatted_log_timestamp == '' or formatted_expected_restore_datetime == ''
-
-- name: Convert timestamps to Unix time
-  ansible.builtin.set_fact:
-    log_unix_time: "{{ formatted_log_timestamp | to_datetime('%Y-%m-%d %H:%M:%S') | timestamp | int }}"
-    expected_unix_time: "{{ formatted_expected_restore_datetime | to_datetime('%Y-%m-%d %H:%M:%S') | timestamp | int }}"
-
-- name: Debug timestamps
-  ansible.builtin.debug:
-    msg:
-      - "Formatted Log Timestamp: {{ formatted_log_timestamp }}"
-      - "Formatted Expected Restore Timestamp: {{ formatted_expected_restore_datetime }}"
-      - "Log Timestamp (Unix): {{ log_unix_time }}"
-      - "Expected Restore Timestamp (Unix): {{ expected_unix_time }}"
+    msg: "log_timestamp: {{ formatted_log_timestamp }}"
 
 - name: Compare log timestamp with expected restore time
   ansible.builtin.set_fact:
-    is_restore_ok: "{{ log_unix_time <= expected_unix_time }}"
+    is_restore_ok: "{{ log_timestamp <= expected_unix_time }}"
 
 - name: Debug Restore Status
   ansible.builtin.debug:
