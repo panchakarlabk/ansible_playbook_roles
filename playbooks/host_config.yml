@@ -55,9 +55,9 @@ dba_automation_dev:
     config:
       log_path: "/home/bharat/logs"  # Base directory where logs are stored
       log_files_to_collect:
-        - logs9.txt
-        - logs10.txt
-        - logs11.txt
+        - log1
+        - log2
+        - log2
     db_type: oracle
     hosts:
       - 192.168.162.136
