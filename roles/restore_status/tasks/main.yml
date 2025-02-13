@@ -103,7 +103,9 @@
       {% else %}
       ok
       {% endif %}
-  when: all_logs.stdout_lines is defined
+  when: 
+    - all_logs.stdout_lines is defined
+    - formatted_log_timestamp is defined
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
