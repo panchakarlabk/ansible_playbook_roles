@@ -88,24 +88,31 @@
 
 - name: Set expected restore time with today's date if not provided with a date
   ansible.builtin.set_fact:
-    expected_restore_datetime: "{{ ((ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M')).timestamp() | int }}"
+    expected_Finished_Restore_Time: "{{ ((ansible_date_time.date + ' ' + expected_restore_time) | to_datetime('%Y-%m-%d %H:%M')).timestamp() | int }}"
   when: expected_restore_time is defined
 
-- name: Debug expected_restore_time
-  ansible.builtin.debug:
-    msg: "expected_restore_datetime: {{ expected_restore_datetime }}"
+- name: Convert expected restore time to datetime
+  ansible.builtin.set_fact:
+    expected_restore_datetime: >-
+      {% set today = ansible_date_time.date %}
+      {% set yesterday = (ansible_date_time.epoch | int - 86400) | strftime('%Y-%m-%d') %}
+      {% set expected_time = expected_Finished_Restore_Time %}
+      {% if current_Time < expected_time %}
+      {{ yesterday }} {{ expected_time }}
+      {% else %}
+      {{ today }} {{ expected_time }}
+      {% endif %}
+
 
 - name: Compare log timestamp with expected restore time
   ansible.builtin.set_fact:
     restore_status: >-
-      {% if formatted_log_timestamp < expected_restore_datetime %}
-      not ok
-      {% else %}
+      {% if formatted_log_timestamp >= expected_restore_datetime %}
       ok
+      {% else %}
+      not ok
       {% endif %}
-  when: 
-    - all_logs.stdout_lines is defined
-    - formatted_log_timestamp is defined
+
 
 # Step 3: Check for errors in logs
 - name: Identify errors in logs
