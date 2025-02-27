@@ -3,19 +3,19 @@
 - name: Get MySQL version using mysql CLI
   ansible.builtin.shell: "mysql --login-path=root -e 'SELECT VERSION();' -s -N"
   register: mysql_version_output
-  delegate_to: "{{ inventory_hostname }}"  # Run the command on each MySQL host
+  delegate_to: localhost  # Run the command on each MySQL host
 
 - name: Show MySQL version
   ansible.builtin.debug:
     msg: "MySQL version on {{ inventory_hostname }}: {{ mysql_version_output.stdout }}"
-    
+
 - name: Execute MySQL query on multiple hosts and retrieve results
   community.mysql.mysql_query:
     login_path: "root"  # Use the login-path for credentials
     db: "mysql_version_output"
     query: "{{ query }}"
   register: query_result
-  delegate_to: "{{ inventory_hostname }}"  # This ensures the query runs per host
+  delegate_to: localhost  # This ensures the query runs per host
 
 - name: Convert query results to CSV
   ansible.builtin.copy:
