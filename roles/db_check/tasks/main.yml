@@ -3,7 +3,6 @@
 - name: Get MySQL version using mysql CLI
   ansible.builtin.shell: "mysql --login-path=root -e 'SELECT VERSION();' -s -N"
   register: mysql_version_output
-  delegate_to: localhost  # Run the command on each MySQL host
 
 - name: Show MySQL version
   ansible.builtin.debug:
