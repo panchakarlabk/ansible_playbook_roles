@@ -1,0 +1,6 @@
+---
+- name: This is my test plabook 
+  hosts: "{{ targets }}"
+ # Load the configuration file
+  roles:
+    - db_check

@@ -1,0 +1,39 @@
+---
+- name: Get MySQL version
+  community.general.mysql_query:
+    login_path: "root"  # Use --login-path=root for authentication
+    db: "information_schema"  # Any database can be used; information_schema is safe
+    query: "SELECT VERSION();"
+  register: mysql_version_output
+  delegate_to: "{{ inventory_hostname }}"  # Ensures it runs on each MySQL host
+
+- name: Show MySQL version
+  ansible.builtin.debug:
+    msg: "MySQL version on {{ inventory_hostname }}: {{ mysql_version_output.query_result[0]['VERSION()'] }}"
+
+- name: Execute MySQL query on multiple hosts and retrieve results
+  community.general.mysql_query:
+    login_path: "root"  # Use the login-path for credentials
+    db: "mysql_version_output"
+    query: "{{ query }}"
+  register: query_result
+  delegate_to: "{{ inventory_hostname }}"  # This ensures the query runs per host
+
+- name: Convert query results to CSV
+  ansible.builtin.copy:
+    dest: "{{ output_file }}"
+    content: |
+      {% for row in query_result.results %}
+      {% for key, value in row.items() %}
+      {{ key }}: {{ value }}{% if not loop.last %}, {% endif %}
+      {% endfor %}
+      {% if not loop.last %}\n{% endif %}
+      {% endfor %}
+  when: query_result.results | length > 0
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Print message
+  ansible.builtin.debug:
+    msg: "Query results saved to {{ output_file }}"
+  when: query_result.results | length > 0
+  delegate_to: "{{ inventory_hostname }}"

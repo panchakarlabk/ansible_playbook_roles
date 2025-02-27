@@ -1,0 +1,5 @@
+---
+mysql_login_path: "root"  # MySQL login path that stores user credentials
+mysql_db: "your_database"
+query: "show tables;"
+output_file: "/tmp/query_result.csv"
