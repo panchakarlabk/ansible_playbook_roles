@@ -1,16 +1,14 @@
 ---
-- name: Get MySQL version
-  community.mysql.mysql_query:
-    login_path: "root"  # Use --login-path=root for authentication
-    db: "information_schema"  # Use information_schema since it exists on all MySQL servers
-    query: "SELECT VERSION();"
+
+- name: Get MySQL version using mysql CLI
+  ansible.builtin.shell: "mysql --login-path=root -e 'SELECT VERSION();' -s -N"
   register: mysql_version_output
-  delegate_to: "{{ inventory_hostname }}"  # Ensures the query runs on each MySQL host
+  delegate_to: "{{ inventory_hostname }}"  # Run the command on each MySQL host
 
 - name: Show MySQL version
   ansible.builtin.debug:
-    msg: "MySQL version on {{ inventory_hostname }}: {{ mysql_version_output.query_result[0]['VERSION()'] }}"
-
+    msg: "MySQL version on {{ inventory_hostname }}: {{ mysql_version_output.stdout }}"
+    
 - name: Execute MySQL query on multiple hosts and retrieve results
   community.mysql.mysql_query:
     login_path: "root"  # Use the login-path for credentials
