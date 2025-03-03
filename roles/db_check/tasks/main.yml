@@ -9,13 +9,15 @@
   ansible.builtin.debug:
     msg: "MySQL version on {{ inventory_hostname }}: {{ mysql_version_output.stdout }}"
 
-- name: Get MySQL version
-  community.mysql.mysql_query:
-    login_user: "root"
-    login_host: "localhost"
-    login_db: "information_schema"
-    query: "SELECT VERSION();"
-  register: query_result
+- name: Get MySQL binary path
+  ansible.builtin.command: "which mysql"
+  become: yes
+  become_user: bharat
+  register: mysql_path
+
+- name: Show MySQL binary path
+  ansible.builtin.debug:
+    msg: "MySQL binary path on {{ inventory_hostname }}: {{ mysql_path.stdout }}"
 
 - name: Show MySQL version
   ansible.builtin.debug:
