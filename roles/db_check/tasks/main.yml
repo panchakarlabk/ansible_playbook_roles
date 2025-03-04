@@ -1,9 +1,19 @@
 ---
 
-- name: Get MySQL version using mysql CLI
-  ansible.builtin.shell: "mysql --login-path=root -e 'SELECT VERSION();' -s -N"
+
+- name: Get MySQL version using mysql_query module
+  community.mysql.mysql_query:
+    login_user: "root"
+    query: "SELECT VERSION();"
+  become: yes
   become_user: "bharat"
   register: query_result
+
+
+# - name: Get MySQL version using mysql CLI
+#   ansible.builtin.shell: "mysql --login-path=root -e 'SELECT VERSION();' -s -N"
+#   become_user: "bharat"
+#   register: query_result
 
 - name: Show MySQL version
   ansible.builtin.debug:
