@@ -11,8 +11,6 @@
 
 - name: Get MySQL binary path
   ansible.builtin.command: "which mysql"
-  become: yes
-  become_user: bharat
   register: mysql_path
 
 - name: Show MySQL binary path
