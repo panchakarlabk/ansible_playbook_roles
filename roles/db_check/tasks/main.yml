@@ -1,10 +1,16 @@
 ---
 
-- name: Install PyMySQL for MySQL Ansible modules
+- name: Install pip3
+  ansible.builtin.package:
+    name: python3-pip
+    state: present
+
+- name: Install PyMySQL using pip3
   ansible.builtin.pip:
     name: pymysql
     state: present
-    
+
+
 - name: Get MySQL version using mysql_query module
   community.mysql.mysql_query:
     login_user: "root"
