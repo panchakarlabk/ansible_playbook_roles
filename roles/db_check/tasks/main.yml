@@ -3,11 +3,11 @@
 - name: Get MySQL version using mysql CLI
   ansible.builtin.shell: "mysql --login-path=root -e 'SELECT VERSION();' -s -N"
   become_user: "bharat"
-  register: mysql_version_output
+  register: query_result
 
 - name: Show MySQL version
   ansible.builtin.debug:
-    msg: "MySQL version on {{ inventory_hostname }}: {{ mysql_version_output.stdout }}"
+    msg: "MySQL version on {{ inventory_hostname }}: {{ query_result.stdout }}"
 
 - name: Get MySQL binary path
   ansible.builtin.command: "which mysql"
