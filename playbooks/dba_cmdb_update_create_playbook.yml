@@ -1,0 +1,85 @@
+# Author: Bharat Kumar Panchakarla
+# Year: 2025
+# Description: playbook to to check CMDB Check DB engines on specific hosts 
+
+- name: CMDB Check DB engines on specific hosts
+  hosts: "{{ targets }}"
+  become: false
+  gather_facts: yes
+  roles:
+    - host_unreachable_check
+    - dba_cmdb_host_running
+    - role: dba_common
+      when: 
+        - hostname_exists 
+        - uptime_result.unreachable is not defined 
+    - role: dba_common_oracle
+      when: 
+        - hostname_exists 
+        - uptime_result.unreachable is not defined 
+
+  tasks:
+    - name: Execute CMDB attributes update or create for Oracle databases
+      block:
+        - name: Get CMDB attributes Values in Oracle
+          ansible.builtin.include_role:
+            name: dba_cmdb_oracle
+
+        - name: Import dba_cmdb_update_create only if any DB process returns data
+          ansible.builtin.include_role:
+            name: dba_cmdb_update_create 
+          when:
+            - query_results.results is defined
+            - query_results.results|length > 0
+      when: 
+        - hostname_exists
+        - oracle_process_Count.stdout|int > 0
+        - uptime_result.unreachable is not defined
+      rescue:
+        - name: Handle failure gracefully
+          debug:
+            msg: "Something went wrong while updating CMDB attributes."
+
+    - name: Execute CMDB attributes update or create for MySQL databases
+      block:
+        - name: Get CMDB attributes Vaules in MySQL
+          ansible.builtin.include_role:
+            name: dba_cmdb_mysql
+
+        - name: Import dba_cmdb_update_create only if any DB process returns data
+          ansible.builtin.include_role:
+            name: dba_cmdb_update_create 
+          when:
+            - query_results.stdout is defined
+            - query_results.stdout|length > 0
+      when: 
+        - hostname_exists
+        - uptime_result.unreachable is not defined
+        - mysql_process_Count.stdout|int > 0
+      rescue:
+        - name: Handle failure gracefully
+          debug:
+            msg: "Something went wrong while updating CMDB attributes."
+
+    - name: Execute CMDB attributes update or create for PostgreSQL databases
+      block:
+        - name: CMDB attributes update for PostgreSQL
+          ansible.builtin.include_role:
+            name: dba_cmdb_postgresql
+
+        - name: Import dba_cmdb_update_create only if any DB process returns data
+          ansible.builtin.include_role:
+            name: dba_cmdb_update_create
+          when:
+            - query_results.stdout is defined
+            - query_results.stdout|length > 0
+      when: 
+        - hostname_exists
+        - uptime_result.unreachable is not defined
+        - postgres_process_Count.stdout|int > 0
+      rescue:
+        - name: Handle failure gracefully
+          debug:
+            msg: "Something went wrong while updating CMDB attributes."
+
+
