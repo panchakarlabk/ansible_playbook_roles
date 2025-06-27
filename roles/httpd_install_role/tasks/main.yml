@@ -1,25 +1,26 @@
 ---
 # tasks file for Httpd
 
-  - name: install httpd
-    yum:
-      name: "{{ pck }}"
-      state: latest
-    notify: restart
-  
-  - name: install nginx
-    yum:
-      name: "{{ pck2 }}"
-      state: latest
-    notify: restart
+- name: install httpd
+  ansible.builtin.yum:
+    name: "{{ pck }}"
+    state: latest
+  notify: restart
 
-  - name: folder creation
-    file:
-      dest: /root/test.txt
-      state: touch
-  
-  - name: content creation
-    copy:
-      content: '# This file is belonogs to Bharat Kumar From Ansible test file'
-      dest: /root/test.txt
+- name: install nginx
+  ansible.builtin.yum:
+    name: "{{ pck2 }}"
+    state: latest
+  notify: restart
+
+- name: folder creation
+  ansible.builtin.file:
+    dest: /root/test.txt
+    state: touch
+
+- name: content creation
+  ansible.builtin.copy:
+    content: '# This file belongs to Bharat Kumar From Ansible test file'
+    dest: /root/test.txt
+
 
