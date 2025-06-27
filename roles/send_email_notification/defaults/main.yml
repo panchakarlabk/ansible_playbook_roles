@@ -1,3 +1,8 @@
 ---
 # defaults file for ariba_install_role
 log_path: "/var/log/messages"
+
+email_username: "panchakarlabk"
+email_password: "$1$b.ZwvvPa$EAtIsCj1ndmIeUrREs2C5/"
+email_recipient: "panchakarlabk@gmail.com"
+email_subject: "This Ansible eamil log notifiction"

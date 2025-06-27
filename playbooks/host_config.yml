@@ -43,6 +43,11 @@ dba_automation_prod:
 dba_automation_dev:
   process_001_mysql:
     config:
+      log_path: "/home/admin/logs.txt"
+    hosts:
+      - 10.100.152.166
+  process_001_mysql:
+    config:
       log_path: "/home/bharat/logs/logs.txt"
     hosts:
       - 192.168.162.130
