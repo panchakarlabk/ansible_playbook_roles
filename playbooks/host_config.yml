@@ -67,14 +67,14 @@ dba_automation_dev:
     hosts:
       - 192.168.162.136
 
-# ignore_alerts_rules:
-#   - code: "rule_001"
-#     decription: "dummy stuff not DBA topic"
-#     ignore_if:
-#       - monitorObjectName: "DatabaseServer*"
-#   - code: "rule_002"
-#     decription: "app/business alerts"
-#     ignore_if:
-#       - resourceTemplateName: "Apache*"
+ignore_alerts_rules:
+  - code: "rule_001"
+    decription: "dummy stuff not DBA topic"
+    ignore_if:
+      - monitorObjectName: "DatabaseServer*"
+  - code: "rule_002"
+    decription: "app/business alerts"
+    ignore_if:
+      - resourceTemplateName: "Apache*"
   
 
