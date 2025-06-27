@@ -15,12 +15,12 @@
 
 - name: folder creation
   ansible.builtin.file:
-    dest: /root/test.txt
+    dest: test.txt
     state: touch
 
 - name: content creation
   ansible.builtin.copy:
     content: '# This file belongs to Bharat Kumar From Ansible test file'
-    dest: /root/test.txt
+    dest: test.txt
 
 
